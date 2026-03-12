@@ -251,13 +251,13 @@ Files created/modified:
 
 Completed as part of Phase 1. BREE is now `JavaSE-25`, `javacSource=25`, `javacTarget=25`. The build compiles all 69 source files successfully with `--release 25`.
 
-### Phase 3: Java Language Modernization
+### Phase 3: Java Language Modernization ✅ DONE
 
 **Goal**: Modernize Java code to use modern language features. Apply these changes file by file.
 
-#### 3a. Add Generics (Remove Raw Types)
+#### 3a. Add Generics (Remove Raw Types) ✅ DONE
 
-Every raw `ArrayList`, `HashMap`, `List`, `Iterator`, `Map` must be parameterized:
+Every raw `ArrayList`, `HashMap`, `List`, `Iterator`, `Map`, `Vector` must be parameterized:
 
 | File                              | Change                                                                                               |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -266,9 +266,15 @@ Every raw `ArrayList`, `HashMap`, `List`, `Iterator`, `Map` must be parameterize
 | `PropertiesDocumentProvider.java` | `List` → `List<IPropertiesDocumentListener>`, `ArrayList` → `ArrayList<IPropertiesDocumentListener>` |
 | `PropertiesPartitionScanner.java` | `List` → `List<IPredicateRule>`                                                                      |
 | `CheckAndMarkDuplicateKey.java`   | `Map` → `Map<String, Integer>`, `List` → `List<String>`                                              |
+| `EncodeManager.java`              | `Vector` → `List<Encode>`, raw `List` → `List<String>`, return type `Vector` → `List<Encode>`        |
+| `EncodeSelectPanel.java`          | `Vector` → `List<Encode>`, removed unchecked casts, enhanced for-each loops                          |
+| `JExtendedPopupComboBox.java`     | Raw `Vector` → `Vector<?>`, `@SuppressWarnings("rawtypes")` on class (extends raw `JComboBox`)       |
+| `JFontChooserDialog.java`         | Raw `JComboBox` → `JComboBox<String>`                                                                |
+| `JExtendedPopupComboBoxUI.java`   | Raw `ComboBoxModel` → `ComboBoxModel<?>`, raw `JComboBox` → `JComboBox<?>`                           |
+| `PropertiesEditorFrame.java`      | Raw `java.util.List` → `java.util.List<File>` in `DropHandler.drop()`                                |
 | All for-loops using index         | Convert to enhanced for-each where applicable                                                        |
 
-#### 3b. Replace Deprecated Constructors
+#### 3b. Replace Deprecated Constructors ✅ DONE
 
 | Pattern              | Replacement                            |
 | -------------------- | -------------------------------------- |
@@ -277,41 +283,46 @@ Every raw `ArrayList`, `HashMap`, `List`, `Iterator`, `Map` must be parameterize
 
 Files affected: `CheckAndMarkDuplicateKey.java`, `PropertiesEditor.java` (editors).
 
-#### 3c. `StringBuffer` → `StringBuilder`
+#### 3c. `StringBuffer` → `StringBuilder` ✅ DONE
 
 Replace all `StringBuffer` with `StringBuilder` (none of the usages are shared across threads):
 
-Files affected: `EncodeChanger.java`, `CheckAndMarkDuplicateKey.java`.
+Files affected: `EncodeChanger.java`, `CheckAndMarkDuplicateKey.java`, `PropertiesEditorFrame.java` (`ajustLineNumber`).
 
-#### 3d. Add `@Override` Annotations
+#### 3d. Add `@Override` Annotations ✅ DONE
 
 Add `@Override` to every method that overrides a superclass method or implements an interface method. This affects virtually every file in the `eclipse/plugin/` package tree.
 
-#### 3e. Use Try-with-Resources
+#### 3e. Use Try-with-Resources ✅ DONE
 
 Replace manual `try/finally` resource closing with try-with-resources:
 
 Files affected: `CheckAndMarkDuplicateKey.java` (`BufferedReader`), `EncodeChanger.java`, `FileOpener.java`.
 
-#### 3f. Use Diamond Operator
+#### 3f. Use Diamond Operator ✅ DONE
 
 Replace `new ArrayList<Type>()` with `new ArrayList<>()` (after generics are added).
 
-#### 3g. Use `var` (Local Variable Type Inference)
+#### 3g. Use `var` (Local Variable Type Inference) ✅ DONE
 
 Use `var` for local variables where the type is obvious from the right-hand side.
 
-#### 3h. Use Lambdas and Method References
+Files affected: `PropertiesEditorFrame.java` (`new_actionPerformed`, `version_actionPerformed`, `selectOpenFile`, `ajustLineNumber`), `JFontChooserDialog.java` (`initialize`), `EncodeSelectPanel.java` (`getSelectedEncode`).
 
-Replace anonymous inner classes with lambdas where a functional interface is used (e.g., `Runnable`, `SelectionListener`, `ModifyListener`). Primarily applies to the Swing standalone app (`PropertiesEditorFrame.java`).
+#### 3h. Use Lambdas and Method References ✅ DONE
 
-#### 3i. Use `String.replace()` Instead of Manual StringBuffer Replacement
+Replace anonymous inner classes with lambdas where a functional interface is used (e.g., `Runnable`, `ActionListener`). Non-functional anonymous classes (e.g., `KeyAdapter`, `DropTargetListener`) retained with `@Override` added.
 
-In `CheckAndMarkDuplicateKey.replace()` — replace the manual `StringBuffer`-based string replacement with `String.replace()`.
+Files affected: `PropertiesEditorFrame.java` (30+ lambda conversions), `JFontChooserDialog.java` (7 lambdas), `ReplaceTextDialog.java` (2), `SearchTextDialog.java` (2), `UnicodeDialog.java` (1), `PropertiesReconcilingStrategy.java` (1).
 
-#### 3j. Records for Simple Data Holders (Java 16+)
+#### 3i. Use `String.replace()` Instead of Manual StringBuffer Replacement ✅ DONE
 
-Evaluate `AppSetting.java` and `Encode.java` in `bean/` — if they are simple data carriers, convert to `record` types. Only do this if they have no mutable state that needs to be preserved.
+In `CheckAndMarkDuplicateKey.replace()` — replaced the manual `StringBuilder`-based string replacement with `String.replace()`.
+
+#### 3j. Records for Simple Data Holders (Java 16+) ✅ DONE
+
+- **`Encode.java`**: Converted to `record Encode(int no, String name, String code)`. Updated all callers (`EncodeSelectPanel.java`) from bean-style getters (`getName()`) to record accessors (`name()`).
+- **`AppSetting.java`**: Remains a class — relies on mutable singleton state, Java serialization (`readObject`/`writeObject`), and setter-based mutation. Javadoc note added documenting future record migration potential after architectural changes (e.g., replacing `ObjectOutputStream` persistence with JSON/TOML config).
 
 ### Phase 4: Eclipse API Modernization
 
@@ -363,7 +374,7 @@ log.log(new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage
 
 **Goal**: Modernize the Swing desktop app (lower priority than Eclipse plugin).
 
-1. `PropertiesEditorFrame.java` (52KB) — refactor into smaller classes, use lambdas for event listeners.
+1. `PropertiesEditorFrame.java` — refactor into smaller classes (lambdas for event listeners already done in Phase 3h).
 2. Replace `UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())` with FlatLaf or similar modern look-and-feel.
 3. Use `var`, enhanced for-each, and streams where appropriate.
 4. Evaluate whether the standalone app should be preserved long-term or deprecated in favor of Eclipse-only usage.
