@@ -174,14 +174,6 @@ public class CheckAndMarkDuplicateKey {
 
 	public static String replace(String str, String toString, String fromString) {
 
-		StringBuilder buf = new StringBuilder();
-		int idx = str.indexOf(fromString, 0);
-		if (idx == -1) {
-			return str;
-		}
-		buf.append(str.substring(0, idx));
-		buf.append(toString);
-		buf.append(str.substring(idx + fromString.length(), str.length()));
-		return buf.toString();
+		return str.replace(fromString, toString);
 	}
 }

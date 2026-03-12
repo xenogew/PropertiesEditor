@@ -96,13 +96,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 		}
 		// Collections.sort(fPositions, new RangeTokenComparator());
 
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				editor.updateFoldingStructure(fPositions);
-			}
-
-		});
+		Display.getDefault().asyncExec(() -> editor.updateFoldingStructure(fPositions));
 	}
 
 	/**
