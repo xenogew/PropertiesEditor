@@ -16,6 +16,7 @@ public class BasicNewPropertiesFileWizard extends BasicNewFileResourceWizard {
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
 	 */
+	@Override
 	public void addPage(IWizardPage page) {
 		page.setTitle(Messages.getString("eclipse.propertieseditor.BasicNewPropertiesFileWizard.0")); //$NON-NLS-1$
 		page.setDescription(Messages.getString("eclipse.propertieseditor.BasicNewPropertiesFileWizard.1")); //$NON-NLS-1$

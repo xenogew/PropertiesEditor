@@ -42,6 +42,7 @@ public class PropertiesPreference extends FieldEditorPreferencePage implements I
 		setDescription(Messages.getString("eclipse.propertieseditor.preference.page.title")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void createFieldEditors() {
 
 		Composite parent = getFieldEditorParent();
@@ -76,6 +77,7 @@ public class PropertiesPreference extends FieldEditorPreferencePage implements I
 		addField(notConvertCommentField);
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 
 	}
@@ -83,6 +85,7 @@ public class PropertiesPreference extends FieldEditorPreferencePage implements I
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performApply()
 	 */
+	@Override
 	protected void performApply() {
 		super.performApply();
 	}

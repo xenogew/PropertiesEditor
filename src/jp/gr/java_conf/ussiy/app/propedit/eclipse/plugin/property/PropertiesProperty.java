@@ -50,6 +50,7 @@ public class PropertiesProperty extends PropertyPage {
 	
 	private Button notConvertCommentCheckBox = null;
 	
+	@Override
 	protected Control createContents(Composite parent) {
 
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -64,6 +65,7 @@ public class PropertiesProperty extends PropertyPage {
 		gd.horizontalSpan = 2;
 		orgCheckBox.setLayoutData(gd);
 		orgCheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (orgCheckBox.getSelection()) {
 					commentText.setEnabled(true);
@@ -110,6 +112,7 @@ public class PropertiesProperty extends PropertyPage {
 		notAllConvertCheckBox = new Button(group, SWT.CHECK);
 		notAllConvertCheckBox.setText(Messages.getString("eclipse.propertieseditor.preference.convert")); //$NON-NLS-1$
 		notAllConvertCheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (notAllConvertCheckBox.getSelection()) {
 					notConvertCommentCheckBox.setEnabled(false);
@@ -164,7 +167,7 @@ public class PropertiesProperty extends PropertyPage {
 			convertCharCaseCombo.setText(Messages.getString("eclipse.propertieseditor.preference.convert.char.lowercase")); //$NON-NLS-1$
 		}
 		if (notAllConvert != null) {
-			notAllConvertCheckBox.setSelection(Boolean.valueOf(notAllConvert).booleanValue());
+			notAllConvertCheckBox.setSelection(Boolean.parseBoolean(notAllConvert));
 			if (notAllConvertCheckBox.getSelection()) {
 				notConvertCommentCheckBox.setEnabled(false);
 			} else {
@@ -175,13 +178,13 @@ public class PropertiesProperty extends PropertyPage {
 			notConvertCommentCheckBox.setEnabled(false);
 		}
 		if (notConvertComment != null) {
-			notConvertCommentCheckBox.setSelection(Boolean.valueOf(notConvertComment).booleanValue());
+			notConvertCommentCheckBox.setSelection(Boolean.parseBoolean(notConvertComment));
 		} else {
 			notConvertCommentCheckBox.setSelection(false);
 		}
 		
 		if (org != null) {
-			orgCheckBox.setSelection(Boolean.valueOf(org).booleanValue());
+			orgCheckBox.setSelection(Boolean.parseBoolean(org));
 			if (orgCheckBox.getSelection()) {
 				commentText.setEnabled(true);
 				convertCharCaseCombo.setEnabled(true);
@@ -210,6 +213,7 @@ public class PropertiesProperty extends PropertyPage {
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performApply()
 	 */
+	@Override
 	protected void performApply() {
 		try {
 			IAdaptable adapter = getElement();
@@ -233,6 +237,7 @@ public class PropertiesProperty extends PropertyPage {
 		}
 	}
 
+	@Override
 	protected void performDefaults() {
 		commentText.setText("#"); //$NON-NLS-1$
 		convertCharCaseCombo.setText(Messages.getString("eclipse.propertieseditor.preference.convert.char.lowercase")); //$NON-NLS-1$
@@ -246,6 +251,7 @@ public class PropertiesProperty extends PropertyPage {
 		notConvertCommentCheckBox.setEnabled(false);
 	}
 
+	@Override
 	public boolean performOk() {
 		performApply();
 		return true;

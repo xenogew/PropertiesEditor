@@ -17,6 +17,7 @@ public class ExpandAllFoldingAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
 	 */
+	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		if (targetEditor instanceof PropertiesEditor) {
 			textEditor = (PropertiesEditor)targetEditor;
@@ -26,21 +27,23 @@ public class ExpandAllFoldingAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		if (textEditor == null) {
 			return;
 		}
 		
 		ProjectionAnnotationModel model = textEditor.getAnnotationModel();
-		Iterator annotationIterator = model.getAnnotationIterator();
+		Iterator<Annotation> annotationIterator = model.getAnnotationIterator();
 		while(annotationIterator.hasNext()) {
-			model.expand((Annotation)annotationIterator.next());
+			model.expand(annotationIterator.next());
 		}
 	}
 
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 

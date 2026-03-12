@@ -37,6 +37,7 @@ public class ShowUnicodeEscAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
 	 */
+	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		if (targetEditor instanceof PropertiesEditor) {
 			textEditor = (PropertiesEditor)targetEditor;
@@ -46,6 +47,7 @@ public class ShowUnicodeEscAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		Shell shell = new Shell(textEditor.getSite().getShell(), SWT.SHELL_TRIM);
 		URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
@@ -117,6 +119,7 @@ public class ShowUnicodeEscAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 

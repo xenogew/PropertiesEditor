@@ -6,6 +6,8 @@ import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PropertiesPr
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.property.PropertyUtil;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -24,6 +26,7 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
 	 */
+	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		if (targetEditor instanceof PropertiesEditor) {
 			textEditor = (PropertiesEditor)targetEditor;
@@ -34,6 +37,7 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		toggleComment();
 	}
@@ -59,7 +63,7 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 
 		try {
 			int startPos = document.getLineOffset(startLineNum);
-			StringBuffer strBuf = new StringBuffer();
+			StringBuilder strBuf = new StringBuilder();
 			int length = 0;
 			int comCnt = 0;
 			int firstComCnt = 0;
@@ -90,13 +94,15 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 			int selectionLength = ts.getLength() + comCnt;
 			textEditor.getSelectionProvider().setSelection(new TextSelection(selectionStartPos, selectionLength));
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
 	}
 
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 
 	}

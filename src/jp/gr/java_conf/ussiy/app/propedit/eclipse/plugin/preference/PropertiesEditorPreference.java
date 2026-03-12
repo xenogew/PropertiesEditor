@@ -60,6 +60,7 @@ public class PropertiesEditorPreference extends FieldEditorPreferencePage implem
 		setDescription(Messages.getString("eclipse.propertieseditor.preference.page.title")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void createFieldEditors() {
 
 		Composite parent = getFieldEditorParent();
@@ -105,6 +106,7 @@ public class PropertiesEditorPreference extends FieldEditorPreferencePage implem
 		addField(backgroundColorFieldEditor);
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 
 	}
@@ -112,6 +114,7 @@ public class PropertiesEditorPreference extends FieldEditorPreferencePage implem
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performApply()
 	 */
+	@Override
 	protected void performApply() {
 
 		super.performApply();
@@ -122,12 +125,11 @@ public class PropertiesEditorPreference extends FieldEditorPreferencePage implem
 
 		IPreferenceStore pStore = getPreferenceStore();
 		IWorkbenchWindow[] workbenchWindow = PropertiesEditorPlugin.getDefault().getWorkbench().getWorkbenchWindows();
-		for (int i = 0; i < workbenchWindow.length; i++) {
-			IWorkbenchPage[] workbenchPage = workbenchWindow[i].getPages();
-			for (int j = 0; j < workbenchPage.length; j++) {
-				IEditorReference[] editorReferences = workbenchPage[j].getEditorReferences();
-				for (int k = 0; k < editorReferences.length; k++) {
-					IEditorReference ref = editorReferences[k];
+		for (IWorkbenchWindow window : workbenchWindow) {
+			IWorkbenchPage[] workbenchPage = window.getPages();
+			for (IWorkbenchPage page : workbenchPage) {
+				IEditorReference[] editorReferences = page.getEditorReferences();
+				for (IEditorReference ref : editorReferences) {
 					IEditorPart editorPart = ref.getEditor(false);
 					if (editorPart instanceof jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditor) {
 						RGB rgb = PreferenceConverter.getColor(pStore, PropertiesEditorPreference.P_BACKGROUND_COLOR);

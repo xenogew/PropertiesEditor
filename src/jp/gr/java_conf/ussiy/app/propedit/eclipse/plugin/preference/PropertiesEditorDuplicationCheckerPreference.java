@@ -22,6 +22,7 @@ public class PropertiesEditorDuplicationCheckerPreference extends FieldEditorPre
 		setDescription(Messages.getString("eclipse.propertieseditor.preference.page.title")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void createFieldEditors() {
 
 		Composite parent = getFieldEditorParent();
@@ -31,6 +32,7 @@ public class PropertiesEditorDuplicationCheckerPreference extends FieldEditorPre
 		addField(duplicateCheckFieldEditor);
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 
 	}
@@ -38,6 +40,7 @@ public class PropertiesEditorDuplicationCheckerPreference extends FieldEditorPre
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performApply()
 	 */
+	@Override
 	protected void performApply() {
 		super.performApply();
 	}

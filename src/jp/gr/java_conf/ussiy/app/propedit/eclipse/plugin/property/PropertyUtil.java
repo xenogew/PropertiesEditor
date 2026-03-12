@@ -26,7 +26,7 @@ public class PropertyUtil {
 			ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.property.error_title"), Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (org != null) {
-			if (Boolean.valueOf(org).booleanValue()) {
+			if (Boolean.parseBoolean(org)) {
 				if (commentChar == null || commentChar.equals("")) { //$NON-NLS-1$
 					return preference;
 				} else {
@@ -50,11 +50,11 @@ public class PropertyUtil {
 			ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.property.error_title"), Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (org != null) {
-			if (Boolean.valueOf(org).booleanValue()) {
+			if (Boolean.parseBoolean(org)) {
 				if (notAllConvert == null || notAllConvert.equals("")) { //$NON-NLS-1$
 					return preference;
 				} else {
-					return Boolean.valueOf(notAllConvert).booleanValue();
+					return Boolean.parseBoolean(notAllConvert);
 				}
 			}
 		}
@@ -76,16 +76,16 @@ public class PropertyUtil {
 			ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.property.error_title"), Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (org != null) {
-			if (Boolean.valueOf(org).booleanValue()) {
+			if (Boolean.parseBoolean(org)) {
 				if (notAllConvert != null) {
-					if (Boolean.valueOf(notAllConvert).booleanValue()) {
+					if (Boolean.parseBoolean(notAllConvert)) {
 						return true;
 					}
 				}
 				if (notConvertComment == null || notConvertComment.equals("")) { //$NON-NLS-1$
 					return preference;
 				} else {
-					return Boolean.valueOf(notConvertComment).booleanValue();
+					return Boolean.parseBoolean(notConvertComment);
 				}
 			}
 		}
@@ -105,7 +105,7 @@ public class PropertyUtil {
 			ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.property.error_title"), Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (org != null) {
-			if (Boolean.valueOf(org).booleanValue()) {
+			if (Boolean.parseBoolean(org)) {
 				if (charcase == null || charcase.equals("")) { //$NON-NLS-1$
 					return preference;
 				} else {
