@@ -24,7 +24,7 @@ public class FileOpener extends File {
 
 	/**
 	 */
-	private StringBuffer txt = null;
+	private StringBuilder txt = null;
 
 	/**
 	 * 
@@ -53,34 +53,18 @@ public class FileOpener extends File {
 	 */
 	public void read(String code) throws IOException {
 
-		byte[] buffer = null;
-		BufferedInputStream bis = null;
-		ByteArrayOutputStream bin = null;
-		int getLength = 0;
-
 		if (this.isFile()) {
 			// In the case of a file (nothing is carried out when it is not a
 			// file)
-			try {
-				bis = new BufferedInputStream(new FileInputStream(this));
-				bin = new ByteArrayOutputStream();
-				buffer = new byte[1024];
+			try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(this));
+				 ByteArrayOutputStream bin = new ByteArrayOutputStream()) {
+				byte[] buffer = new byte[1024];
+				int getLength = 0;
 				// Reading of a file
 				while ((getLength = bis.read(buffer)) != -1) {
 					bin.write(buffer, 0, getLength);
 				}
-				txt = new StringBuffer(StringUtil.removeCarriageReturn(new String(bin.toByteArray(), code)));
-
-				return;
-			} catch (IOException e) {
-				throw e;
-			} finally {
-				try {
-					if (bis != null) {
-						bis.close();
-					}
-				} catch (IOException e) {
-				}
+				txt = new StringBuilder(StringUtil.removeCarriageReturn(new String(bin.toByteArray(), code)));
 			}
 		}
 	}
@@ -92,22 +76,16 @@ public class FileOpener extends File {
 	 */
 	public void write(String code) throws AlreadyFileLockException, IOException {
 
-		LockableFileOutputStream out = null;
-		try {
-			out = new LockableFileOutputStream(new FileOutputStream(this));
+		try (LockableFileOutputStream out = new LockableFileOutputStream(new FileOutputStream(this))) {
 			if (!out.tryLock()) {
 				throw new AlreadyFileLockException(Messages.getString("FileOpener.0")); //$NON-NLS-1$
 			}
-			out.write(this.getText().getBytes(code));
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (out != null) {
+			try {
+				out.write(this.getText().getBytes(code));
+			} finally {
 				out.unlock();
-				out.flush();
-				out.close();
-				out = null;
 			}
+			out.flush();
 		}
 	}
 
@@ -131,7 +109,7 @@ public class FileOpener extends File {
 	 */
 	public void setText(String buffer) {
 
-		txt = new StringBuffer();
+		txt = new StringBuilder();
 		if (buffer != null) {
 			txt.append(buffer);
 		}

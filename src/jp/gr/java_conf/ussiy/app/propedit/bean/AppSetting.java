@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * It is a class holding various setup. This class is saved and it is made to read a setup at the time of next starting.
@@ -62,10 +63,10 @@ public class AppSetting implements Serializable {
 	public void saveSetting() throws FileNotFoundException, IOException {
 
 		File file = new File(filepath);
-		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-		out.writeObject(this);
-		out.flush();
-		out.close();
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+			out.writeObject(this);
+			out.flush();
+		}
 	}
 
 	/**
@@ -78,9 +79,10 @@ public class AppSetting implements Serializable {
 		if (!file.exists() || !file.isFile()) {
 			return;
 		}
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-		AppSetting setting = (AppSetting) in.readObject();
-		in.close();
+		AppSetting setting;
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+			setting = (AppSetting) in.readObject();
+		}
 		this.setOpenFileHistory(setting.getOpenFileHistory());
 		this.setShowLineNumberFlag(setting.isShowLineNumberFlag());
 		this.setShowToolBarFlag(setting.isShowToolBarFlag());
@@ -90,7 +92,7 @@ public class AppSetting implements Serializable {
 		this.setForegroundColor(setting.getForegroundColor());
 		this.setBackgroundColor(setting.getBackgroundColor());
 		this.setLookAndFeelClass(setting.getLookAndFeelClass());
-		Vector files = this.getOpenFileHistory();
+		List<File> files = this.getOpenFileHistory();
 		if (files.size() >= 10) {
 			int rem = files.size() - 10;
 			for (int i = 0; i < rem; i++) {
@@ -109,7 +111,7 @@ public class AppSetting implements Serializable {
 
 	/**
 	 */
-	private java.util.Vector openFileHistory = new java.util.Vector();
+	private List<File> openFileHistory = new ArrayList<>();
 
 	/**
 	 */
@@ -187,7 +189,7 @@ public class AppSetting implements Serializable {
 	 * 
 	 * @since 1.0.0
 	 */
-	public java.util.Vector getOpenFileHistory() {
+	public List<File> getOpenFileHistory() {
 
 		return openFileHistory;
 	}
@@ -197,7 +199,7 @@ public class AppSetting implements Serializable {
 	 * @param openFileHistory
 	 * @since 1.0.0
 	 */
-	private void setOpenFileHistory(java.util.Vector openFileHistory) {
+	private void setOpenFileHistory(List<File> openFileHistory) {
 
 		this.openFileHistory = openFileHistory;
 		if (openFileHistory.size() == 11) {

@@ -4,7 +4,7 @@ public class StringUtil {
 
 	public static String removeCarriageReturn(String str) {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		char[] c = str.toCharArray();
 		for (int i = 0; i < c.length; i++) {
 			if (c[i] != 0x0D) {

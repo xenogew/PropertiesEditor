@@ -36,7 +36,7 @@ public class EncodeChanger {
 	 */
 	public static String unicode2UnicodeEsc(String uniStr, int charcase) {
 
-		StringBuffer ret = new StringBuffer();
+		StringBuilder ret = new StringBuilder();
 		if (uniStr == null) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public class EncodeChanger {
 			return null;
 		}
 
-		StringBuffer retBuf = new StringBuffer();
+		StringBuilder retBuf = new StringBuilder();
 		int maxLoop = unicodeStr.length();
 		for (int i = 0; i < maxLoop; i++) {
 			if (unicodeStr.charAt(i) == '\\') {
@@ -102,8 +102,8 @@ public class EncodeChanger {
 
 	public static String unicode2UnicodeEscWithoutComment(String uniStr, int charcase) throws IOException {
 
-		StringBuffer buf = new StringBuffer();
-		BufferedReader reader = new BufferedReader(new StringReader(uniStr));
+		StringBuilder buf = new StringBuilder();
+		try (BufferedReader reader = new BufferedReader(new StringReader(uniStr))) {
 		boolean continueFlg = false;
 		String line = null;
 		while ((line = reader.readLine()) != null) {
@@ -121,6 +121,7 @@ public class EncodeChanger {
 		}
 		if (!uniStr.endsWith("\n")) { //$NON-NLS-1$
 			buf.deleteCharAt(buf.length() - 1);
+		}
 		}
 
 		return buf.toString();
