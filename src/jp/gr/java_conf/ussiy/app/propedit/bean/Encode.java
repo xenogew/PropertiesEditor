@@ -1,72 +1,17 @@
 package jp.gr.java_conf.ussiy.app.propedit.bean;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+/**
+ * Immutable data carrier for encoding information.
+ *
+ * @param no   ordinal index used for default-selection logic
+ * @param name display name shown in the UI
+ * @param code Java charset/encoding identifier
+ */
+public record Encode(int no, String name, String code) {
 
-public class Encode implements Serializable {
-
-	private String name;
-
-	private String code;
-
-	private int no;
-
-	public Encode() {
-
-	}
-
-	public Encode(int no, String name, String code) {
-
-		this.no = no;
-		this.name = name;
-		this.code = code;
-	}
-
-	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-
-		ois.defaultReadObject();
-	}
-
-	private void writeObject(ObjectOutputStream oos) throws IOException {
-
-		oos.defaultWriteObject();
-	}
-
-	public String getName() {
-
-		return name;
-	}
-
-	public void setName(String name) {
-
-		this.name = name;
-	}
-
-	public String getCode() {
-
-		return code;
-	}
-
-	public void setCode(String code) {
-
-		this.code = code;
-	}
-
-	public int getNo() {
-
-		return no;
-	}
-
-	public void setNo(int no) {
-
-		this.no = no;
-	}
-
+	@Override
 	public String toString() {
 
-		return getName();
+		return name();
 	}
-
 }

@@ -7,7 +7,6 @@ package jp.gr.java_conf.ussiy.app.propedit.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import jp.gr.java_conf.ussiy.app.propedit.bean.Encode;
 
@@ -18,7 +17,7 @@ import jp.gr.java_conf.ussiy.app.propedit.bean.Encode;
  */
 public class EncodeManager {
 
-	public static Vector readEncList = new Vector();
+	public static List<Encode> readEncList = new ArrayList<>();
 
 	public static final String AUTO = "JISAutoDetect"; //$NON-NLS-1$
 
@@ -38,7 +37,7 @@ public class EncodeManager {
 
 	/**
 	 */
-	private static List codeList = new ArrayList();
+	private static List<String> codeList = new ArrayList<>();
 
 	static {
 		readEncList.add(new Encode(0, "Auto", AUTO)); //$NON-NLS-1$
@@ -58,7 +57,7 @@ public class EncodeManager {
 		codeList.add(UTF16);
 	}
 
-	public static Vector getReadEncodeList() {
+	public static List<Encode> getReadEncodeList() {
 
 		return readEncList;
 	}

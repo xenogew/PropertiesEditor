@@ -2,8 +2,7 @@ package jp.gr.java_conf.ussiy.app.propedit;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -27,7 +26,7 @@ class EncodeSelectPanel extends JPanel {
 
 	private ButtonGroup encodeButtonGroup = new ButtonGroup();
 
-	private Vector encodeList;
+	private List<Encode> encodeList;
 
 	private boolean store = true;
 
@@ -54,27 +53,21 @@ class EncodeSelectPanel extends JPanel {
 		if (!store) {
 			encodeList = EncodeManager.getReadEncodeList();
 		}
-		for (int i = 0; i < encodeList.size(); i++) {
-			Encode enc = (Encode) encodeList.get(i);
-			switch (enc.getNo()) {
-				case 0:
-					JRadioButton radioButton = new JRadioButton(enc.getName());
-					radioButton.setSelected(true);
-					encodeRadioButton.add(radioButton);
-					break;
-				default:
-					radioButton = new JRadioButton(enc.getName());
-					encodeRadioButton.add(radioButton);
+		for (Encode enc : encodeList) {
+			JRadioButton radioButton = new JRadioButton(enc.name());
+			if (enc.no() == 0) {
+				radioButton.setSelected(true);
 			}
+			encodeRadioButton.add(radioButton);
 		}
 		gridLayout1.setColumns(0);
 		gridLayout1.setHgap(5);
 		gridLayout1.setRows(12);
 		gridLayout1.setVgap(5);
 		this.add(jLabel1, null);
-		for (int i = 0; i < encodeRadioButton.size(); i++) {
-			encodeButtonGroup.add((JRadioButton) encodeRadioButton.get(i));
-			this.add((JRadioButton) encodeRadioButton.get(i), null);
+		for (JRadioButton rb : encodeRadioButton) {
+			encodeButtonGroup.add(rb);
+			this.add(rb, null);
 		}
 	}
 
@@ -83,16 +76,15 @@ class EncodeSelectPanel extends JPanel {
 		String name = null;
 		var enu = encodeButtonGroup.getElements();
 		while (enu.hasMoreElements()) {
-			AbstractButton button = (AbstractButton) enu.nextElement();
+			AbstractButton button = enu.nextElement();
 			if (button.isSelected()) {
 				name = button.getText();
 				break;
 			}
 		}
-		for (int i = 0; i < encodeList.size(); i++) {
-			Encode enc = (Encode) encodeList.get(i);
-			if (enc.getName().equals(name)) {
-				return enc.getCode();
+		for (Encode enc : encodeList) {
+			if (enc.name().equals(name)) {
+				return enc.code();
 			}
 		}
 		return null;

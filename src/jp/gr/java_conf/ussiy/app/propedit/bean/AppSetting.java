@@ -23,6 +23,13 @@ import java.util.List;
 /**
  * It is a class holding various setup. This class is saved and it is made to read a setup at the time of next starting.
  * 
+ * <p><b>Record migration note (Phase 3j):</b> This class is a potential candidate for
+ * conversion to a Java {@code record}, but currently cannot be migrated because it
+ * relies on mutable singleton state, Java serialization ({@code readObject}/{@code writeObject}),
+ * and setter-based field mutation after construction. A future architectural change
+ * (e.g. replacing {@code ObjectOutputStream} persistence with a JSON/TOML config file
+ * and using an immutable builder pattern) would enable record conversion.</p>
+ * 
  * @author Sou Miyazaki
  *  
  */
