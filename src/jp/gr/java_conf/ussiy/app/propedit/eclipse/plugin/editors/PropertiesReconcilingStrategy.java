@@ -1,12 +1,15 @@
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -22,7 +25,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	private PropertiesEditor editor;
 
 	private IDocument fDocument;
-	protected final ArrayList fPositions = new ArrayList();
+	protected final ArrayList<Position> fPositions = new ArrayList<>();
 
 	/**
 	 * @return Returns the editor.
@@ -38,6 +41,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	/*
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#setDocument(org.eclipse.jface.text.IDocument)
 	 */
+	@Override
 	public void setDocument(IDocument document) {
 		this.fDocument = document;
 
@@ -47,6 +51,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.reconciler.DirtyRegion,
 	 *      org.eclipse.jface.text.IRegion)
 	 */
+	@Override
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
 		initialReconcile();
 	}
@@ -54,6 +59,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	/*
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.IRegion)
 	 */
+	@Override
 	public void reconcile(IRegion partition) {
 		initialReconcile();
 	}
@@ -61,6 +67,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	/*
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension#setProgressMonitor(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void setProgressMonitor(IProgressMonitor monitor) {
 
 	}
@@ -68,6 +75,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 	/*
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension#initialReconcile()
 	 */
+	@Override
 	public void initialReconcile() {
 		calculatePositions();
 	}
@@ -83,11 +91,13 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 		try {
 			recursiveTokens();
 		} catch (CoreException e) {
-			e.printStackTrace();
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
 		// Collections.sort(fPositions, new RangeTokenComparator());
 
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				editor.updateFoldingStructure(fPositions);
 			}
@@ -109,9 +119,7 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 		int startPos = 0;
 		int endPos = 0;
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new StringReader(fDocument.get()));
+		try (BufferedReader reader = new BufferedReader(new StringReader(fDocument.get()))) {
 			while ((line = reader.readLine()) != null) {
 				cntLine++;
 				if (multipleValueFlg) {
@@ -197,14 +205,8 @@ public class PropertiesReconcilingStrategy implements IReconcilingStrategy,
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-			}
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
 	}
 

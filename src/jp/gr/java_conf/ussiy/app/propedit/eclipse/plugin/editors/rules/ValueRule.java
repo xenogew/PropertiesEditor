@@ -20,6 +20,7 @@ public class ValueRule implements IPredicateRule {
 		fEscapeCharacter = escapeCharacter;
 	}
 
+	@Override
 	public IToken getSuccessToken() {
 
 		return fToken;
@@ -43,6 +44,7 @@ public class ValueRule implements IPredicateRule {
 		}
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 
 		if (scanner.getColumn() != 0) {
@@ -138,6 +140,7 @@ public class ValueRule implements IPredicateRule {
 		}
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner) {
 
 		return evaluate(scanner, false);

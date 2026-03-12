@@ -17,6 +17,7 @@ public class CommentLineRule extends EndOfLineRule {
 		super(startSequence, token, escapeCharacter);
 	}
 
+	@Override
 	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
 
 		if (scanner.getColumn() == 0) {
@@ -25,6 +26,7 @@ public class CommentLineRule extends EndOfLineRule {
 		return Token.UNDEFINED;
 	}
 
+	@Override
 	protected IToken doEvaluate(ICharacterScanner scanner) {
 
 		return doEvaluate(scanner, false);

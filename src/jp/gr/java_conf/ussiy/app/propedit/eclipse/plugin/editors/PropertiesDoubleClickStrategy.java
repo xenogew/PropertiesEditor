@@ -1,5 +1,9 @@
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors;
 
+import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
@@ -10,6 +14,7 @@ public class PropertiesDoubleClickStrategy implements ITextDoubleClickStrategy {
 
 	protected ITextViewer fText;
 
+	@Override
 	public void doubleClicked(ITextViewer part) {
 
 		int pos = part.getSelectedRange().x;
@@ -44,7 +49,8 @@ public class PropertiesDoubleClickStrategy implements ITextDoubleClickStrategy {
 				}
 			}
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
 		return false;
 	}
@@ -62,7 +68,8 @@ public class PropertiesDoubleClickStrategy implements ITextDoubleClickStrategy {
 			length = doc.getLineLength(lineNum);
 			targetLine = doc.get(startPos, length);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 			return;
 		}
 		if (targetLine.equals("")) { //$NON-NLS-1$

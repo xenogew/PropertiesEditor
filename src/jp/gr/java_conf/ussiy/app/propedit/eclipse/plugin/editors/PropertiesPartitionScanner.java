@@ -24,7 +24,7 @@ public class PropertiesPartitionScanner extends RuleBasedPartitionScanner {
 		IToken propertiesValue = new Token(PROPERTIES_VALUE);
 		IToken propertiesSeparator = new Token(PROPERTIES_SEPARATOR);
 
-		List ruleList = new ArrayList();
+		List<IPredicateRule> ruleList = new ArrayList<>();
 		ruleList.add(new SkipHeadSpaceRule());
 		ruleList.add(new CommentLineRule("#", propertiesComment, '\\')); //$NON-NLS-1$
 		ruleList.add(new CommentLineRule("!", propertiesComment, '\\')); //$NON-NLS-1$
@@ -35,8 +35,7 @@ public class PropertiesPartitionScanner extends RuleBasedPartitionScanner {
 		ruleList.add(new ValueRule('\t', propertiesValue, '\\'));
 //		ruleList.add(new ValueRuleForWhiteSpace(new char[] { '=', ':', ' ', '\t' }, propertiesValue, '\\'));
 
-		IPredicateRule[] rules = new IPredicateRule[ruleList.size()];
-		rules = (IPredicateRule[]) ruleList.toArray(rules);
+		IPredicateRule[] rules = ruleList.toArray(new IPredicateRule[0]);
 		setPredicateRules(rules);
 	}
 }

@@ -2,8 +2,6 @@ package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.resources.Messages;
@@ -16,30 +14,29 @@ import org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContextInformation;
 
 public class PropertiesCompletionProposalComputer implements
 		IJavaCompletionProposalComputer {
 
-	public List computeCompletionProposals(ContentAssistInvocationContext context,
+	@Override
+	public List<ICompletionProposal> computeCompletionProposals(ContentAssistInvocationContext context,
 			IProgressMonitor monitor) {
 		if (!(context instanceof JavaContentAssistInvocationContext)) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		
 		JavaContentAssistInvocationContext jContext = (JavaContentAssistInvocationContext)context;
 		IJavaProject jProject = jContext.getProject();
 		IProject project = jProject.getProject();
 
-		Enumeration enu = ProjectProperties.getInstance().getProperty(project).keys();
-		List keyList = new ArrayList();
-		while (enu.hasMoreElements()) {
-			keyList.add(enu.nextElement());
-		}
+		List<String> keyList = new ArrayList<>(ProjectProperties.getInstance().getProperty(project).stringPropertyNames());
 		
 		String source = context.getDocument().get();
 		int offset = context.getInvocationOffset();
 		int idx = source.charAt(offset) == '\"' ? source.lastIndexOf("\"", offset - 1) : source.lastIndexOf("\"", offset); //$NON-NLS-1$ //$NON-NLS-2$
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i = idx + 1; i < offset; i++) {
 			char c = source.charAt(i);
 			buf.append(c);
@@ -47,12 +44,10 @@ public class PropertiesCompletionProposalComputer implements
 		
 		String match = buf.toString();
 		
-		List list = new ArrayList();
+		List<ICompletionProposal> list = new ArrayList<>();
 		
 		Collections.sort(keyList);
-		Iterator ite = keyList.iterator();
-		while (ite.hasNext()) {
-			String key = (String)ite.next();
+		for (String key : keyList) {
 			if (key.startsWith(match)) {
 				list.add(new CompletionProposal(key, offset - match.length(),
 						match.length(), key.length()));
@@ -62,18 +57,22 @@ public class PropertiesCompletionProposalComputer implements
 		return list;
 	}
 
-	public List computeContextInformation(ContentAssistInvocationContext arg0,
+	@Override
+	public List<IContextInformation> computeContextInformation(ContentAssistInvocationContext arg0,
 			IProgressMonitor arg1) {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public String getErrorMessage() {
 		return Messages.getString("eclipse.propertieseditor.PropertiesCompletionProposalComputer.4"); //$NON-NLS-1$
 	}
 
+	@Override
 	public void sessionEnded() {
 	}
 
+	@Override
 	public void sessionStarted() {
 	}
 

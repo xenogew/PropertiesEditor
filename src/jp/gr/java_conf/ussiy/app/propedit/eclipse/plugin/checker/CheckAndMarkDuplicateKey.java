@@ -29,10 +29,10 @@ public class CheckAndMarkDuplicateKey {
 			CheckAndMarkResourceVisitor visitor = new CheckAndMarkResourceVisitor(this);
 			resource.accept(visitor);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			IStatus coreStatus = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(coreStatus);
 			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
 			IStatus status = new Status(IStatus.ERROR, PlatformUI.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
 			ILog log = PropertiesEditorPlugin.getDefault().getLog();
 			log.log(status);
@@ -50,8 +50,8 @@ public class CheckAndMarkDuplicateKey {
 
 		// delete marker
 		IMarker[] markers = resource.findMarkers("jp.gr.java_conf.ussiy.app.propedit.duplicationmarker", false, IResource.DEPTH_ZERO); //$NON-NLS-1$
-		for (int i = 0; i < markers.length; i++) {
-			markers[i].delete();
+		for (IMarker marker : markers) {
+			marker.delete();
 		}
 
 		if (!PropertiesEditorPlugin.getDefault().getPreferenceStore().getBoolean(PropertiesEditorDuplicationCheckerPreference.P_CHECK_KEY)) {
@@ -60,14 +60,12 @@ public class CheckAndMarkDuplicateKey {
 
 		String line = null;
 		int cntLine = 0;
-		Map map = new HashMap();
+		Map<String, Integer> map = new HashMap<>();
 		String warn = Messages.getString("eclipse_editor_key_duplicate"); //$NON-NLS-1$
 		boolean multipleValueFlg = false;
-		List duplicateKeyList = new ArrayList();
+		List<String> duplicateKeyList = new ArrayList<>();
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new StringReader(text));
+		try (BufferedReader reader = new BufferedReader(new StringReader(text))) {
 			String key = null;
 			boolean lineEscape = false;
 			while ((line = reader.readLine()) != null) {
@@ -150,7 +148,7 @@ public class CheckAndMarkDuplicateKey {
 					marker.setAttribute(IMarker.LINE_NUMBER, cntLine);
 					if (!duplicateKeyList.contains(key)) {
 						// mark2
-						int tmpCntLine = ((Integer) map.get(key)).intValue();
+						int tmpCntLine = map.get(key);
 						marker = resource.createMarker("jp.gr.java_conf.ussiy.app.propedit.duplicationmarker"); //$NON-NLS-1$
 						marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 						marker.setAttribute(IMarker.TRANSIENT, true);
@@ -159,7 +157,7 @@ public class CheckAndMarkDuplicateKey {
 						duplicateKeyList.add(key);
 					}
 				}
-				map.put(key, new Integer(cntLine));
+				map.put(key, cntLine);
 				if (line.endsWith("\\")) { //$NON-NLS-1$
 					multipleValueFlg = true;
 				} else {
@@ -171,21 +169,12 @@ public class CheckAndMarkDuplicateKey {
 			ILog log = PropertiesEditorPlugin.getDefault().getLog();
 			log.log(status);
 			throw new CoreException(status);
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-			}
-			map.clear();
-			map = null;
 		}
 	}
 
 	public static String replace(String str, String toString, String fromString) {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int idx = str.indexOf(fromString, 0);
 		if (idx == -1) {
 			return str;

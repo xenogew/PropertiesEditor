@@ -1,13 +1,15 @@
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.view.outline;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.view.outline.PropertiesContentOutlinePage.Segment;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
 import org.eclipse.jface.text.DocumentEvent;
@@ -38,16 +40,14 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	protected IPositionUpdater fPositionUpdater = new DefaultPositionUpdater(
 			SEGMENTS);
 
-	protected List fContent = new ArrayList(10);
+	protected List<Segment> fContent = new ArrayList<>(10);
 
 	protected void parse(IDocument document) {
 		String line = null;
 		int cntLine = 0;
 		boolean multipleValueFlg = false;
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new StringReader(document.get()));
+		try (BufferedReader reader = new BufferedReader(new StringReader(document.get()))) {
 			while ((line = reader.readLine()) != null) {
 				cntLine++;
 				if (multipleValueFlg) {
@@ -122,14 +122,8 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-			}
+			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
 
 	}
@@ -137,6 +131,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (oldInput != null) {
 			IDocument document = this.fContentOutlinePage.fDocumentProvider
@@ -167,6 +162,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see IContentProvider#dispose
 	 */
+	@Override
 	public void dispose() {
 		if (fContent != null) {
 			fContent.clear();
@@ -184,6 +180,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see IStructuredContentProvider#getElements(Object)
 	 */
+	@Override
 	public Object[] getElements(Object element) {
 		return fContent.toArray();
 	}
@@ -191,6 +188,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see ITreeContentProvider#hasChildren(Object)
 	 */
+	@Override
 	public boolean hasChildren(Object element) {
 		return element == this.fContentOutlinePage.fInput;
 	}
@@ -198,6 +196,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see ITreeContentProvider#getParent(Object)
 	 */
+	@Override
 	public Object getParent(Object element) {
 		if (element instanceof Segment)
 			return this.fContentOutlinePage.fInput;
@@ -207,6 +206,7 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/*
 	 * @see ITreeContentProvider#getChildren(Object)
 	 */
+	@Override
 	public Object[] getChildren(Object element) {
 		if (element == this.fContentOutlinePage.fInput)
 			return fContent.toArray();
@@ -216,12 +216,14 @@ class PropertiesOutlineContentProvider implements ITreeContentProvider, IDocumen
 	/**
 	 * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
 	 */
+	@Override
 	public void documentAboutToBeChanged(DocumentEvent event) {
 	}
 
 	/**
 	 * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
 	 */
+	@Override
 	public void documentChanged(DocumentEvent event) {
 //		try {
 //			event.getDocument().removePositionCategory(SEGMENTS);

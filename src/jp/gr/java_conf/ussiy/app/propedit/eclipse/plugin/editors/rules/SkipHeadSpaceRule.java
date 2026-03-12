@@ -7,6 +7,7 @@ import org.eclipse.jface.text.rules.Token;
 
 public class SkipHeadSpaceRule implements IPredicateRule {
 
+	@Override
 	public IToken getSuccessToken() {
 
 		return Token.UNDEFINED;
@@ -30,6 +31,7 @@ public class SkipHeadSpaceRule implements IPredicateRule {
 		}
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 
 		if (scanner.getColumn() == 0) {
@@ -48,6 +50,7 @@ public class SkipHeadSpaceRule implements IPredicateRule {
 		return getSuccessToken();
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner) {
 
 		return evaluate(scanner, false);

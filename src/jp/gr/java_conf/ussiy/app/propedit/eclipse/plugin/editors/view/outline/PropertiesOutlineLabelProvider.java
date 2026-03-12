@@ -15,6 +15,7 @@ public class PropertiesOutlineLabelProvider extends LabelProvider {
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
+	@Override
 	public Image getImage(Object element) {
 		if (markerImage != null && !markerImage.isDisposed()) {
 			return markerImage;
@@ -34,6 +35,7 @@ public class PropertiesOutlineLabelProvider extends LabelProvider {
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (markerImage != null) {

@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
@@ -38,6 +39,7 @@ public class PropertiesEditor extends TextEditor {
 		setDocumentProvider(new PropertiesDocumentProvider());
 	}
 
+	@Override
 	public void dispose() {
 		if (fOutlinePage != null) {
 			fOutlinePage.setInput(null);
@@ -50,6 +52,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeEditor()
 	 */
+	@Override
 	protected void initializeEditor() {
 
 		super.initializeEditor();
@@ -84,6 +87,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		if (!PropertiesEditorPlugin.getDefault().getPreferenceStore().getBoolean(PropertiesEditorPreference.P_COLLAPSE)) {
@@ -109,6 +113,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#createSourceViewer(org.eclipse.swt.widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
 	 */
+	@Override
 	protected ISourceViewer createSourceViewer(Composite parent,
 			IVerticalRuler ruler, int styles) {
 		if (!PropertiesEditorPlugin.getDefault().getPreferenceStore().getBoolean(PropertiesEditorPreference.P_COLLAPSE)) {
@@ -123,18 +128,18 @@ public class PropertiesEditor extends TextEditor {
 		return viewer;
 	}
 
-	public void updateFoldingStructure(ArrayList positions) {
+	public void updateFoldingStructure(ArrayList<Position> positions) {
 		if (!PropertiesEditorPlugin.getDefault().getPreferenceStore().getBoolean(PropertiesEditorPreference.P_COLLAPSE)) {
 			return;
 		}
 
-		Iterator ite = annotationModel.getAnnotationIterator();
+		Iterator<Annotation> ite = annotationModel.getAnnotationIterator();
 		while(ite.hasNext()){
-			ProjectionAnnotation annotation = (ProjectionAnnotation)ite.next();
+			ProjectionAnnotation annotation = (ProjectionAnnotation) ite.next();
 			Position oldPos = annotationModel.getPosition(annotation);
 			boolean removeFlg = true;
 			for(int i=0; i<positions.size(); i++){
-				Position newPos = (Position)positions.get(i);
+				Position newPos = positions.get(i);
 				if(newPos.getOffset() == oldPos.getOffset() && newPos.getLength() == oldPos.getLength()){
 					removeFlg = false;
 					positions.remove(newPos);
@@ -148,14 +153,12 @@ public class PropertiesEditor extends TextEditor {
 		if (initialCollapseOption == null) {
 			// get default collapse option
 			IPreferenceStore store = PropertiesEditorPlugin.getDefault().getPreferenceStore();
-			initialCollapseOption = new Boolean(store.getBoolean(PropertiesEditorPreference.P_INIT_COLLAPSE));
-			for(int i=0;i<positions.size();i++){
-				Position pos = (Position)positions.get(i);
+			initialCollapseOption = store.getBoolean(PropertiesEditorPreference.P_INIT_COLLAPSE);
+			for(Position pos : positions){
 				annotationModel.addAnnotation(new ProjectionAnnotation(initialCollapseOption.booleanValue()), pos);
 			}
 		} else {
-			for(int i=0;i<positions.size();i++){
-				Position pos = (Position)positions.get(i);
+			for(Position pos : positions){
 				annotationModel.addAnnotation(new ProjectionAnnotation(), pos);
 			}
 		}
@@ -164,6 +167,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeKeyBindingScopes()
 	 */
+	@Override
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { "jp.gr.java_conf.ussiy.app.propedit.PropertiesEditorScope" });  //$NON-NLS-1$
 	}
@@ -171,7 +175,8 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
 			if (fOutlinePage == null) {
 				fOutlinePage= new PropertiesContentOutlinePage(getDocumentProvider(), this);
@@ -186,6 +191,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.texteditor.ITextEditor#doRevertToSaved()
 	 */
+	@Override
 	public void doRevertToSaved() {
 		super.doRevertToSaved();
 		if (fOutlinePage != null) {
@@ -196,6 +202,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
 		super.doSave(progressMonitor);
 		if (fOutlinePage != null) {
@@ -206,6 +213,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
+	@Override
 	public void doSaveAs() {
 		super.doSaveAs();
 		if (fOutlinePage != null) {
@@ -216,6 +224,7 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#doSetInput(org.eclipse.ui.IEditorInput)
 	 */
+	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);
 		if (fOutlinePage != null) {

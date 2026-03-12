@@ -36,6 +36,7 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
 			this.position= position;
 		}
 
+		@Override
 		public String toString() {
 			return name;
 		}
@@ -68,6 +69,7 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
 	/**
 	 * Method declared on ContentOutlinePage
 	 */
+	@Override
 	public void createControl(Composite parent) {
 
 		super.createControl(parent);
@@ -118,6 +120,7 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
 	/* (non-Javadoc)
 	 * Method declared on ContentOutlinePage
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		super.selectionChanged(event);
@@ -180,6 +183,7 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
 	/**
 	 * @see org.eclipse.ui.part.IPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 	}

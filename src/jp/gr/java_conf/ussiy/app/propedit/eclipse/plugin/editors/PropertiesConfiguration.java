@@ -47,11 +47,13 @@ public class PropertiesConfiguration extends SourceViewerConfiguration {
 		this.editor = editor;
 	}
 
+	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 
 		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PropertiesPartitionScanner.PROPERTIES_COMMENT, PropertiesPartitionScanner.PROPERTIES_SEPARATOR, PropertiesPartitionScanner.PROPERTIES_VALUE };
 	}
 
+	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
 
 		if (doubleClickStrategy == null) {
@@ -65,6 +67,7 @@ public class PropertiesConfiguration extends SourceViewerConfiguration {
 		return PropertiesEditorPlugin.getDefault().getPreferenceStore();
 	}
 
+	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 
 		IPreferenceStore pStore = getPreferenceStore();
@@ -103,6 +106,7 @@ public class PropertiesConfiguration extends SourceViewerConfiguration {
 	/**
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getReconciler(org.eclipse.jface.text.source.ISourceViewer)
 	 */
+	@Override
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
         PropertiesReconcilingStrategy strategy = new PropertiesReconcilingStrategy();
         strategy.setEditor(editor);
@@ -115,30 +119,30 @@ public class PropertiesConfiguration extends SourceViewerConfiguration {
 	/**
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getHyperlinkDetectors(org.eclipse.jface.text.source.ISourceViewer)
 	 */
+	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer viewer) {
 		IHyperlinkDetector[] detectors = super.getHyperlinkDetectors(viewer);
-		List list = new ArrayList();
-		for (int i = 0; i < detectors.length; i++) {
-			if (detectors[i] != null) list.add(detectors[i]);
+		List<IHyperlinkDetector> list = new ArrayList<>();
+		for (IHyperlinkDetector detector : detectors) {
+			if (detector != null) list.add(detector);
 		}
 		list.addAll(computePropertiesHyperlinkDetectors());
-		detectors = (IHyperlinkDetector[])list.toArray(new IHyperlinkDetector[0]);
-		return detectors;
+		return list.toArray(new IHyperlinkDetector[0]);
 	}
 
-	protected List computePropertiesHyperlinkDetectors() {
+	protected List<IHyperlinkDetector> computePropertiesHyperlinkDetectors() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENSION_POINT);
 		IExtension[] extensions = extensionPoint.getExtensions();
-		ArrayList results = new ArrayList();
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-			for (int j = 0; j < elements.length; j++) {
+		ArrayList<IHyperlinkDetector> results = new ArrayList<>();
+		for (IExtension extension : extensions) {
+			IConfigurationElement[] elements = extension.getConfigurationElements();
+			for (IConfigurationElement element : elements) {
 				try {
-					Object detector = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
+					Object detector = element.createExecutableExtension("class"); //$NON-NLS-1$
 					if (detector instanceof jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.detector.IHyperlinkDetector) {
 						((jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.detector.IHyperlinkDetector)detector).setTextEditor(editor);
-						results.add(detector);
+						results.add((IHyperlinkDetector) detector);
 					}
 				} catch(CoreException e) {
 					IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);

@@ -32,21 +32,22 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
 public class PropertiesDocumentProvider extends FileDocumentProvider {
 	private static final String EXTENSION_POINT = "jp.gr.java_conf.ussiy.app.propedit.listeners"; //$NON-NLS-1$
 
-	protected List computePropertiesDocumentListeners() {
+	protected List<IPropertiesDocumentListener> computePropertiesDocumentListeners() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENSION_POINT);
 		IExtension[] extensions = extensionPoint.getExtensions();
-		ArrayList results = new ArrayList();
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-			for (int j = 0; j < elements.length; j++) {
+		ArrayList<IPropertiesDocumentListener> results = new ArrayList<>();
+		for (IExtension extension : extensions) {
+			IConfigurationElement[] elements = extension.getConfigurationElements();
+			for (IConfigurationElement element : elements) {
 				try {
-					Object listener = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
+					Object listener = element.createExecutableExtension("class"); //$NON-NLS-1$
 					if (listener instanceof IPropertiesDocumentListener) {
-						results.add(listener);
+						results.add((IPropertiesDocumentListener) listener);
 					}
 				} catch(CoreException e) {
-					e.printStackTrace();
+					IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+					PropertiesEditorPlugin.getDefault().getLog().log(status);
 				}
 			}
 		}
@@ -54,17 +55,18 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
 		return results;
 	}
 	
+	@Override
 	protected IDocument createDocument(Object element) throws CoreException {
 
 		IDocument document = super.createDocument(element);
 		
-		List listeners = computePropertiesDocumentListeners();
-		for (int i = 0; i < listeners.size(); i++) {
-			IPropertiesDocumentListener listener = (IPropertiesDocumentListener)listeners.get(i);
+		List<IPropertiesDocumentListener> listeners = computePropertiesDocumentListeners();
+		for (IPropertiesDocumentListener listener : listeners) {
 			try {
 				listener.beforeConvertAtLoadingDocument(document, element);
 			} catch(Exception e) {
-				e.printStackTrace();
+				IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+				PropertiesEditorPlugin.getDefault().getLog().log(status);
 			}
 		}
 		
@@ -79,12 +81,12 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
 				ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
-			for (int i = 0; i < listeners.size(); i++) {
-				IPropertiesDocumentListener listener = (IPropertiesDocumentListener)listeners.get(i);
+			for (IPropertiesDocumentListener listener : listeners) {
 				try {
 					listener.afterConvertAtLoadingDocument(document, element);
 				} catch(Exception e) {
-					e.printStackTrace();
+					IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+					PropertiesEditorPlugin.getDefault().getLog().log(status);
 				}
 			}
 
@@ -95,6 +97,7 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
 		return document;
 	}
 
+	@Override
 	protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document, boolean overwrite) throws CoreException {
 
 		if (element instanceof IFileEditorInput) {
@@ -103,9 +106,8 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
 
 			IProject project = input.getFile().getProject();
 
-			List listeners = computePropertiesDocumentListeners();
-			for (int i = 0; i < listeners.size(); i++) {
-				IPropertiesDocumentListener listener = (IPropertiesDocumentListener)listeners.get(i);
+			List<IPropertiesDocumentListener> listeners = computePropertiesDocumentListeners();
+			for (IPropertiesDocumentListener listener : listeners) {
 				try {
 					listener.beforeUnicodeConvertAtSavingDocument(monitor, element, document, overwrite);
 				} catch(Exception e) {
@@ -148,8 +150,7 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
 			}
 			document = new Document(uniEscStr);
 			
-			for (int i = 0; i < listeners.size(); i++) {
-				IPropertiesDocumentListener listener = (IPropertiesDocumentListener)listeners.get(i);
+			for (IPropertiesDocumentListener listener : listeners) {
 				try {
 					listener.afterUnicodeConvertAtSavingDocument(monitor, element, document, overwrite);
 				} catch(Exception e) {

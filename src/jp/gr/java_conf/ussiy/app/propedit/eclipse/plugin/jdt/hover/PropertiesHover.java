@@ -3,7 +3,6 @@
  */
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.hover;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -39,6 +38,7 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
 	/**
 	 * @see org.eclipse.jdt.ui.text.java.hover.IJavaEditorTextHover#setEditor(org.eclipse.ui.IEditorPart)
 	 */
+	@Override
 	public void setEditor(IEditorPart editorPart) {
 		this.editorPart = editorPart;
 	}
@@ -46,6 +46,7 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
 	/**
 	 * @see org.eclipse.jface.text.ITextHover#getHoverInfo(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
 	 */
+	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion region) {
 		IDocument document = textViewer.getDocument();
 		int offset = region.getOffset();
@@ -131,18 +132,17 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
 			IFileEditorInput fEditorInput = (IFileEditorInput)editorInput;
 			IProject project = fEditorInput.getFile().getProject();
 	
-			Map propertyMap = ProjectProperties.getInstance().getProperty(project, targetKey);
+			Map<IFile, Properties> propertyMap = ProjectProperties.getInstance().getProperty(project, targetKey);
 			
 			if (propertyMap.isEmpty()) {
 				return null;
 			}
 			
-			Iterator ite = propertyMap.keySet().iterator();
-			StringBuffer buf = new StringBuffer();
-			while (ite.hasNext()) {
-				IFile file = (IFile)ite.next();
-				String path = StringUtil.escapeHtml((String)file.getFullPath().toPortableString());
-				String value = StringUtil.escapeHtml((String)((Properties)propertyMap.get(file)).getProperty(targetKey));
+			StringBuilder buf = new StringBuilder();
+			for (Map.Entry<IFile, Properties> entry : propertyMap.entrySet()) {
+				IFile file = entry.getKey();
+				String path = StringUtil.escapeHtml(file.getFullPath().toPortableString());
+				String value = StringUtil.escapeHtml(entry.getValue().getProperty(targetKey));
 				buf.append("<b>").append(path).append("</b><br/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				buf.append(value).append("<br/>"); //$NON-NLS-1$
 			}
@@ -155,6 +155,7 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
 	/**
 	 * @see org.eclipse.jface.text.ITextHover#getHoverRegion(org.eclipse.jface.text.ITextViewer, int)
 	 */
+	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 		return null;
 	}
@@ -162,6 +163,7 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
 	/**
 	 * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
 	 */
+	@Override
 	public IInformationControlCreator getHoverControlCreator() {
 		return new JavaInformationProvider(editorPart).getInformationPresenterControlCreator();
 	}

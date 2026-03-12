@@ -20,6 +20,7 @@ public class SeparatorRule implements IPredicateRule {
 		fEscapeCharacter = escapeCharacter;
 	}
 
+	@Override
 	public IToken getSuccessToken() {
 
 		return fToken;
@@ -43,6 +44,7 @@ public class SeparatorRule implements IPredicateRule {
 		}
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 
 		int nc = scanner.read();
@@ -128,6 +130,7 @@ public class SeparatorRule implements IPredicateRule {
 		}
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner) {
 
 		return evaluate(scanner, false);
