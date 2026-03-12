@@ -83,13 +83,7 @@ public class UnicodeDialog extends BaseDialog {
 		jMenu1.setText(PropertiesEditor.getI18nProperty("fileMenu_Text")); //$NON-NLS-1$
 		jMenuItem1.setText(PropertiesEditor.getI18nProperty("closeMenuItem_Text")); //$NON-NLS-1$
 		jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke('U', java.awt.event.KeyEvent.CTRL_MASK, false));
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				jMenuItem1_actionPerformed(e);
-			}
-		});
+		jMenuItem1.addActionListener(e -> jMenuItem1_actionPerformed(e));
 		getContentPane().add(panel1);
 		panel1.add(jScrollPane1, BorderLayout.CENTER);
 		jScrollPane1.getViewport().add(jTextArea1, null);

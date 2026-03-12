@@ -13,16 +13,19 @@ import jp.gr.java_conf.ussiy.swing.JExtendedPopupComboBox;
 
 public class JExtendedPopupComboBoxUI extends BasicComboBoxUI {
 
+	@Override
 	protected ComboPopup createPopup() {
 
 		BasicComboPopup popup = new BasicComboPopup(comboBox) {
 
+			@Override
 			public void show() {
 
 				JExtendedPopupComboBox sComboBox = (JExtendedPopupComboBox) comboBox;
 
-				ComboBoxModel cModel = sComboBox.getModel();
-				JComboBox tmpComboBox = new JComboBox(cModel);
+				ComboBoxModel<?> cModel = sComboBox.getModel();
+				@SuppressWarnings("unchecked")
+				JComboBox<?> tmpComboBox = new JComboBox<>(cModel);
 				sComboBox.setPopupWidth(tmpComboBox.getPreferredSize().width);
 
 				Dimension popupSize = sComboBox.getPopupSize();

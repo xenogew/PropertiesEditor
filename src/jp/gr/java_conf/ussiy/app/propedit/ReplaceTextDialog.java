@@ -70,22 +70,10 @@ public class ReplaceTextDialog extends BaseDialog {
 		panel1.setLayout(borderLayout1);
 		replaceButton.setFont(new java.awt.Font("Dialog", 1, 13)); //$NON-NLS-1$
 		replaceButton.setText(PropertiesEditor.getI18nProperty("replaceMenuItem_Text")); //$NON-NLS-1$
-		replaceButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				replaceButton_actionPerformed(e);
-			}
-		});
+		replaceButton.addActionListener(e -> replaceButton_actionPerformed(e));
 		cancelButton.setFont(new java.awt.Font("Dialog", 1, 13)); //$NON-NLS-1$
 		cancelButton.setText(PropertiesEditor.getI18nProperty("KEY17")); //$NON-NLS-1$
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				cancelButton_actionPerformed(e);
-			}
-		});
+		cancelButton.addActionListener(e -> cancelButton_actionPerformed(e));
 		jPanel1.setLayout(flowLayout1);
 		flowLayout1.setAlignment(FlowLayout.RIGHT);
 		jPanel2.setLayout(gridBagLayout1);

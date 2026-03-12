@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 
 import jp.gr.java_conf.ussiy.swing.plaf.basic.JExtendedPopupComboBoxUI;
 
+@SuppressWarnings("rawtypes")
 public class JExtendedPopupComboBox extends JComboBox {
 
 	protected int popupWidth;
@@ -29,7 +30,7 @@ public class JExtendedPopupComboBox extends JComboBox {
 		initialize();
 	}
 
-	public JExtendedPopupComboBox(Vector items) {
+	public JExtendedPopupComboBox(Vector<?> items) {
 
 		super(items);
 		initialize();
@@ -55,6 +56,7 @@ public class JExtendedPopupComboBox extends JComboBox {
 		return new Dimension(popupWidth, size.height);
 	}
 
+	@Override
 	public void updateUI() {
 
 		super.updateUI();

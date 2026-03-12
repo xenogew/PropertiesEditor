@@ -70,6 +70,7 @@ public class SearchTextDialog extends BaseDialog {
 		inputTextField.setText(""); //$NON-NLS-1$
 		inputTextField.addKeyListener(new java.awt.event.KeyAdapter() {
 
+			@Override
 			public void keyTyped(KeyEvent e) {
 
 				inputTextField_keyTyped(e);
@@ -77,22 +78,10 @@ public class SearchTextDialog extends BaseDialog {
 		});
 		cancelButton.setFont(new java.awt.Font("Dialog", 1, 13)); //$NON-NLS-1$
 		cancelButton.setText(PropertiesEditor.getI18nProperty("KEY17")); //$NON-NLS-1$
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				cancelButton_actionPerformed(e);
-			}
-		});
+		cancelButton.addActionListener(e -> cancelButton_actionPerformed(e));
 		searchButton.setFont(new java.awt.Font("Dialog", 1, 13)); //$NON-NLS-1$
 		searchButton.setText(PropertiesEditor.getI18nProperty("findMenuItem_Text")); //$NON-NLS-1$
-		searchButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				searchButton_actionPerformed(e);
-			}
-		});
+		searchButton.addActionListener(e -> searchButton_actionPerformed(e));
 		getContentPane().add(panel1);
 		panel1.add(jPanel1, BorderLayout.SOUTH);
 		jPanel1.add(searchButton, null);

@@ -54,15 +54,18 @@ public class JFontChooserDialog extends BaseDialog {
 
 	private JLabel jLabel1 = new JLabel();
 
-	private JComboBox fontNameComboBox = new JExtendedPopupComboBox();
+	@SuppressWarnings("unchecked")
+	private JComboBox<String> fontNameComboBox = new JExtendedPopupComboBox();
 
 	private JLabel jLabel2 = new JLabel();
 
-	private JComboBox styleComboBox = new JExtendedPopupComboBox();
+	@SuppressWarnings("unchecked")
+	private JComboBox<String> styleComboBox = new JExtendedPopupComboBox();
 
 	private JLabel jLabel3 = new JLabel();
 
-	private JComboBox sizeComboBox = new JExtendedPopupComboBox();
+	@SuppressWarnings("unchecked")
+	private JComboBox<String> sizeComboBox = new JExtendedPopupComboBox();
 
 	private JLabel charaColorLabel = new JLabel();
 
@@ -138,13 +141,7 @@ public class JFontChooserDialog extends BaseDialog {
 		charaColorLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		charaColorLabel.setText(res.getString("font_color")); //$NON-NLS-1$
 		selectForegroundButton.setText(res.getString("selectForegroundButton_text")); //$NON-NLS-1$
-		selectForegroundButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				selectForegroundButton_actionPerformed(e);
-			}
-		});
+		selectForegroundButton.addActionListener(e -> selectForegroundButton_actionPerformed(e));
 		jPanel1.setLayout(gridBagLayout1);
 		jPanel5.setBorder(titledBorder1);
 		jPanel5.setLayout(borderLayout3);
@@ -152,60 +149,24 @@ public class JFontChooserDialog extends BaseDialog {
 		panel1.setMinimumSize(new Dimension(300, 200));
 		jPanel1.setPreferredSize(new Dimension(300, 120));
 		fontNameComboBox.setPreferredSize(new Dimension(100, 18));
-		fontNameComboBox.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				fontNameComboBox_actionPerformed(e);
-			}
-		});
+		fontNameComboBox.addActionListener(e -> fontNameComboBox_actionPerformed(e));
 		styleComboBox.setMinimumSize(new Dimension(23, 18));
 		styleComboBox.setPreferredSize(new Dimension(70, 18));
-		styleComboBox.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				styleComboBox_actionPerformed(e);
-			}
-		});
+		styleComboBox.addActionListener(e -> styleComboBox_actionPerformed(e));
 		sizeComboBox.setMinimumSize(new Dimension(23, 18));
 		sizeComboBox.setPreferredSize(new Dimension(50, 18));
-		sizeComboBox.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				sizeComboBox_actionPerformed(e);
-			}
-		});
+		sizeComboBox.addActionListener(e -> sizeComboBox_actionPerformed(e));
 		backgroundColorLabel.setOpaque(true);
 		backgroundColorLabel.setPreferredSize(new Dimension(50, 26));
 		backgroundColorLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		backgroundColorLabel.setHorizontalTextPosition(SwingConstants.TRAILING);
 		backgroundColorLabel.setText(res.getString("backgroundColorLabel_bgcolor")); //$NON-NLS-1$
 		selectBackgroundButton.setText(res.getString("selectBackgroundButton_text")); //$NON-NLS-1$
-		selectBackgroundButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				selectBackgroundButton_actionPerformed(e);
-			}
-		});
+		selectBackgroundButton.addActionListener(e -> selectBackgroundButton_actionPerformed(e));
 		cancelButton.setText(res.getString("cancelButton_text")); //$NON-NLS-1$
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				cancelButton_actionPerformed(e);
-			}
-		});
+		cancelButton.addActionListener(e -> cancelButton_actionPerformed(e));
 		setButton.setText(res.getString("setButton_text")); //$NON-NLS-1$
-		setButton.addActionListener(new java.awt.event.ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				setButton_actionPerformed(e);
-			}
-		});
+		setButton.addActionListener(e -> setButton_actionPerformed(e));
 		buttonPanel.setLayout(flowLayout1);
 		flowLayout1.setAlignment(FlowLayout.RIGHT);
 		flowLayout1.setHgap(5);
@@ -267,17 +228,17 @@ public class JFontChooserDialog extends BaseDialog {
 
 	private void initialize() {
 
-		// ƒtƒHƒ“ƒg–¼‚Ì‰Šú‰»
-		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		// ãƒ•ã‚©ãƒ³ãƒˆåã®åˆæœŸåŒ–
+		var env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		fontNameList = env.getAvailableFontFamilyNames();
 		for (int i = 0; i < fontNameList.length; i++) {
 			fontNameComboBox.addItem(fontNameList[i]);
 		}
-		// ƒXƒ^ƒCƒ‹‚Ì‰Šú‰»
+		// ã‚¹ã‚¿ã‚¤ãƒ«ã®åˆæœŸåŒ–
 		for (int i = 0; i < fontStyleCodeList.length; i++) {
 			styleComboBox.addItem(this.getFontStyleStringByFontStyleCode(fontStyleCodeList[i]));
 		}
-		// ƒTƒCƒY‚Ì‰Šú‰»
+		// ã‚µã‚¤ã‚ºã®åˆæœŸåŒ–
 		for (int i = 0; i < fontSizeList.length; i++) {
 			sizeComboBox.addItem(fontSizeList[i]);
 		}
