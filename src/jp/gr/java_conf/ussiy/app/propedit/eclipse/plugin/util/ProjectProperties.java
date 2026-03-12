@@ -6,7 +6,6 @@ package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,7 +30,7 @@ public class ProjectProperties {
 	
 	private static ProjectProperties instance = null;
 	
-	private Map propertyMap = new HashMap();
+	private Map<IProject, Map<IFile, Properties>> propertyMap = new HashMap<>();
 
 	private ProjectProperties() {
 	}
@@ -45,8 +44,7 @@ public class ProjectProperties {
 	
 	public void loadAllProperty(IWorkspace workspace) {
 		IProject[] projects = workspace.getRoot().getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if (project.isOpen()) {
 				loadProjectProperties(project);
 			}
@@ -74,13 +72,11 @@ public class ProjectProperties {
 		} catch (JavaModelException e) {
 		}
 		IFile[] pFiles = PropertiesFileUtil.findFileExt(project, outputPath, "properties"); //$NON-NLS-1$
-		Map list = new HashMap();
-		for (int j = 0; j < pFiles.length; j++) {
-//			log("loading file '" + pFiles[j].getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+		Map<IFile, Properties> list = new HashMap<>();
+		for (IFile pFile : pFiles) {
+//			log("loading file '" + pFile.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 			Properties prop = new Properties();
-			InputStream is = null;
-			try {
-				is = pFiles[j].getContents();
+			try (InputStream is = pFile.getContents()) {
 				prop.load(is);
 			} catch (IOException e) {
 				IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
@@ -90,41 +86,27 @@ public class ProjectProperties {
 				IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
 				ILog log = PropertiesEditorPlugin.getDefault().getLog();
 				log.log(status);
-			} finally {
-				if (is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-					}
-					is = null;
-				}
 			}
-			list.put(pFiles[j], prop);
+			list.put(pFile, prop);
 		}
 		propertyMap.put(project, list);
 	}
 	
 	public Properties getProperty(IProject project) {
 		Properties prop = new Properties();
-		Map properties = (Map)propertyMap.get(project);
-		Iterator ite = properties.keySet().iterator();
-		while (ite.hasNext()) {
-			IFile file = (IFile)ite.next();
-			Properties p = (Properties)properties.get(file);
+		Map<IFile, Properties> properties = propertyMap.get(project);
+		for (Properties p : properties.values()) {
 			prop.putAll(p);
 		}
 		return prop;
 	}
 	
-	public Map getProperty(IProject project, String key) {
-		Map list = new HashMap();
-		Map properties = (Map)propertyMap.get(project);
-		Iterator ite = properties.keySet().iterator();
-		while (ite.hasNext()) {
-			IFile file = (IFile)ite.next();
-			Properties p = (Properties)properties.get(file);
-			if (p.containsKey(key)) {
-				list.put(file, p);
+	public Map<IFile, Properties> getProperty(IProject project, String key) {
+		Map<IFile, Properties> list = new HashMap<>();
+		Map<IFile, Properties> properties = propertyMap.get(project);
+		for (Map.Entry<IFile, Properties> entry : properties.entrySet()) {
+			if (entry.getValue().containsKey(key)) {
+				list.put(entry.getKey(), entry.getValue());
 			}
 		}
 		return list;

@@ -3,8 +3,6 @@
  */
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.startup;
 
-import java.util.Iterator;
-
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.util.ProjectProperties;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.util.ResourceChange;
@@ -30,10 +28,12 @@ public class Startup implements IStartup {
 	/**
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
+	@Override
 	public void earlyStartup() {
 		IWorkspace workspace = PropertiesEditorPlugin.getWorkspace();
 		ProjectProperties.getInstance().loadAllProperty(workspace);
 		workspace.addResourceChangeListener(new IResourceChangeListener() {
+			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				ProjectProperties pp = ProjectProperties.getInstance();
 				
@@ -43,9 +43,7 @@ public class Startup implements IStartup {
 				if (rcs.size() == 0) {
 					return;
 				}
-				Iterator ite = rcs.iterator();
-				while (ite.hasNext()) {
-					ResourceChange rc = (ResourceChange)ite.next();
+				for (ResourceChange rc : rcs) {
 					switch (rc.getType()) {
 					case ResourceChange.PROJECT_ADD:
 						pp.loadProjectProperties(rc.getProject());
@@ -115,8 +113,8 @@ public class Startup implements IStartup {
 				}
 
 				IResourceDelta[] deltas = delta.getAffectedChildren();
-				for (int i = 0; i < deltas.length; i++) {
-					ResourceChangeList rcs = getEventType(deltas[i]);
+				for (IResourceDelta child : deltas) {
+					ResourceChangeList rcs = getEventType(child);
 					resourceChangeList.addAll(rcs);
 				}
 				return resourceChangeList;

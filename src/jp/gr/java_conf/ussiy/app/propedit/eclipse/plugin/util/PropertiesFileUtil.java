@@ -29,23 +29,23 @@ public class PropertiesFileUtil {
 		if (list == null) {
 			return new IFile[0];
 		}
-		List fileList = new ArrayList();
-		for (int i = 0; i < list.length; i++) {
-			if (list[i] instanceof IFile) {
-				if (extension.equals(list[i].getFileExtension())) {
-					fileList.add((IFile)list[i]);
+		List<IFile> fileList = new ArrayList<>();
+		for (IResource resource : list) {
+			if (resource instanceof IFile) {
+				if (extension.equals(resource.getFileExtension())) {
+					fileList.add((IFile) resource);
 				}
-			} else 	if (list[i] instanceof IContainer) {
-				if (excludePath != null && excludePath.matchingFirstSegments(list[i].getFullPath()) == excludePath.segmentCount()) {
+			} else 	if (resource instanceof IContainer) {
+				if (excludePath != null && excludePath.matchingFirstSegments(resource.getFullPath()) == excludePath.segmentCount()) {
 					continue;
 				}
-				IFile[] files = findFileExt((IContainer)list[i], excludePath, extension);
-				for (int j = 0; j < files.length; j++) {
-					fileList.add(files[j]);
+				IFile[] files = findFileExt((IContainer) resource, excludePath, extension);
+				for (IFile file : files) {
+					fileList.add(file);
 				}
 			}
 		}
 		
-		return (IFile[])fileList.toArray(new IFile[0]);
+		return fileList.toArray(new IFile[0]);
 	}
 }

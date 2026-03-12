@@ -11,16 +11,14 @@ import java.util.List;
 /**
  *
  */
-public class ResourceChangeList {
+public class ResourceChangeList implements Iterable<ResourceChange> {
 	
-	private List list = new ArrayList();
+	private List<ResourceChange> list = new ArrayList<>();
 
 	public void add(ResourceChange rc) {
 		boolean addDoneFlg = false;
-		Iterator ite = list.iterator();
-		List newList = new ArrayList();
-		while (ite.hasNext()) {
-			ResourceChange rcInList = (ResourceChange)ite.next();
+		List<ResourceChange> newList = new ArrayList<>();
+		for (ResourceChange rcInList : list) {
 			if (rc.getType() == ResourceChange.PROPERTIES_CHANGE) {
 				if (rcInList.getProject().getFullPath().toPortableString().equals(rc.getProject().getFullPath().toPortableString())) {
 					newList.add(rcInList);
@@ -47,18 +45,17 @@ public class ResourceChangeList {
 		list = newList;
 	}
 
-	public void addAll(ResourceChangeList list) {
-		Iterator ite = list.iterator();
-		while (ite.hasNext()) {
-			ResourceChange rc = (ResourceChange)ite.next();
+	public void addAll(ResourceChangeList rcList) {
+		for (ResourceChange rc : rcList.list) {
 			add(rc);
 		}
 	}
 	
-	public Iterator iterator() {
+	@Override
+	public Iterator<ResourceChange> iterator() {
 		return list.iterator();
 	}
-	
+
 	public int size() {
 		return list.size();
 	}
