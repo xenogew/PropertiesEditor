@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "java-coding-guideline": {
+      "source": "gabia/agent-skills",
+      "sourceType": "github",
+      "computedHash": "035bb5e41434312c62c68022f476adf3287919b4c9c60d3fa135bafa5cafb1cb"
+    },
+    "java-xmlrpc-guideline": {
+      "source": "gabia/agent-skills",
+      "sourceType": "github",
+      "computedHash": "0a786496e870873234b9f48dabadfc640e0a33399f043413f9e5f2b19d7ff02d"
+    }
+  }
+}

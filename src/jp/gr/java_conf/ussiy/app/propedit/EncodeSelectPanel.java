@@ -17,11 +17,13 @@ import jp.gr.java_conf.ussiy.app.propedit.util.EncodeManager;
 
 class EncodeSelectPanel extends JPanel {
 
+	private static final long serialVersionUID = -3161561981802069139L;
+
 	private GridLayout gridLayout1 = new GridLayout();
 
 	private JLabel jLabel1 = new JLabel();
 
-	private ArrayList encodeRadioButton = new ArrayList();
+	private ArrayList<JRadioButton> encodeRadioButton = new ArrayList<>();
 
 	private ButtonGroup encodeButtonGroup = new ButtonGroup();
 
@@ -79,7 +81,7 @@ class EncodeSelectPanel extends JPanel {
 	public String getSelectedEncode() {
 
 		String name = null;
-		Enumeration enu = encodeButtonGroup.getElements();
+		var enu = encodeButtonGroup.getElements();
 		while (enu.hasMoreElements()) {
 			AbstractButton button = (AbstractButton) enu.nextElement();
 			if (button.isSelected()) {

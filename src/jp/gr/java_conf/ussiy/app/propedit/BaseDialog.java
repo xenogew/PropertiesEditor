@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 
 public class BaseDialog extends JDialog {
 
+	private static final long serialVersionUID = -3918517962385853621L;
+
 	public BaseDialog(Frame frame, String title, boolean modal) {
 
 		super(frame, title, modal);

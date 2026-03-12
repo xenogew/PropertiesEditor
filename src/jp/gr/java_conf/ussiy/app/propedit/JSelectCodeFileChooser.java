@@ -20,6 +20,7 @@ import javax.swing.filechooser.FileSystemView;
  */
 public class JSelectCodeFileChooser extends JFileChooser {
 
+	private static final long serialVersionUID = 2541718889046378532L;
 	/**
 	 */
 	private EncodeSelectPanel scPanel = null;
