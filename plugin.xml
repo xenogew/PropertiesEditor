@@ -10,7 +10,7 @@
 	<extension
 		   point="org.eclipse.ui.editors">
 		<editor
-				icon="icons/IconByTaroTw.gif"
+				icon="icons/IconByTaroTw.png"
 				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditor"
 				default="true"
 				name="PropertiesEditor"
@@ -130,19 +130,19 @@
 				locationURI="popup:#PropertiesEditorContext?after=additions">
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%toggleCommentActionLabel"/>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%expandAllActionLabel"/>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%collapseAllActionLabel"/>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%showUnicodeEscActionLabel"/>
 		</menuContribution>
 		<!-- editor menu bar contributions (replaces org.eclipse.ui.editorActions) -->
@@ -150,7 +150,7 @@
 				locationURI="menu:edit?after=additions">
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%toggleCommentActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
@@ -160,7 +160,7 @@
 			</command>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%expandAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
@@ -170,7 +170,7 @@
 			</command>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%collapseAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
@@ -180,7 +180,7 @@
 			</command>
 			<command
 					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-					icon="icons/IconByTaroTw.gif"
+					icon="icons/IconByTaroTw.png"
 					label="%showUnicodeEscActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
@@ -228,7 +228,7 @@
 				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal.PropertiesCompletionProposalComputer">
 			<partition type="__java_string"/>
 		</javaCompletionProposalComputer>
-		<proposalCategory icon="icons/pe_32.gif"/>
+		<proposalCategory icon="icons/pe_32.png"/>
 	</extension>
 	<extension
 			point="org.eclipse.core.contenttype.contentTypes">
@@ -247,7 +247,7 @@
 				name="%wizardName"
 				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.wizard.BasicNewPropertiesFileWizard"
 				category="org.eclipse.jdt.ui.java"
-				icon="icons/pe_32.gif"
+				icon="icons/pe_32.png"
 				project="false"/>
 	</extension>
 	<extension

@@ -19,7 +19,7 @@ public class PropertiesOutlineLabelProvider extends LabelProvider {
       return markerImage;
     }
     URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
-    String path = "icons/outlineMarker.gif"; //$NON-NLS-1$
+    String path = "icons/outlineMarker.png"; //$NON-NLS-1$
     ImageDescriptor descriptor = null;
     try {
       descriptor = ImageDescriptor.createFromURL(new URL(url, path));

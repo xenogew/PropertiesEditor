@@ -105,7 +105,7 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
     action.setToolTipText(action.getText());
     if (sortImageDescriptor == null) {
       URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
-      String path = "icons/alphab_sort_co.gif"; //$NON-NLS-1$
+      String path = "icons/alphab_sort_co.png"; //$NON-NLS-1$
       try {
         sortImageDescriptor = ImageDescriptor.createFromURL(new URL(url, path));
       } catch (MalformedURLException e) {

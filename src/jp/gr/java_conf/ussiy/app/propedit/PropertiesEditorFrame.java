@@ -377,24 +377,24 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
    */
   private void initIcon() {
 
-    openImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Open16.gif")); //$NON-NLS-1$
-    closeImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Stop16.gif")); //$NON-NLS-1$
-    infoImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Information16.gif")); //$NON-NLS-1$
-    searchImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Find16.gif")); //$NON-NLS-1$
+    openImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Open16.png")); //$NON-NLS-1$
+    closeImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Stop16.png")); //$NON-NLS-1$
+    infoImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Information16.png")); //$NON-NLS-1$
+    searchImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Find16.png")); //$NON-NLS-1$
     searchNextImage16 =
-        new ImageIcon(PropertiesEditor.class.getResource("resource/FindAgain16.gif")); //$NON-NLS-1$
-    saveImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Save16.gif")); //$NON-NLS-1$
-    newImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/New16.gif")); //$NON-NLS-1$
-    undoImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Undo16.gif")); //$NON-NLS-1$
-    pasteImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Paste16.gif")); //$NON-NLS-1$
-    replaceImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Replace16.gif")); //$NON-NLS-1$
-    deleteImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Delete16.gif")); //$NON-NLS-1$
-    cutImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Cut16.gif")); //$NON-NLS-1$
-    copyImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Copy16.gif")); //$NON-NLS-1$
+        new ImageIcon(PropertiesEditor.class.getResource("resource/FindAgain16.png")); //$NON-NLS-1$
+    saveImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Save16.png")); //$NON-NLS-1$
+    newImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/New16.png")); //$NON-NLS-1$
+    undoImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Undo16.png")); //$NON-NLS-1$
+    pasteImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Paste16.png")); //$NON-NLS-1$
+    replaceImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Replace16.png")); //$NON-NLS-1$
+    deleteImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Delete16.png")); //$NON-NLS-1$
+    cutImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Cut16.png")); //$NON-NLS-1$
+    copyImage16 = new ImageIcon(PropertiesEditor.class.getResource("resource/Copy16.png")); //$NON-NLS-1$
     lineNumImage16 =
-        new ImageIcon(PropertiesEditor.class.getResource("resource/ColumnInsertBefore16.gif")); //$NON-NLS-1$
+        new ImageIcon(PropertiesEditor.class.getResource("resource/ColumnInsertBefore16.png")); //$NON-NLS-1$
     imgIcon = Toolkit.getDefaultToolkit()
-        .createImage(PropertiesEditor.class.getResource("resource/pe_16.gif")); //$NON-NLS-1$
+        .createImage(PropertiesEditor.class.getResource("resource/pe_16.png")); //$NON-NLS-1$
   }
 
   /**

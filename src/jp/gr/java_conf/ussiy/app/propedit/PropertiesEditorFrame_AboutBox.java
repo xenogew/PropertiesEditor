@@ -115,7 +115,7 @@ public class PropertiesEditorFrame_AboutBox extends JDialog implements ActionLis
   private void jbInit() throws Exception {
 
     image1 = new ImageIcon(jp.gr.java_conf.ussiy.app.propedit.PropertiesEditorFrame.class
-        .getResource("resource/editor.gif")); //$NON-NLS-1$
+        .getResource("resource/editor.png")); //$NON-NLS-1$
     imageLabel.setBorder(null);
     imageLabel.setIcon(image1);
     this.setTitle(PropertiesEditor.getI18nProperty("versionMenuItem_Text")); //$NON-NLS-1$

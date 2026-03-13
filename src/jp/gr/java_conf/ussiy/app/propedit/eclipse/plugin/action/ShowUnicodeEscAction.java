@@ -1,6 +1,5 @@
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditor;
@@ -40,14 +39,10 @@ public class ShowUnicodeEscAction extends AbstractHandler {
     }
 
     Shell shell = new Shell(textEditor.getSite().getShell(), SWT.SHELL_TRIM);
-    URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
-    String path = "icons/previewPage.gif"; //$NON-NLS-1$
+    String path = "/icons/previewPage.png"; //$NON-NLS-1$
+    URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry(path); // $NON-NLS-1$
     ImageDescriptor descriptor = null;
-    try {
-      descriptor = ImageDescriptor.createFromURL(new URL(url, path));
-    } catch (MalformedURLException e) {
-      descriptor = ImageDescriptor.getMissingImageDescriptor();
-    }
+    descriptor = ImageDescriptor.createFromURL(url);
     Image image = descriptor.createImage();
     shell.setImage(image);
     shell.setSize(600, 400);

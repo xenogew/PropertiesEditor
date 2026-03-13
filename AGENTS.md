@@ -499,9 +499,11 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 
 ### Phase 8: Make it modern, Java 25 compatible and adopt Leyden, Virtual Thread for executing tasks
 
-### Phase 9: Adopt Spotless for code formatting
+### Phase 9: Adopt Spotless for code formatting — DONE
 
-### Phase 10: Make project to be my own signature and publish it to Eclipse Marketplace for publishing
+### Phase 10: Change all GUI libraries related to SWT or Eclipse RCP or OSGi
+
+### Phase 11: Make project to be my own signature and publish it to Eclipse Marketplace for publishing
 
 ---
 
