@@ -2,64 +2,62 @@ package jp.gr.java_conf.ussiy.swing;
 
 import java.awt.Dimension;
 import java.util.Vector;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
-
 import jp.gr.java_conf.ussiy.swing.plaf.basic.JExtendedPopupComboBoxUI;
 
 @SuppressWarnings("rawtypes")
 public class JExtendedPopupComboBox extends JComboBox {
 
-	protected int popupWidth;
+  protected int popupWidth;
 
-	public JExtendedPopupComboBox() {
+  public JExtendedPopupComboBox() {
 
-		initialize();
-	}
+    initialize();
+  }
 
-	public JExtendedPopupComboBox(ComboBoxModel aModel) {
+  public JExtendedPopupComboBox(ComboBoxModel aModel) {
 
-		super(aModel);
-		initialize();
-	}
+    super(aModel);
+    initialize();
+  }
 
-	public JExtendedPopupComboBox(Object[] items) {
+  public JExtendedPopupComboBox(Object[] items) {
 
-		super(items);
-		initialize();
-	}
+    super(items);
+    initialize();
+  }
 
-	public JExtendedPopupComboBox(Vector<?> items) {
+  public JExtendedPopupComboBox(Vector<?> items) {
 
-		super(items);
-		initialize();
-	}
+    super(items);
+    initialize();
+  }
 
-	public void initialize() {
+  public void initialize() {
 
-		setUI(new JExtendedPopupComboBoxUI());
-		popupWidth = 0;
-	}
+    setUI(new JExtendedPopupComboBoxUI());
+    popupWidth = 0;
+  }
 
-	public void setPopupWidth(int width) {
+  public void setPopupWidth(int width) {
 
-		popupWidth = width;
-	}
+    popupWidth = width;
+  }
 
-	public Dimension getPopupSize() {
+  public Dimension getPopupSize() {
 
-		Dimension size = getSize();
-		if (popupWidth < 1) {
-			popupWidth = size.width;
-		}
-		return new Dimension(popupWidth, size.height);
-	}
+    Dimension size = getSize();
+    if (popupWidth < 1) {
+      popupWidth = size.width;
+    }
+    return new Dimension(popupWidth, size.height);
+  }
 
-	@Override
-	public void updateUI() {
+  @Override
+  public void updateUI() {
 
-		super.updateUI();
-		initialize();
-	}
+    super.updateUI();
+    initialize();
+  }
 }

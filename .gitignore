@@ -1,3 +1,4 @@
 target/
 bin/
 *.target.resolved
+eclipse-java-google-style.xml

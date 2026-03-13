@@ -10,115 +10,115 @@ import java.util.logging.Logger;
 
 public class LockableFileOutputStream extends OutputStream {
 
-	private static final Logger LOG = Logger.getLogger(LockableFileOutputStream.class.getName());
+  private static final Logger LOG = Logger.getLogger(LockableFileOutputStream.class.getName());
 
-	private FileOutputStream fOut;
+  private FileOutputStream fOut;
 
-	private FileChannel fc;
+  private FileChannel fc;
 
-	private FileLock fl;
+  private FileLock fl;
 
-	private final int TRY_LOCK_FLG = 0;
+  private final int TRY_LOCK_FLG = 0;
 
-	private final int LOCK_FLG = 1;
+  private final int LOCK_FLG = 1;
 
-	public LockableFileOutputStream(FileOutputStream out) {
+  public LockableFileOutputStream(FileOutputStream out) {
 
-		this.fOut = out;
-		fc = out.getChannel();
-	}
+    this.fOut = out;
+    fc = out.getChannel();
+  }
 
-	public boolean tryLock() {
+  public boolean tryLock() {
 
-		return lock(TRY_LOCK_FLG);
-	}
+    return lock(TRY_LOCK_FLG);
+  }
 
-	private boolean lock(int flg) {
+  private boolean lock(int flg) {
 
-		try {
-			if (fc != null) {
-				if (flg == TRY_LOCK_FLG) {
-					fl = fc.tryLock();
-				} else if (flg == LOCK_FLG) {
-					fl = fc.lock();
-				}
-				if (fl == null) {
-					return false;
-				}
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			try {
-				fl.release();
-			} catch (IOException ex) {
-				LOG.log(Level.SEVERE, ex.getMessage(), ex);
-			}
-			return false;
-		}
-	}
+    try {
+      if (fc != null) {
+        if (flg == TRY_LOCK_FLG) {
+          fl = fc.tryLock();
+        } else if (flg == LOCK_FLG) {
+          fl = fc.lock();
+        }
+        if (fl == null) {
+          return false;
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } catch (IOException e) {
+      LOG.log(Level.SEVERE, e.getMessage(), e);
+      try {
+        fl.release();
+      } catch (IOException ex) {
+        LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      }
+      return false;
+    }
+  }
 
-	public boolean lock() {
+  public boolean lock() {
 
-		return lock(LOCK_FLG);
-	}
+    return lock(LOCK_FLG);
+  }
 
-	public boolean unlock() throws IOException {
+  public boolean unlock() throws IOException {
 
-		try {
-			if (fl != null) {
-				fl.release();
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			try {
-				if (fl != null) {
-					fl.release();
-				}
-			} catch (IOException ex) {
-				LOG.log(Level.SEVERE, ex.getMessage(), ex);
-			}
-		}
-	}
+    try {
+      if (fl != null) {
+        fl.release();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (IOException e) {
+      throw e;
+    } finally {
+      try {
+        if (fl != null) {
+          fl.release();
+        }
+      } catch (IOException ex) {
+        LOG.log(Level.SEVERE, ex.getMessage(), ex);
+      }
+    }
+  }
 
-	protected void finalize() throws IOException {
+  protected void finalize() throws IOException {
 
-		unlock();
-	}
+    unlock();
+  }
 
-	public void close() throws java.io.IOException {
+  public void close() throws java.io.IOException {
 
-		fOut.close();
-	}
+    fOut.close();
+  }
 
-	public void write(byte[] parm1) throws java.io.IOException {
+  public void write(byte[] parm1) throws java.io.IOException {
 
-		fOut.write(parm1);
-	}
+    fOut.write(parm1);
+  }
 
-	public void write(int b) throws java.io.IOException {
+  public void write(int b) throws java.io.IOException {
 
-		fOut.write(b);
-	}
+    fOut.write(b);
+  }
 
-	public void write(byte[] parm1, int parm2, int parm3) throws java.io.IOException {
+  public void write(byte[] parm1, int parm2, int parm3) throws java.io.IOException {
 
-		fOut.write(parm1, parm2, parm3);
-	}
+    fOut.write(parm1, parm2, parm3);
+  }
 
-	public void flush() throws java.io.IOException {
+  public void flush() throws java.io.IOException {
 
-		fOut.flush();
-	}
+    fOut.flush();
+  }
 
-	public FileChannel getChannel() {
+  public FileChannel getChannel() {
 
-		return fc;
-	}
+    return fc;
+  }
 }

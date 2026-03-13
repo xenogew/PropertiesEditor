@@ -1,8 +1,8 @@
 /*****************************************************
- * It is a class holding various setup.
- * This class is saved and it is made to read a setup at the time of next starting.
+ * It is a class holding various setup. This class is saved and it is made to read a setup at the
+ * time of next starting.
  *
- *   @author  Sou Miyazaki
+ * @author Sou Miyazaki
  *
  ****************************************************/
 package jp.gr.java_conf.ussiy.app.propedit.bean;
@@ -21,275 +21,278 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * It is a class holding various setup. This class is saved and it is made to read a setup at the time of next starting.
+ * It is a class holding various setup. This class is saved and it is made to read a setup at the
+ * time of next starting.
  * 
- * <p><b>Record migration note (Phase 3j):</b> This class is a potential candidate for
- * conversion to a Java {@code record}, but currently cannot be migrated because it
- * relies on mutable singleton state, Java serialization ({@code readObject}/{@code writeObject}),
- * and setter-based field mutation after construction. A future architectural change
- * (e.g. replacing {@code ObjectOutputStream} persistence with a JSON/TOML config file
- * and using an immutable builder pattern) would enable record conversion.</p>
+ * <p>
+ * <b>Record migration note (Phase 3j):</b> This class is a potential candidate for conversion to a
+ * Java {@code record}, but currently cannot be migrated because it relies on mutable singleton
+ * state, Java serialization ({@code readObject}/{@code writeObject}), and setter-based field
+ * mutation after construction. A future architectural change (e.g. replacing
+ * {@code ObjectOutputStream} persistence with a JSON/TOML config file and using an immutable
+ * builder pattern) would enable record conversion.
+ * </p>
  * 
  * @author Sou Miyazaki
- *  
+ * 
  */
 public class AppSetting implements Serializable {
 
-	/**
-	 */
-	public static final String filepath = "ini"; //$NON-NLS-1$
+  /**
+   */
+  public static final String filepath = "ini"; //$NON-NLS-1$
 
-	/**
-	 */
-	private static AppSetting setting;
+  /**
+   */
+  private static AppSetting setting;
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	private AppSetting() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  private AppSetting() {
 
-	}
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public static AppSetting getInstance() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public static AppSetting getInstance() {
 
-		if (setting == null) {
-			setting = new AppSetting();
-		}
-		return setting;
-	}
+    if (setting == null) {
+      setting = new AppSetting();
+    }
+    return setting;
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public void saveSetting() throws FileNotFoundException, IOException {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public void saveSetting() throws FileNotFoundException, IOException {
 
-		File file = new File(filepath);
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
-			out.writeObject(this);
-			out.flush();
-		}
-	}
+    File file = new File(filepath);
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+      out.writeObject(this);
+      out.flush();
+    }
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public void loadSetting() throws FileNotFoundException, ClassNotFoundException, IOException {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public void loadSetting() throws FileNotFoundException, ClassNotFoundException, IOException {
 
-		File file = new File(filepath);
-		if (!file.exists() || !file.isFile()) {
-			return;
-		}
-		AppSetting setting;
-		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-			setting = (AppSetting) in.readObject();
-		}
-		this.setOpenFileHistory(setting.getOpenFileHistory());
-		this.setShowLineNumberFlag(setting.isShowLineNumberFlag());
-		this.setShowToolBarFlag(setting.isShowToolBarFlag());
-		this.setWordWrapFlag(setting.isWordWrapFlag());
-		this.setFramesize(setting.getFramesize());
-		this.setFont(setting.getFont());
-		this.setForegroundColor(setting.getForegroundColor());
-		this.setBackgroundColor(setting.getBackgroundColor());
-		this.setLookAndFeelClass(setting.getLookAndFeelClass());
-		List<File> files = this.getOpenFileHistory();
-		if (files.size() >= 10) {
-			int rem = files.size() - 10;
-			for (int i = 0; i < rem; i++) {
-				files.remove(0);
-			}
-		}
-	}
+    File file = new File(filepath);
+    if (!file.exists() || !file.isFile()) {
+      return;
+    }
+    AppSetting setting;
+    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+      setting = (AppSetting) in.readObject();
+    }
+    this.setOpenFileHistory(setting.getOpenFileHistory());
+    this.setShowLineNumberFlag(setting.isShowLineNumberFlag());
+    this.setShowToolBarFlag(setting.isShowToolBarFlag());
+    this.setWordWrapFlag(setting.isWordWrapFlag());
+    this.setFramesize(setting.getFramesize());
+    this.setFont(setting.getFont());
+    this.setForegroundColor(setting.getForegroundColor());
+    this.setBackgroundColor(setting.getBackgroundColor());
+    this.setLookAndFeelClass(setting.getLookAndFeelClass());
+    List<File> files = this.getOpenFileHistory();
+    if (files.size() >= 10) {
+      int rem = files.size() - 10;
+      for (int i = 0; i < rem; i++) {
+        files.remove(0);
+      }
+    }
+  }
 
-	/**
-	 */
-	private boolean showLineNumberFlag;
+  /**
+   */
+  private boolean showLineNumberFlag;
 
-	/**
-	 */
-	private boolean showToolBarFlag;
+  /**
+   */
+  private boolean showToolBarFlag;
 
-	/**
-	 */
-	private List<File> openFileHistory = new ArrayList<>();
+  /**
+   */
+  private List<File> openFileHistory = new ArrayList<>();
 
-	/**
-	 */
-	private boolean wordWrapFlag;
+  /**
+   */
+  private boolean wordWrapFlag;
 
-	private java.awt.Dimension framesize;
+  private java.awt.Dimension framesize;
 
-	private Font font;
+  private Font font;
 
-	private Color backgroundColor;
+  private Color backgroundColor;
 
-	private Color foregroundColor;
+  private Color foregroundColor;
 
-	private String lookAndFeelClass;
+  private String lookAndFeelClass;
 
-	/**
-	 * 
-	 * @param ois
-	 * @since 1.0.0
-	 */
-	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+  /**
+   * 
+   * @param ois
+   * @since 1.0.0
+   */
+  private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
 
-		ois.defaultReadObject();
-	}
+    ois.defaultReadObject();
+  }
 
-	/**
-	 * 
-	 * @param oos
-	 * @since 1.0.0
-	 */
-	private void writeObject(ObjectOutputStream oos) throws IOException {
+  /**
+   * 
+   * @param oos
+   * @since 1.0.0
+   */
+  private void writeObject(ObjectOutputStream oos) throws IOException {
 
-		oos.defaultWriteObject();
-	}
+    oos.defaultWriteObject();
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public boolean isShowLineNumberFlag() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public boolean isShowLineNumberFlag() {
 
-		return showLineNumberFlag;
-	}
+    return showLineNumberFlag;
+  }
 
-	/**
-	 * 
-	 * @param showLineNumberFlag
-	 * @since 1.0.0
-	 */
-	public void setShowLineNumberFlag(boolean showLineNumberFlag) {
+  /**
+   * 
+   * @param showLineNumberFlag
+   * @since 1.0.0
+   */
+  public void setShowLineNumberFlag(boolean showLineNumberFlag) {
 
-		this.showLineNumberFlag = showLineNumberFlag;
-	}
+    this.showLineNumberFlag = showLineNumberFlag;
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public boolean isShowToolBarFlag() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public boolean isShowToolBarFlag() {
 
-		return showToolBarFlag;
-	}
+    return showToolBarFlag;
+  }
 
-	/**
-	 * 
-	 * @param showToolBarFlag
-	 * @since 1.0.0
-	 */
-	public void setShowToolBarFlag(boolean showToolBarFlag) {
+  /**
+   * 
+   * @param showToolBarFlag
+   * @since 1.0.0
+   */
+  public void setShowToolBarFlag(boolean showToolBarFlag) {
 
-		this.showToolBarFlag = showToolBarFlag;
-	}
+    this.showToolBarFlag = showToolBarFlag;
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public List<File> getOpenFileHistory() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public List<File> getOpenFileHistory() {
 
-		return openFileHistory;
-	}
+    return openFileHistory;
+  }
 
-	/**
-	 * 
-	 * @param openFileHistory
-	 * @since 1.0.0
-	 */
-	private void setOpenFileHistory(List<File> openFileHistory) {
+  /**
+   * 
+   * @param openFileHistory
+   * @since 1.0.0
+   */
+  private void setOpenFileHistory(List<File> openFileHistory) {
 
-		this.openFileHistory = openFileHistory;
-		if (openFileHistory.size() == 11) {
-			openFileHistory.remove(10);
-		}
-	}
+    this.openFileHistory = openFileHistory;
+    if (openFileHistory.size() == 11) {
+      openFileHistory.remove(10);
+    }
+  }
 
-	/**
-	 * 
-	 * @param openFile
-	 * @since 1.0.0
-	 */
-	public void setOpenFileHistory(File openFile) {
+  /**
+   * 
+   * @param openFile
+   * @since 1.0.0
+   */
+  public void setOpenFileHistory(File openFile) {
 
-		this.openFileHistory.add(openFile);
-	}
+    this.openFileHistory.add(openFile);
+  }
 
-	/**
-	 * 
-	 * @since 1.0.0
-	 */
-	public boolean isWordWrapFlag() {
+  /**
+   * 
+   * @since 1.0.0
+   */
+  public boolean isWordWrapFlag() {
 
-		return wordWrapFlag;
-	}
+    return wordWrapFlag;
+  }
 
-	/**
-	 * 
-	 * @param wordWrapFlag
-	 * @since 1.0.0
-	 */
-	public void setWordWrapFlag(boolean wordWrapFlag) {
+  /**
+   * 
+   * @param wordWrapFlag
+   * @since 1.0.0
+   */
+  public void setWordWrapFlag(boolean wordWrapFlag) {
 
-		this.wordWrapFlag = wordWrapFlag;
-	}
+    this.wordWrapFlag = wordWrapFlag;
+  }
 
-	public java.awt.Dimension getFramesize() {
+  public java.awt.Dimension getFramesize() {
 
-		return framesize;
-	}
+    return framesize;
+  }
 
-	public void setFramesize(java.awt.Dimension framesize) {
+  public void setFramesize(java.awt.Dimension framesize) {
 
-		this.framesize = framesize;
-	}
+    this.framesize = framesize;
+  }
 
-	public void setFont(Font font) {
+  public void setFont(Font font) {
 
-		this.font = font;
-	}
+    this.font = font;
+  }
 
-	public Font getFont() {
+  public Font getFont() {
 
-		return font;
-	}
+    return font;
+  }
 
-	public void setForegroundColor(Color foreColor) {
+  public void setForegroundColor(Color foreColor) {
 
-		this.foregroundColor = foreColor;
-	}
+    this.foregroundColor = foreColor;
+  }
 
-	public Color getForegroundColor() {
+  public Color getForegroundColor() {
 
-		return this.foregroundColor;
-	}
+    return this.foregroundColor;
+  }
 
-	public void setBackgroundColor(Color backColor) {
+  public void setBackgroundColor(Color backColor) {
 
-		this.backgroundColor = backColor;
-	}
+    this.backgroundColor = backColor;
+  }
 
-	public Color getBackgroundColor() {
+  public Color getBackgroundColor() {
 
-		return this.backgroundColor;
-	}
+    return this.backgroundColor;
+  }
 
-	public String getLookAndFeelClass() {
+  public String getLookAndFeelClass() {
 
-		return lookAndFeelClass;
-	}
+    return lookAndFeelClass;
+  }
 
-	public void setLookAndFeelClass(String lookAndFeelClass) {
+  public void setLookAndFeelClass(String lookAndFeelClass) {
 
-		this.lookAndFeelClass = lookAndFeelClass;
-	}
+    this.lookAndFeelClass = lookAndFeelClass;
+  }
 }

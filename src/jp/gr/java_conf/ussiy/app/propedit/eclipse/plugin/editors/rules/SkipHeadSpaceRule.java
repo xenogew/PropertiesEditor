@@ -7,52 +7,52 @@ import org.eclipse.jface.text.rules.Token;
 
 public class SkipHeadSpaceRule implements IPredicateRule {
 
-	@Override
-	public IToken getSuccessToken() {
+  @Override
+  public IToken getSuccessToken() {
 
-		return Token.UNDEFINED;
-	}
+    return Token.UNDEFINED;
+  }
 
-	public void disp(int a) {
+  public void disp(int a) {
 
-		disp((char) a);
-	}
+    disp((char) a);
+  }
 
-	public void disp(char a) {
+  public void disp(char a) {
 
-		if (a == '\n') {
-			System.out.println("\\n"); //$NON-NLS-1$
-		} else if (a == '\r') {
-			System.out.println("\\r"); //$NON-NLS-1$
-		} else if (a == ' ') {
-			System.out.println("\\s"); //$NON-NLS-1$
-		} else {
-			System.out.println(new char[] { a });
-		}
-	}
+    if (a == '\n') {
+      System.out.println("\\n"); //$NON-NLS-1$
+    } else if (a == '\r') {
+      System.out.println("\\r"); //$NON-NLS-1$
+    } else if (a == ' ') {
+      System.out.println("\\s"); //$NON-NLS-1$
+    } else {
+      System.out.println(new char[] {a});
+    }
+  }
 
-	@Override
-	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
+  @Override
+  public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 
-		if (scanner.getColumn() == 0) {
-			int nc = 0;
-			while (true) {
-				nc = scanner.read();
-				if (nc == ICharacterScanner.EOF) {
-					return getSuccessToken();
-				}
-				if ((char) nc != ' ' && (char) nc != '\t') {
-					scanner.unread();
-					return getSuccessToken();
-				}
-			}
-		}
-		return getSuccessToken();
-	}
+    if (scanner.getColumn() == 0) {
+      int nc = 0;
+      while (true) {
+        nc = scanner.read();
+        if (nc == ICharacterScanner.EOF) {
+          return getSuccessToken();
+        }
+        if ((char) nc != ' ' && (char) nc != '\t') {
+          scanner.unread();
+          return getSuccessToken();
+        }
+      }
+    }
+    return getSuccessToken();
+  }
 
-	@Override
-	public IToken evaluate(ICharacterScanner scanner) {
+  @Override
+  public IToken evaluate(ICharacterScanner scanner) {
 
-		return evaluate(scanner, false);
-	}
+    return evaluate(scanner, false);
+  }
 }

@@ -7,99 +7,100 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ComboFieldEditor extends FieldEditor {
 
-	private Combo combo;
+  private Combo combo;
 
-	private String[] items;
+  private String[] items;
 
-	/**
-	 * (これを消してコンストラクターの説明を記述)
-	 * 
-	 * @param name
-	 * @param labelText
-	 * @param parent
-	 */
-	public ComboFieldEditor(String name, String labelText, String[] items, Composite parent) {
+  /**
+   * (これを消してコンストラクターの説明を記述)
+   * 
+   * @param name
+   * @param labelText
+   * @param parent
+   */
+  public ComboFieldEditor(String name, String labelText, String[] items, Composite parent) {
 
-		super(name, labelText, parent);
-		this.items = items;
-		setComboItems();
-	}
+    super(name, labelText, parent);
+    this.items = items;
+    setComboItems();
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
-	 */
-	@Override
-	protected void adjustForNumColumns(int numColumns) {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
+   */
+  @Override
+  protected void adjustForNumColumns(int numColumns) {
 
-	}
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid(org.eclipse.swt.widgets.Composite, int)
-	 */
-	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid(org.eclipse.swt.widgets.Composite,
+   * int)
+   */
+  @Override
+  protected void doFillIntoGrid(Composite parent, int numColumns) {
 
-		getLabelControl(parent);
+    getLabelControl(parent);
 
-		combo = new Combo(parent, SWT.NONE);
-	}
+    combo = new Combo(parent, SWT.NONE);
+  }
 
-	protected void setComboItems() {
+  protected void setComboItems() {
 
-		combo.setItems(items);
-	}
+    combo.setItems(items);
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
-	 */
-	@Override
-	protected void doLoad() {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#doLoad()
+   */
+  @Override
+  protected void doLoad() {
 
-		if (combo != null) {
-			String value = getPreferenceStore().getString(getPreferenceName());
-			combo.setText(value);
-		}
-	}
+    if (combo != null) {
+      String value = getPreferenceStore().getString(getPreferenceName());
+      combo.setText(value);
+    }
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
-	 */
-	@Override
-	protected void doLoadDefault() {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
+   */
+  @Override
+  protected void doLoadDefault() {
 
-		if (combo != null) {
-			String value = getPreferenceStore().getDefaultString(getPreferenceName());
-			combo.setText(value);
-		}
-	}
+    if (combo != null) {
+      String value = getPreferenceStore().getDefaultString(getPreferenceName());
+      combo.setText(value);
+    }
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#doStore()
-	 */
-	@Override
-	protected void doStore() {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#doStore()
+   */
+  @Override
+  protected void doStore() {
 
-		getPreferenceStore().setValue(getPreferenceName(), combo.getText());
-	}
+    getPreferenceStore().setValue(getPreferenceName(), combo.getText());
+  }
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
-	 */
-	@Override
-	public int getNumberOfControls() {
+  /*
+   * (非 Javadoc)
+   * 
+   * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
+   */
+  @Override
+  public int getNumberOfControls() {
 
-		return 2;
-	}
+    return 2;
+  }
 }

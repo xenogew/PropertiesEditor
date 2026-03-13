@@ -2,7 +2,6 @@ package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ILog;
@@ -15,73 +14,74 @@ import org.osgi.framework.BundleContext;
  */
 public class PropertiesEditorPlugin extends AbstractUIPlugin {
 
-	public static String PLUGIN_ID = "jp.gr.java_conf.ussiy.app.propedit"; //$NON-NLS-1$
-	
-	//The shared instance.
-	private static PropertiesEditorPlugin plugin;
+  public static String PLUGIN_ID = "jp.gr.java_conf.ussiy.app.propedit"; //$NON-NLS-1$
 
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
+  // The shared instance.
+  private static PropertiesEditorPlugin plugin;
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-		try {
-			resourceBundle = ResourceBundle.getBundle("jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditorPluginResources"); //$NON-NLS-1$
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-	}
+  // Resource bundle.
+  private ResourceBundle resourceBundle;
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+  @Override
+  public void start(BundleContext context) throws Exception {
+    super.start(context);
+    plugin = this;
+    try {
+      resourceBundle = ResourceBundle.getBundle(
+          "jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditorPluginResources"); //$NON-NLS-1$
+    } catch (MissingResourceException x) {
+      resourceBundle = null;
+    }
+  }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static PropertiesEditorPlugin getDefault() {
+  @Override
+  public void stop(BundleContext context) throws Exception {
+    plugin = null;
+    super.stop(context);
+  }
 
-		return plugin;
-	}
+  /**
+   * Returns the shared instance.
+   */
+  public static PropertiesEditorPlugin getDefault() {
 
-	/**
-	 * Returns the plugin logger (available even before the activator starts).
-	 */
-	public static ILog log() {
+    return plugin;
+  }
 
-		return Platform.getLog(PropertiesEditorPlugin.class);
-	}
+  /**
+   * Returns the plugin logger (available even before the activator starts).
+   */
+  public static ILog log() {
 
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
+    return Platform.getLog(PropertiesEditorPlugin.class);
+  }
 
-		return ResourcesPlugin.getWorkspace();
-	}
+  /**
+   * Returns the workspace instance.
+   */
+  public static IWorkspace getWorkspace() {
 
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
+    return ResourcesPlugin.getWorkspace();
+  }
 
-		ResourceBundle bundle = PropertiesEditorPlugin.getDefault().getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
+  /**
+   * Returns the string from the plugin's resource bundle, or 'key' if not found.
+   */
+  public static String getResourceString(String key) {
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
+    ResourceBundle bundle = PropertiesEditorPlugin.getDefault().getResourceBundle();
+    try {
+      return bundle.getString(key);
+    } catch (MissingResourceException e) {
+      return key;
+    }
+  }
 
-		return resourceBundle;
-	}
+  /**
+   * Returns the plugin's resource bundle,
+   */
+  public ResourceBundle getResourceBundle() {
+
+    return resourceBundle;
+  }
 }

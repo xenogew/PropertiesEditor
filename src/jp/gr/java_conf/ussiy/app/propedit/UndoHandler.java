@@ -6,26 +6,26 @@ import javax.swing.event.UndoableEditListener;
 /**
  * 
  * @author Sou Miyazaki
- *  
+ * 
  */
 class UndoHandler implements UndoableEditListener {
 
-	private final PropertiesEditorFrame frame;
+  private final PropertiesEditorFrame frame;
 
-	UndoHandler(PropertiesEditorFrame frame) {
-		this.frame = frame;
-	}
+  UndoHandler(PropertiesEditorFrame frame) {
+    this.frame = frame;
+  }
 
-	/**
-	 * 
-	 * @param e
-	 * @since 1.0.0
-	 */
-	@Override
-	public void undoableEditHappened(UndoableEditEvent e) {
+  /**
+   * 
+   * @param e
+   * @since 1.0.0
+   */
+  @Override
+  public void undoableEditHappened(UndoableEditEvent e) {
 
-		frame.undo.addEdit(e.getEdit());
-		frame.undoAction.update();
-		frame.redoAction.update();
-	}
+    frame.undo.addEdit(e.getEdit());
+    frame.undoAction.update();
+    frame.redoAction.update();
+  }
 }

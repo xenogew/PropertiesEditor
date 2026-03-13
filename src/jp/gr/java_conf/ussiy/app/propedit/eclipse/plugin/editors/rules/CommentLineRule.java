@@ -7,29 +7,29 @@ import org.eclipse.jface.text.rules.Token;
 
 public class CommentLineRule extends EndOfLineRule {
 
-	public CommentLineRule(String startSequence, IToken token) {
+  public CommentLineRule(String startSequence, IToken token) {
 
-		super(startSequence, token);
-	}
+    super(startSequence, token);
+  }
 
-	public CommentLineRule(String startSequence, IToken token, char escapeCharacter) {
+  public CommentLineRule(String startSequence, IToken token, char escapeCharacter) {
 
-		super(startSequence, token, escapeCharacter);
-	}
+    super(startSequence, token, escapeCharacter);
+  }
 
-	@Override
-	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
+  @Override
+  protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
 
-		if (scanner.getColumn() == 0) {
-			return super.doEvaluate(scanner, resume);
-		}
-		return Token.UNDEFINED;
-	}
+    if (scanner.getColumn() == 0) {
+      return super.doEvaluate(scanner, resume);
+    }
+    return Token.UNDEFINED;
+  }
 
-	@Override
-	protected IToken doEvaluate(ICharacterScanner scanner) {
+  @Override
+  protected IToken doEvaluate(ICharacterScanner scanner) {
 
-		return doEvaluate(scanner, false);
-	}
+    return doEvaluate(scanner, false);
+  }
 
 }

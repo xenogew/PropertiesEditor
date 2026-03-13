@@ -1,6 +1,6 @@
 /*****************************************************
  *
- *   @author  Sou Miyazaki
+ * @author Sou Miyazaki
  *
  ****************************************************/
 package jp.gr.java_conf.ussiy.app.propedit.util;
@@ -12,118 +12,120 @@ import java.io.StringReader;
 /**
  * 
  * @author Sou Miyazaki
- *  
+ * 
  */
 public class EncodeChanger {
-	
-	public static final int LOWERCASE = 0;
-	
-	public static final int UPPERCASE = 1;
 
-	/**
-	 * 
-	 * @param UniStr
-	 * @since 1.0.0
-	 */
-	public static String unicode2UnicodeEsc(String uniStr) {
-		return EncodeChanger.unicode2UnicodeEsc(uniStr, LOWERCASE);
-	}
+  public static final int LOWERCASE = 0;
 
-	/**
-	 * 
-	 * @param UniStr
-	 * @param charcase
-	 */
-	public static String unicode2UnicodeEsc(String uniStr, int charcase) {
+  public static final int UPPERCASE = 1;
 
-		StringBuilder ret = new StringBuilder();
-		if (uniStr == null) {
-			return null;
-		}
-		int maxLoop = uniStr.length();
-		for (int i = 0; i < maxLoop; i++) {
-			char character = uniStr.charAt(i);
-			if (character <= 127) {
-				ret.append(character);
-			} else {
-				ret.append("\\u"); //$NON-NLS-1$
-				String hexStr = null;
-				if (charcase == UPPERCASE) {
-					hexStr = Integer.toHexString(character).toUpperCase();
-				} else {
-					hexStr = Integer.toHexString(character).toLowerCase();
-				}
-				int zeroCount = 4 - hexStr.length();
-				for (int j = 0; j < zeroCount; j++) {
-					ret.append('0');
-				}
-				ret.append(hexStr);
-			}
-		}
-		return ret.toString();
-	}
+  /**
+   * 
+   * @param UniStr
+   * @since 1.0.0
+   */
+  public static String unicode2UnicodeEsc(String uniStr) {
+    return EncodeChanger.unicode2UnicodeEsc(uniStr, LOWERCASE);
+  }
 
-	/**
-	 * 
-	 * @param EscStr
-	 * @since 1.0.0
-	 */
-	public static String unicodeEsc2Unicode(String unicodeStr) {
+  /**
+   * 
+   * @param UniStr
+   * @param charcase
+   */
+  public static String unicode2UnicodeEsc(String uniStr, int charcase) {
 
-		if (unicodeStr == null) {
-			return null;
-		}
+    StringBuilder ret = new StringBuilder();
+    if (uniStr == null) {
+      return null;
+    }
+    int maxLoop = uniStr.length();
+    for (int i = 0; i < maxLoop; i++) {
+      char character = uniStr.charAt(i);
+      if (character <= 127) {
+        ret.append(character);
+      } else {
+        ret.append("\\u"); //$NON-NLS-1$
+        String hexStr = null;
+        if (charcase == UPPERCASE) {
+          hexStr = Integer.toHexString(character).toUpperCase();
+        } else {
+          hexStr = Integer.toHexString(character).toLowerCase();
+        }
+        int zeroCount = 4 - hexStr.length();
+        for (int j = 0; j < zeroCount; j++) {
+          ret.append('0');
+        }
+        ret.append(hexStr);
+      }
+    }
+    return ret.toString();
+  }
 
-		StringBuilder retBuf = new StringBuilder();
-		int maxLoop = unicodeStr.length();
-		for (int i = 0; i < maxLoop; i++) {
-			if (unicodeStr.charAt(i) == '\\') {
-				if (i < maxLoop - 5 && (unicodeStr.charAt(i + 1) == 'u' || unicodeStr.charAt(i + 1) == 'U')) {
-					try {
-						retBuf.append((char) Integer.parseInt(unicodeStr.substring(i + 2, i + 6), 16));
-						i += 5;
-					} catch (NumberFormatException e) {
-						retBuf.append(unicodeStr.charAt(i));
-					}
-				} else {
-					retBuf.append(unicodeStr.charAt(i));
-				}
-			} else {
-				retBuf.append(unicodeStr.charAt(i));
-			}
-		}
+  /**
+   * 
+   * @param EscStr
+   * @since 1.0.0
+   */
+  public static String unicodeEsc2Unicode(String unicodeStr) {
 
-		return retBuf.toString();
-	}
+    if (unicodeStr == null) {
+      return null;
+    }
 
-	public static String unicode2UnicodeEscWithoutComment(String uniStr) throws IOException {
-		return EncodeChanger.unicode2UnicodeEscWithoutComment(uniStr, LOWERCASE);
-	}
+    StringBuilder retBuf = new StringBuilder();
+    int maxLoop = unicodeStr.length();
+    for (int i = 0; i < maxLoop; i++) {
+      if (unicodeStr.charAt(i) == '\\') {
+        if (i < maxLoop - 5
+            && (unicodeStr.charAt(i + 1) == 'u' || unicodeStr.charAt(i + 1) == 'U')) {
+          try {
+            retBuf.append((char) Integer.parseInt(unicodeStr.substring(i + 2, i + 6), 16));
+            i += 5;
+          } catch (NumberFormatException e) {
+            retBuf.append(unicodeStr.charAt(i));
+          }
+        } else {
+          retBuf.append(unicodeStr.charAt(i));
+        }
+      } else {
+        retBuf.append(unicodeStr.charAt(i));
+      }
+    }
 
-	public static String unicode2UnicodeEscWithoutComment(String uniStr, int charcase) throws IOException {
+    return retBuf.toString();
+  }
 
-		StringBuilder buf = new StringBuilder();
-		try (BufferedReader reader = new BufferedReader(new StringReader(uniStr))) {
-		boolean continueFlg = false;
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if ((line.trim().startsWith("#") || line.trim().startsWith("!")) && !continueFlg) { //$NON-NLS-1$ //$NON-NLS-2$
-				buf.append(line);
-			} else {
-				if (line.endsWith("\\")) { //$NON-NLS-1$
-					continueFlg = true;
-				} else {
-					continueFlg = false;
-				}
-				buf.append(EncodeChanger.unicode2UnicodeEsc(line, charcase));
-			}
-			buf.append("\n"); //$NON-NLS-1$
-		}
-		if (!uniStr.endsWith("\n")) { //$NON-NLS-1$
-			buf.deleteCharAt(buf.length() - 1);
-		}
-		}
+  public static String unicode2UnicodeEscWithoutComment(String uniStr) throws IOException {
+    return EncodeChanger.unicode2UnicodeEscWithoutComment(uniStr, LOWERCASE);
+  }
 
-		return buf.toString();
-	}
+  public static String unicode2UnicodeEscWithoutComment(String uniStr, int charcase)
+      throws IOException {
+
+    StringBuilder buf = new StringBuilder();
+    try (BufferedReader reader = new BufferedReader(new StringReader(uniStr))) {
+      boolean continueFlg = false;
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        if ((line.trim().startsWith("#") || line.trim().startsWith("!")) && !continueFlg) { //$NON-NLS-1$ //$NON-NLS-2$
+          buf.append(line);
+        } else {
+          if (line.endsWith("\\")) { //$NON-NLS-1$
+            continueFlg = true;
+          } else {
+            continueFlg = false;
+          }
+          buf.append(EncodeChanger.unicode2UnicodeEsc(line, charcase));
+        }
+        buf.append("\n"); //$NON-NLS-1$
+      }
+      if (!uniStr.endsWith("\n")) { //$NON-NLS-1$
+        buf.deleteCharAt(buf.length() - 1);
+      }
+    }
+
+    return buf.toString();
+  }
 }

@@ -1,7 +1,6 @@
 package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors;
 
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -12,176 +11,179 @@ import org.eclipse.jface.text.ITypedRegion;
 
 public class PropertiesDoubleClickStrategy implements ITextDoubleClickStrategy {
 
-	protected ITextViewer fText;
+  protected ITextViewer fText;
 
-	@Override
-	public void doubleClicked(ITextViewer part) {
+  @Override
+  public void doubleClicked(ITextViewer part) {
 
-		int pos = part.getSelectedRange().x;
+    int pos = part.getSelectedRange().x;
 
-		if (pos < 0) {
-			return;
-		}
+    if (pos < 0) {
+      return;
+    }
 
-		fText = part;
+    fText = part;
 
-		if (isSelectKey(pos)) {
-			selectKey(pos);
-		} else {
-			selectWord(pos);
-		}
-	}
+    if (isSelectKey(pos)) {
+      selectKey(pos);
+    } else {
+      selectWord(pos);
+    }
+  }
 
-	/**
-	 * @param pos
-	 * @return
-	 */
-	protected boolean isSelectKey(int pos) {
-		IDocument doc = fText.getDocument();
+  /**
+   * @param pos
+   * @return
+   */
+  protected boolean isSelectKey(int pos) {
+    IDocument doc = fText.getDocument();
 
-		try {
-			int len = doc.getLength();
-			if (len == pos) return false;
-			ITypedRegion[] partitionType = doc.computePartitioning(pos, 1);
-			if (partitionType.length > 0) {
-				if (partitionType[0].getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
-					return true;
-				}
-			}
-		} catch (BadLocationException e) {
-			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
-			PropertiesEditorPlugin.getDefault().getLog().log(status);
-		}
-		return false;
-	}
+    try {
+      int len = doc.getLength();
+      if (len == pos)
+        return false;
+      ITypedRegion[] partitionType = doc.computePartitioning(pos, 1);
+      if (partitionType.length > 0) {
+        if (partitionType[0].getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
+          return true;
+        }
+      }
+    } catch (BadLocationException e) {
+      IStatus status =
+          new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+      PropertiesEditorPlugin.getDefault().getLog().log(status);
+    }
+    return false;
+  }
 
-	protected void selectKey(int pos) {
+  protected void selectKey(int pos) {
 
-		IDocument doc = fText.getDocument();
-		int lineNum = 0;
-		int startPos = 0;
-		int length = 0;
-		String targetLine = null;
-		try {
-			lineNum = doc.getLineOfOffset(pos);
-			startPos = doc.getLineOffset(lineNum);
-			length = doc.getLineLength(lineNum);
-			targetLine = doc.get(startPos, length);
-		} catch (BadLocationException e) {
-			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
-			PropertiesEditorPlugin.getDefault().getLog().log(status);
-			return;
-		}
-		if (targetLine.equals("")) { //$NON-NLS-1$
-			return;
-		}
+    IDocument doc = fText.getDocument();
+    int lineNum = 0;
+    int startPos = 0;
+    int length = 0;
+    String targetLine = null;
+    try {
+      lineNum = doc.getLineOfOffset(pos);
+      startPos = doc.getLineOffset(lineNum);
+      length = doc.getLineLength(lineNum);
+      targetLine = doc.get(startPos, length);
+    } catch (BadLocationException e) {
+      IStatus status =
+          new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+      PropertiesEditorPlugin.getDefault().getLog().log(status);
+      return;
+    }
+    if (targetLine.equals("")) { //$NON-NLS-1$
+      return;
+    }
 
-		String line = targetLine;
-		boolean escapeFlg = false;
-		boolean flg = true;
-		int spcnt = 0;
-		int i = 0;
-		for ( ; i < line.length(); i++) {
-			char achar = line.charAt(i);
-			if (flg && (achar == ' ' || achar == '\t')) {
-				spcnt++;
-				continue;
-			} else if (flg) {
-				flg = false;
-			}
-			if (achar == '\\') {
-				if (escapeFlg) {
-					String tmp = line;
-					line = ""; //$NON-NLS-1$
-					line = tmp.substring(0, i);
-					line += tmp.substring(i + 1, tmp.length());
-					escapeFlg = false;
-					i--;
-				} else {
-					escapeFlg = true;
-				}
-			} else if (achar == '=' || achar == '\t' || achar == ':' || achar == ' ') {
-				if (escapeFlg) {
-					String tmp = line;
-					line = ""; //$NON-NLS-1$
-					line = tmp.substring(0, i - 1);
-					line += tmp.substring(i, tmp.length());
-					escapeFlg = false;
-					i--;
-					continue;
-				} else {
-					selectRange2(startPos + spcnt, i - spcnt);
-					return;
-				}
-			} else {
-				if (escapeFlg) {
-					String tmp = line;
-					line = ""; //$NON-NLS-1$
-					line = tmp.substring(0, i - 1);
-					line += tmp.substring(i, tmp.length());
-					i--;
-				}
-				escapeFlg = false;
-			}
-		}
-		if (targetLine.endsWith("\\\n")) { //$NON-NLS-1$
-			selectRange2(startPos + spcnt, i - spcnt - 1);
-		} else if (targetLine.endsWith("\\")) { //$NON-NLS-1$
-			selectRange2(startPos + spcnt, i - spcnt - 1);
-		} else {
-			selectRange2(startPos + spcnt, i - spcnt);
-		}
-	}
+    String line = targetLine;
+    boolean escapeFlg = false;
+    boolean flg = true;
+    int spcnt = 0;
+    int i = 0;
+    for (; i < line.length(); i++) {
+      char achar = line.charAt(i);
+      if (flg && (achar == ' ' || achar == '\t')) {
+        spcnt++;
+        continue;
+      } else if (flg) {
+        flg = false;
+      }
+      if (achar == '\\') {
+        if (escapeFlg) {
+          String tmp = line;
+          line = ""; //$NON-NLS-1$
+          line = tmp.substring(0, i);
+          line += tmp.substring(i + 1, tmp.length());
+          escapeFlg = false;
+          i--;
+        } else {
+          escapeFlg = true;
+        }
+      } else if (achar == '=' || achar == '\t' || achar == ':' || achar == ' ') {
+        if (escapeFlg) {
+          String tmp = line;
+          line = ""; //$NON-NLS-1$
+          line = tmp.substring(0, i - 1);
+          line += tmp.substring(i, tmp.length());
+          escapeFlg = false;
+          i--;
+          continue;
+        } else {
+          selectRange2(startPos + spcnt, i - spcnt);
+          return;
+        }
+      } else {
+        if (escapeFlg) {
+          String tmp = line;
+          line = ""; //$NON-NLS-1$
+          line = tmp.substring(0, i - 1);
+          line += tmp.substring(i, tmp.length());
+          i--;
+        }
+        escapeFlg = false;
+      }
+    }
+    if (targetLine.endsWith("\\\n")) { //$NON-NLS-1$
+      selectRange2(startPos + spcnt, i - spcnt - 1);
+    } else if (targetLine.endsWith("\\")) { //$NON-NLS-1$
+      selectRange2(startPos + spcnt, i - spcnt - 1);
+    } else {
+      selectRange2(startPos + spcnt, i - spcnt);
+    }
+  }
 
-	protected boolean selectWord(int caretPos) {
+  protected boolean selectWord(int caretPos) {
 
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
+    IDocument doc = fText.getDocument();
+    int startPos, endPos;
 
-		try {
+    try {
 
-			int pos = caretPos;
-			char c;
+      int pos = caretPos;
+      char c;
 
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c)) {
-					break;
-				}
-				--pos;
-			}
+      while (pos >= 0) {
+        c = doc.getChar(pos);
+        if (!Character.isJavaIdentifierPart(c)) {
+          break;
+        }
+        --pos;
+      }
 
-			startPos = pos;
+      startPos = pos;
 
-			pos = caretPos;
-			int length = doc.getLength();
+      pos = caretPos;
+      int length = doc.getLength();
 
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c)) {
-					break;
-				}
-				++pos;
-			}
+      while (pos < length) {
+        c = doc.getChar(pos);
+        if (!Character.isJavaIdentifierPart(c)) {
+          break;
+        }
+        ++pos;
+      }
 
-			endPos = pos;
-			selectRange(startPos, endPos);
-			return true;
+      endPos = pos;
+      selectRange(startPos, endPos);
+      return true;
 
-		} catch (BadLocationException x) {
-		}
+    } catch (BadLocationException x) {
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private void selectRange2(int startPos, int length) {
-		fText.setSelectedRange(startPos, length);
-	}
+  private void selectRange2(int startPos, int length) {
+    fText.setSelectedRange(startPos, length);
+  }
 
-	private void selectRange(int startPos, int stopPos) {
+  private void selectRange(int startPos, int stopPos) {
 
-		int offset = startPos + 1;
-		int length = stopPos - offset;
-		fText.setSelectedRange(offset, length);
-	}
+    int offset = startPos + 1;
+    int length = stopPos - offset;
+    fText.setSelectedRange(offset, length);
+  }
 }
