@@ -224,7 +224,7 @@
 			name="%proposalName">
 		<javaCompletionProposalComputer
 				activate="true"
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposalCategory"
+				categoryId="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal.Category"
 				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal.PropertiesCompletionProposalComputer">
 			<partition type="__java_string"/>
 		</javaCompletionProposalComputer>
