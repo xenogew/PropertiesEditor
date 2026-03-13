@@ -128,6 +128,21 @@ class CheckAndMarkDuplicateKeyTest {
 			assertEquals(1, result.size());
 			assertTrue(result.containsKey("key"));
 		}
+
+		@Test
+		void utf8Keys() throws IOException {
+			var result = CheckAndMarkDuplicateKey.extractKeys("greeting=\u3053\u3093\u306b\u3061\u306f\nfarewell=\u3055\u3088\u3046\u306a\u3089\n");
+			assertEquals(2, result.size());
+			assertTrue(result.containsKey("greeting"));
+			assertTrue(result.containsKey("farewell"));
+		}
+
+		@Test
+		void utf8DuplicateKeys() throws IOException {
+			var result = CheckAndMarkDuplicateKey.extractKeys("msg=hello\nmsg=world\n");
+			assertEquals(1, result.size());
+			assertEquals(List.of(1, 2), result.get("msg"));
+		}
 	}
 
 	@Nested

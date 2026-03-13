@@ -3,6 +3,8 @@ package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.checker;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin;
 
@@ -33,6 +35,12 @@ public class CheckAndMarkResourceVisitor implements IResourceVisitor {
 	public boolean visit(IResource resource) throws CoreException {
 
 		if (resource.getFileExtension() != null && resource.getFileExtension().equals("properties")) { //$NON-NLS-1$
+			Charset charset;
+			try {
+				charset = Charset.forName(((IFile) resource).getCharset());
+			} catch (Exception e) {
+				charset = StandardCharsets.UTF_8;
+			}
 			try (BufferedInputStream in = new BufferedInputStream(((IFile) resource).getContents());
 				 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				byte[] tmp = new byte[10240];
@@ -40,7 +48,7 @@ public class CheckAndMarkResourceVisitor implements IResourceVisitor {
 				while ((readCnt = in.read(tmp)) != -1) {
 					out.write(tmp, 0, readCnt);
 				}
-				camd.checkAndMarkDuplicateKeyInString(out.toString(), resource);
+				camd.checkAndMarkDuplicateKeyInString(out.toString(charset), resource);
 			} catch (IOException e) {
 				IStatus status = new Status(IStatus.ERROR, PlatformUI.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
 				ILog log = PropertiesEditorPlugin.getDefault().getLog();

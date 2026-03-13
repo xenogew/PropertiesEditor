@@ -5,6 +5,9 @@ package jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -76,8 +79,15 @@ public class ProjectProperties {
 		for (IFile pFile : pFiles) {
 //			log("loading file '" + pFile.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 			Properties prop = new Properties();
-			try (InputStream is = pFile.getContents()) {
-				prop.load(is);
+			Charset charset;
+			try {
+				charset = Charset.forName(pFile.getCharset());
+			} catch (Exception e) {
+				charset = StandardCharsets.UTF_8;
+			}
+			try (InputStream is = pFile.getContents();
+				 InputStreamReader reader = new InputStreamReader(is, charset)) {
+				prop.load(reader);
 			} catch (IOException e) {
 				IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
 				ILog log = PropertiesEditorPlugin.getDefault().getLog();
