@@ -11,37 +11,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
-import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -57,7 +46,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.UndoManager;
 
@@ -77,11 +65,15 @@ import jp.gr.java_conf.ussiy.swing.filechooser.PropertiesFileFilter;
  */
 public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
-	private UndoAction undoAction = new UndoAction();
+	private static final long serialVersionUID = 3204064610764930004L;
+
+	private static final Logger LOG = Logger.getLogger(PropertiesEditorFrame.class.getName());
+
+	UndoAction undoAction;
 
 	/**
 	 */
-	private RedoAction redoAction = new RedoAction();
+	RedoAction redoAction;
 
 	/**
 	 */
@@ -89,7 +81,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	/**
 	 */
-	protected UndoableEditListener undoHandler = new UndoHandler();
+	protected UndoableEditListener undoHandler;
 
 	/**
 	 */
@@ -317,7 +309,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	/**
 	 */
-	private JTextArea editTextArea = new JTextArea();
+	JTextArea editTextArea = new JTextArea();
 
 	/**
 	 */
@@ -337,7 +329,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	private JMenuItem printLayoutMenuItem = new JMenuItem();
 
-	private PageFormat pageFormat;
+	PageFormat pageFormat;
 
 	JMenu jMenu1 = new JMenu();
 
@@ -362,12 +354,15 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	public PropertiesEditorFrame() {
 
+		undoAction = new UndoAction(this);
+		redoAction = new RedoAction(this);
+		undoHandler = new UndoHandler(this);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 		try {
 			jbInit();
 			addShutdownHook();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -412,14 +407,14 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		initIcon();
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		this.setIconImage(imgIcon);
-		new DropTarget(this, new DropHandler());
-		new DropTarget(lineNumberTextArea, new DropHandler());
-		new DropTarget(editTextArea, new DropHandler());
+		new DropTarget(this, new DropHandler(this));
+		new DropTarget(lineNumberTextArea, new DropHandler(this));
+		new DropTarget(editTextArea, new DropHandler(this));
 		contentPane = (JPanel) this.getContentPane();
 		contentPane.setLayout(borderLayout1);
 		this.setSize(new Dimension(640, 480));
 		this.setTitle(PropertiesEditor.getI18nProperty("Title")); //$NON-NLS-1$
-		UIManager.LookAndFeelInfo[] lfInfo = UIManager.getInstalledLookAndFeels();
+		var lfInfo = UIManager.getInstalledLookAndFeels();
 		lfRadioMenuItem = new JRadioButtonMenuItem[lfInfo.length];
 		for (int cnt = 0; cnt < lfInfo.length; cnt++) {
 			lfRadioMenuItem[cnt] = new JRadioButtonMenuItem(lfInfo[cnt].getName());
@@ -442,43 +437,43 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		versionMenuItem.addActionListener(e -> version_actionPerformed(e));
 		newMenuItem.setIcon(newImage16);
 		newMenuItem.setText(PropertiesEditor.getI18nProperty("newMenuItem_Text")); //$NON-NLS-1$
-		newMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('N', java.awt.event.KeyEvent.CTRL_MASK, false));
+		newMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('N', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		newMenuItem.addActionListener(e -> new_actionPerformed(e));
 		openMenuItem.setIcon(openImage16);
 		openMenuItem.setText(PropertiesEditor.getI18nProperty("openMenuItem_Text")); //$NON-NLS-1$
-		openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('O', java.awt.event.KeyEvent.CTRL_MASK, false));
+		openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('O', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		openMenuItem.addActionListener(e -> open_actionPerformed(e));
 		unicodeSaveMenuItem.setIcon(saveImage16);
 		unicodeSaveMenuItem.setText(PropertiesEditor.getI18nProperty("unicodeSaveMenuItem_Text")); //$NON-NLS-1$
-		unicodeSaveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('S', java.awt.event.KeyEvent.CTRL_MASK, false));
+		unicodeSaveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('S', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		unicodeSaveMenuItem.addActionListener(e -> saveUnicode_actionPerformed(e));
 		editMenu.setText(PropertiesEditor.getI18nProperty("editMenu_Text")); //$NON-NLS-1$
 		dispMenu.setText(PropertiesEditor.getI18nProperty("dispMenu_Text")); //$NON-NLS-1$
 		undoMenuItem.setIcon(undoImage16);
 		undoMenuItem.setText(PropertiesEditor.getI18nProperty("undoMenuItem_Text")); //$NON-NLS-1$
-		undoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('Z', java.awt.event.KeyEvent.CTRL_MASK, false));
+		undoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('Z', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		undoMenuItem.addActionListener(e -> undo_actionPerformed(e));
 		redoMenuItem.setText(PropertiesEditor.getI18nProperty("redoMenuItem_Text")); //$NON-NLS-1$
-		redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('Y', java.awt.event.KeyEvent.CTRL_MASK, false));
+		redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('Y', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		redoMenuItem.addActionListener(e -> redo_actionPerformed(e));
 		cutMenuItem.setIcon(cutImage16);
 		cutMenuItem.setText(PropertiesEditor.getI18nProperty("cutMenuItem_Text")); //$NON-NLS-1$
-		cutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('X', java.awt.event.KeyEvent.CTRL_MASK, false));
+		cutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('X', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		cutMenuItem.addActionListener(e -> cut_actionPerformed(e));
 		copyMenuItem.setIcon(copyImage16);
 		copyMenuItem.setText(PropertiesEditor.getI18nProperty("copyMenuItem_Text")); //$NON-NLS-1$
-		copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('C', java.awt.event.KeyEvent.CTRL_MASK, false));
+		copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('C', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		copyMenuItem.addActionListener(e -> copy_actionPerformed(e));
 		pasteMenuItem.setIcon(pasteImage16);
 		pasteMenuItem.setText(PropertiesEditor.getI18nProperty("pasteMenuItem_Text")); //$NON-NLS-1$
-		pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('V', java.awt.event.KeyEvent.CTRL_MASK, false));
+		pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('V', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		pasteMenuItem.addActionListener(e -> paste_actionPerformed(e));
 		deleteMenuItem.setIcon(deleteImage16);
 		deleteMenuItem.setText(PropertiesEditor.getI18nProperty("deleteMenuItem_Text")); //$NON-NLS-1$
 		deleteMenuItem.addActionListener(e -> delete_actionPerformed(e));
 		findMenuItem.setIcon(searchImage16);
 		findMenuItem.setText(PropertiesEditor.getI18nProperty("findMenuItem_Text")); //$NON-NLS-1$
-		findMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('F', java.awt.event.KeyEvent.CTRL_MASK, false));
+		findMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('F', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		findMenuItem.addActionListener(e -> find_actionPerformed(e));
 		nextFindMenuItem.setIcon(searchNextImage16);
 		nextFindMenuItem.setText(PropertiesEditor.getI18nProperty("nextFindMenuItem_Text")); //$NON-NLS-1$
@@ -486,10 +481,10 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		nextFindMenuItem.addActionListener(e -> nextFind_actionPerformed(e));
 		replaceMenuItem.setIcon(replaceImage16);
 		replaceMenuItem.setText(PropertiesEditor.getI18nProperty("replaceMenuItem_Text")); //$NON-NLS-1$
-		replaceMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('R', java.awt.event.KeyEvent.CTRL_MASK, false));
+		replaceMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('R', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		replaceMenuItem.addActionListener(e -> replace_actionPerformed(e));
 		selectAllMenuItem.setText(PropertiesEditor.getI18nProperty("selectAllMenuItem_Text")); //$NON-NLS-1$
-		selectAllMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('A', java.awt.event.KeyEvent.CTRL_MASK, false));
+		selectAllMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('A', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		selectAllMenuItem.addActionListener(e -> selectAllMenuItem_actionPerformed(e));
 		toolBar.setFloatable(false);
 		wordWrapCheckBoxMenuItem.setEnabled(false);
@@ -559,7 +554,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		saveUnicodeButton.setText(""); //$NON-NLS-1$
 		saveUnicodeButton.addActionListener(e -> saveUnicode_actionPerformed(e));
 		showUnicodeMenuItem.setText(PropertiesEditor.getI18nProperty("showUnicodeMenuItem_Text")); //$NON-NLS-1$
-		showUnicodeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('U', java.awt.event.KeyEvent.CTRL_MASK, false));
+		showUnicodeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke('U', java.awt.event.KeyEvent.CTRL_DOWN_MASK, false));
 		showUnicodeMenuItem.addActionListener(e -> showUnicodeMenuItem_actionPerformed(e));
 		fontSelectMenuItem.addActionListener(e -> fontSelectMenuItem_actionPerformed(e));
 		fontSelectMenuItem.setText(PropertiesEditor.getI18nProperty("fontSelectMenuItem_Text")); //$NON-NLS-1$
@@ -628,8 +623,8 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		dispMenu.add(lineNumberCheckBoxMenuItem);
 		dispMenu.add(toolbarCheckBoxMenuItem);
 		dispMenu.add(fontSelectMenuItem);
-		for (int cnt = 0; cnt < lfRadioMenuItem.length; cnt++) {
-			jMenu1.add(lfRadioMenuItem[cnt]);
+		for (var item : lfRadioMenuItem) {
+			jMenu1.add(item);
 		}
 
 		// Initialization of application
@@ -690,12 +685,12 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 			}
 		} else {
 			boolean lfFlag = false;
-			UIManager.LookAndFeelInfo[] lfInfo = UIManager.getInstalledLookAndFeels();
-			OUT : for (int cnt = 0; cnt < lfInfo.length; cnt++) {
-				if (setting.getLookAndFeelClass().equals(lfInfo[cnt].getClassName())) {
-					for (int i = 0; i < lfRadioMenuItem.length; i++) {
-						if (lfInfo[cnt].getName().equals(lfRadioMenuItem[i].getText())) {
-							lfRadioMenuItem[i].setSelected(true);
+			var lfInfo = UIManager.getInstalledLookAndFeels();
+			OUT : for (var lf : lfInfo) {
+				if (setting.getLookAndFeelClass().equals(lf.getClassName())) {
+					for (var menuItem : lfRadioMenuItem) {
+						if (lf.getName().equals(menuItem.getText())) {
+							menuItem.setSelected(true);
 							lfFlag = true;
 							break OUT;
 						}
@@ -703,12 +698,12 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 				}
 			}
 			if (!lfFlag) {
-				OUT : for (int i = 0; i < lfInfo.length; i++) {
-					if (lfInfo[i].getClassName().equals(UIManager.getSystemLookAndFeelClassName())) {
-						for (int j = 0; j < lfRadioMenuItem.length; j++) {
-							if (lfInfo[i].getName().equals(lfRadioMenuItem[j].getText())) {
-								lfRadioMenuItem[j].setSelected(true);
-								setting.setLookAndFeelClass(lfInfo[i].getClassName());
+				OUT : for (var lf : lfInfo) {
+					if (lf.getClassName().equals(UIManager.getSystemLookAndFeelClassName())) {
+						for (var menuItem : lfRadioMenuItem) {
+							if (lf.getName().equals(menuItem.getText())) {
+								menuItem.setSelected(true);
+								setting.setLookAndFeelClass(lf.getClassName());
 								break OUT;
 							}
 						}
@@ -808,12 +803,10 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 	 * @param code
 	 * @since 1.0.0
 	 */
-	private void openFile(File file, String code) {
-
-		FileOpener opFpBuk = null;
+	void openFile(File file, String code) {
 
 		// Open file information is evacuated.
-		opFpBuk = opFp;
+		var opFpBuk = opFp;
 		try {
 			opFp = new FileOpener(file);
 			// Reading of a file
@@ -832,7 +825,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, PropertiesEditor.getI18nProperty("KEY3"), PropertiesEditor.getI18nProperty("KEY4"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			opFp = opFpBuk;
 			return;
 		}
@@ -845,7 +838,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 	 * 
 	 * @since 1.0.0
 	 */
-	private boolean checkSave() {
+	boolean checkSave() {
 
 		// It confirms whether to be data under edit.
 		if (undo.canUndo()) {
@@ -867,198 +860,6 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 		}
 		// When it is not it under edit
 		return true;
-	}
-
-	/**
-	 * 
-	 * @author Sou Miyazaki
-	 *  
-	 */
-	class UndoHandler implements UndoableEditListener {
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void undoableEditHappened(UndoableEditEvent e) {
-
-			undo.addEdit(e.getEdit());
-			undoAction.update();
-			redoAction.update();
-		}
-	}
-
-	/**
-	 * 
-	 * @author Sou Miyazaki
-	 *  
-	 */
-	class UndoAction extends AbstractAction {
-
-		/**
-		 * 
-		 * @since 1.0.0
-		 */
-		public UndoAction() {
-
-			super("Undo"); //$NON-NLS-1$
-			setEnabled(false);
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			undo.undo();
-			update();
-			redoAction.update();
-		}
-
-		/**
-		 * 
-		 * @since 1.0.0
-		 */
-		protected void update() {
-
-			if (undo.canUndo()) {
-				setEnabled(true);
-				putValue(Action.NAME, undo.getUndoPresentationName());
-			} else {
-				setEnabled(false);
-				putValue(Action.NAME, "Undo"); //$NON-NLS-1$
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @author Sou Miyazaki
-	 *  
-	 */
-	class RedoAction extends AbstractAction {
-
-		/**
-		 * 
-		 * @since 1.0.0
-		 */
-		public RedoAction() {
-
-			super("Redo"); //$NON-NLS-1$
-			setEnabled(false);
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			undo.redo();
-			update();
-			undoAction.update();
-		}
-
-		/**
-		 * 
-		 * @since 1.0.0
-		 */
-		protected void update() {
-
-			if (undo.canRedo()) {
-				setEnabled(true);
-				putValue(Action.NAME, undo.getRedoPresentationName());
-			} else {
-				setEnabled(false);
-				putValue(Action.NAME, "Redo"); //$NON-NLS-1$
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @author Sou Miyazaki
-	 *  
-	 */
-	class DropHandler implements DropTargetListener {
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void dragEnter(DropTargetDragEvent e) {
-
-			e.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void dragExit(DropTargetEvent e) {
-
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void drop(DropTargetDropEvent e) {
-
-			try {
-				Transferable tr = e.getTransferable();
-				if (tr.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-					e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-					@SuppressWarnings("unchecked")
-					java.util.List<File> l = (java.util.List<File>) tr.getTransferData(DataFlavor.javaFileListFlavor);
-					String filepath = l.get(0).toString();
-					if (!checkSave()) {
-						return;
-					}
-					openFile(new File(filepath), EncodeManager.AUTO);
-					e.getDropTargetContext().dropComplete(true);
-				} else {
-					e.rejectDrop();
-				}
-			} catch (IOException io) {
-				e.rejectDrop();
-			} catch (UnsupportedFlavorException ufe) {
-				e.rejectDrop();
-			}
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void dropActionChanged(DropTargetDragEvent e) {
-
-		}
-
-		/**
-		 * 
-		 * @param e
-		 * @since 1.0.0
-		 */
-		@Override
-		public void dragOver(DropTargetDragEvent e) {
-
-		}
 	}
 
 	/**
@@ -1521,7 +1322,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, PropertiesEditor.getI18nProperty("KEY13"), PropertiesEditor.getI18nProperty("KEY4"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 			return false;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			JOptionPane.showMessageDialog(this, PropertiesEditor.getI18nProperty("KEY14"), PropertiesEditor.getI18nProperty("KEY4"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 			return false;
 		}
@@ -1568,7 +1369,7 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 	void showUnicodeMenuItem_actionPerformed(ActionEvent e) {
 
 		String unicodeText = EncodeChanger.unicode2UnicodeEsc(editTextArea.getText());
-		UnicodeDialog dlg = new UnicodeDialog(this, PropertiesEditor.getI18nProperty("Unicode_"), false); //$NON-NLS-1$
+		var dlg = new UnicodeDialog(this, PropertiesEditor.getI18nProperty("Unicode_"), false); //$NON-NLS-1$
 		dlg.setMessage(unicodeText);
 		dlg.setSize(new Dimension(680, 550));
 		dlg.setVisible(true);
@@ -1576,10 +1377,10 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	void fontSelectMenuItem_actionPerformed(ActionEvent e) {
 
-		Font font = editTextArea.getFont();
-		Color back = editTextArea.getBackground();
-		Color fore = editTextArea.getForeground();
-		JFontChooserDialog fontChooser = new JFontChooserDialog(this, font, fore, back, true);
+		var font = editTextArea.getFont();
+		var back = editTextArea.getBackground();
+		var fore = editTextArea.getForeground();
+		var fontChooser = new JFontChooserDialog(this, font, fore, back, true);
 		fontChooser.setVisible(true);
 		if (fontChooser.getReturnValue() != JFontChooserDialog.APPROVE_OPTION) {
 			return;
@@ -1592,82 +1393,11 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 
 	void printLayoutMenuItem_actionPerformed(ActionEvent e) {
 
-		PrinterJob pj = PrinterJob.getPrinterJob();
+		var pj = PrinterJob.getPrinterJob();
 		if (pageFormat == null) {
 			pageFormat = pj.defaultPage();
 		}
 		pageFormat = pj.pageDialog(pageFormat);
-	}
-
-	class PrintMonitor implements Printable {
-
-		protected PrinterJob printerJob;
-
-		protected Printable printable;
-
-		protected JOptionPane optionPane;
-
-		protected JDialog statusDialog;
-
-		public PrintMonitor(Printable p) {
-
-			printable = p;
-			printerJob = PrinterJob.getPrinterJob();
-			String[] options = { PropertiesEditor.getI18nProperty("KEY17") }; //$NON-NLS-1$
-			optionPane = new JOptionPane("", JOptionPane.INFORMATION_MESSAGE, JOptionPane.CANCEL_OPTION, null, options); //$NON-NLS-1$
-			statusDialog = optionPane.createDialog(null, PropertiesEditor.getI18nProperty("KEY18")); //$NON-NLS-1$
-		}
-
-		public void performPrint() throws PrinterException {
-
-			pageFormat = printerJob.validatePage(pageFormat);
-			printerJob.setPrintable(this, pageFormat);
-
-			optionPane.setMessage(PropertiesEditor.getI18nProperty("optionPane_Message")); //$NON-NLS-1$
-			Thread t = new Thread(() -> {
-				statusDialog.setVisible(true);
-				if (optionPane.getValue() != JOptionPane.UNINITIALIZED_VALUE) {
-					printerJob.cancel();
-				}
-			});
-			t.start();
-			printerJob.print();
-			statusDialog.setVisible(false);
-		}
-
-		@Override
-		public int print(Graphics g, PageFormat pf, int index) throws PrinterException {
-
-			return printable.print(g, pf, index);
-		}
-	}
-
-	class EditorPrinter implements Printable {
-
-		@Override
-		public int print(Graphics g, PageFormat pf, int index) {
-
-			if (index == 0) {
-
-				g.translate((int) (pf.getImageableX()), (int) (pf.getImageableY()));
-
-				//        Graphics2D g2d = (Graphics2D)g;
-				//        double pageWidth = pf.getImageableWidth();
-				//        double panelWidth = editTextArea.getWidth();
-				//        double scaleX = pageWidth / panelWidth;
-				//        g2d.scale(scaleX,scaleX);
-
-				g.setColor(Color.BLUE);
-				g.fillRect(0, 0, 100, 100);
-
-				editTextArea.setDoubleBuffered(false);
-				editTextArea.paintAll(g);
-				editTextArea.setDoubleBuffered(true);
-
-				return Printable.PAGE_EXISTS;
-			}
-			return Printable.NO_SUCH_PAGE;
-		}
 	}
 
 	void printMenuItem_actionPerformed(ActionEvent e) {
@@ -1676,8 +1406,8 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 			pageFormat = PrinterJob.getPrinterJob().defaultPage();
 		}
 		Thread t = new Thread(() -> {
-			EditorPrinter printer = new EditorPrinter();
-			PrintMonitor pm = new PrintMonitor(printer);
+			EditorPrinter printer = new EditorPrinter(this);
+			PrintMonitor pm = new PrintMonitor(this, printer);
 			try {
 				pm.performPrint();
 			} catch (PrinterException pe) {
@@ -1695,19 +1425,19 @@ public class PropertiesEditorFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		UIManager.LookAndFeelInfo[] lfInfo = UIManager.getInstalledLookAndFeels();
-		for (int i = 0; i < lfInfo.length; i++) {
-			if (e.getActionCommand().equals(lfInfo[i].getName())) {
+		var lfInfo = UIManager.getInstalledLookAndFeels();
+		for (var lf : lfInfo) {
+			if (e.getActionCommand().equals(lf.getName())) {
 				try {
-					UIManager.setLookAndFeel(lfInfo[i].getClassName());
+					UIManager.setLookAndFeel(lf.getClassName());
 					SwingUtilities.updateComponentTreeUI(this);
-					AppSetting.getInstance().setLookAndFeelClass(lfInfo[i].getClassName());
+					AppSetting.getInstance().setLookAndFeelClass(lf.getClassName());
 				} catch (UnsupportedLookAndFeelException ex) {
 					JOptionPane.showMessageDialog(this, PropertiesEditor.getI18nProperty("_LookAndFeel_"), PropertiesEditor.getI18nProperty("KEY4"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
-					ex.printStackTrace();
+					LOG.log(Level.SEVERE, ex.getMessage(), ex);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(this, PropertiesEditor.getI18nProperty("LookAndFeel_"), PropertiesEditor.getI18nProperty("KEY4"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
-					ex.printStackTrace();
+					LOG.log(Level.SEVERE, ex.getMessage(), ex);
 				}
 			}
 		}
