@@ -9,6 +9,7 @@ import jp.gr.java_conf.ussiy.swing.plaf.basic.JExtendedPopupComboBoxUI;
 @SuppressWarnings("rawtypes")
 public class JExtendedPopupComboBox extends JComboBox {
 
+  private static final long serialVersionUID = 6371482974050811564L;
   protected int popupWidth;
 
   public JExtendedPopupComboBox() {

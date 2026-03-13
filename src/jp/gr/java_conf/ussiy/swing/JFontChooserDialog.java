@@ -28,6 +28,8 @@ import jp.gr.java_conf.ussiy.app.propedit.BaseDialog;
 
 public class JFontChooserDialog extends BaseDialog {
 
+  private static final long serialVersionUID = 8165568658618588364L;
+
   static ResourceBundle res = ResourceBundle.getBundle("jp.gr.java_conf.ussiy.swing.lang"); //$NON-NLS-1$
 
   private static final Logger LOG = Logger.getLogger(JFontChooserDialog.class.getName());
