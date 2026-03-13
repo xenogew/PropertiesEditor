@@ -21,6 +21,7 @@ A Java `.properties` file editor with automatic `\uXXXX` ↔ native character co
 - Code folding, content outline
 - JDT hover + completion proposals for property keys in Java source
 - Standalone Swing app with FlatLaf, search/replace, encoding selection
+- **Modernized Icons** — All 26 GIF icons converted to PNG; visual directory available at `icon_directory.png`
 - English + Japanese localization
 
 ## Build & Run

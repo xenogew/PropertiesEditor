@@ -449,10 +449,53 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 ### Phase 7: Cleanup and Polish — DONE
 
 1. **Icons** — SKIPPED (no PNG/SVG source files available; 26 GIF icons retained as-is)
+
+   **All GIF icon resources in the project:**
+
+   **Eclipse plugin icons** (`icons/`):
+   - `icons/IconByTaroTw.gif` - Main plugin icon
+   - `icons/IconByTaroTw_disable.gif` - Disabled version
+   - `icons/alphab_sort_co.gif` - Sort action
+   - `icons/editPage.gif` - Edit page
+   - `icons/outlineMarker.gif` - Outline marker
+   - `icons/pe_32.gif` - 32x32 editor icon
+   - `icons/previewPage.gif` - Preview page
+   - `icons/propedit_marker.gif` - Properties editor marker
+   - `icons/psearch_obj.gif` - Search object
+
+   **Standalone app icons** (`src/jp/gr/java_conf/ussiy/app/propedit/resource/`):
+   - `resource/ColumnInsertBefore16.gif`
+   - `resource/Copy16.gif`
+   - `resource/Cut16.gif`
+   - `resource/Delete16.gif`
+   - `resource/Find16.gif`
+   - `resource/FindAgain16.gif`
+   - `resource/Information16.gif`
+   - `resource/New16.gif`
+   - `resource/Open16.gif`
+   - `resource/Paste16.gif`
+   - `resource/Replace16.gif`
+   - `resource/Save16.gif`
+   - `resource/Stop16.gif`
+   - `resource/Undo16.gif`
+   - `resource/editor.gif`
+   - `resource/pe_16.gif`
+   - `resource/pe_32.gif`
+
 2. **Bundle version** — DONE: Bumped `Bundle-Version` to `7.0.0.qualifier` in `MANIFEST.MF` and `<version>` to `7.0.0-SNAPSHOT` in `pom.xml`
 3. **README.md** — DONE: Rewritten with project description, features, prerequisites, build instructions, run commands, project structure, and license reference
 4. **GEMINI.md** — DONE: Rewritten with accurate tech stack table, feature list, build/run commands, and key entry points (removed false claims about Eclipse 4/e4, LSP, TM4E)
 5. **`.gitignore`** — DONE: Fixed `.settings/` pattern from `*/.settings/**/*` to `.settings/`
+6. **Eclipse IDE compatibility** — DONE:
+   - Created `.project` (PDE + Java natures) and `.classpath` (PDE required plugins, JUnit 5, FlatLaf, separate test source folder)
+   - Removed deprecated `Bundle-RequiredExecutionEnvironment: JavaSE-25` from `MANIFEST.MF` (Eclipse 2024-12 OSGi doesn't know Java 25)
+   - Lowered `java.version` to `21` in `pom.xml` and `build.properties` (Eclipse 2024-12 runs on Java 21; code only needs Java 10+ features)
+   - Changed `build.properties` `output..` to `target/classes/` (shared with Maven)
+   - Fixed surefire regression: added `surefire-junit-platform` provider dependency (Tycho injects JUnit 4, causing JUnit4Provider auto-detection)
+7. **UTF-8 encoding fix** — DONE:
+   - `ProjectProperties.loadProjectProperties()`: Changed `Properties.load(InputStream)` → `Properties.load(InputStreamReader)` using `IFile.getCharset()` with UTF-8 fallback. Fixes hover/completion mojibake for native UTF-8 `.properties` files.
+   - `CheckAndMarkResourceVisitor.visit()`: Changed `ByteArrayOutputStream.toString()` → `toString(Charset)` using `IFile.getCharset()` with UTF-8 fallback. Fixes duplicate key detection for UTF-8 files.
+   - Added 2 tests for UTF-8 key parsing. **Total: 53 tests, 0 failures.**
 
 ---
 
