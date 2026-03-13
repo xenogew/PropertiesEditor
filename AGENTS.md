@@ -324,80 +324,135 @@ In `CheckAndMarkDuplicateKey.replace()` — replaced the manual `StringBuilder`-
 - **`Encode.java`**: Converted to `record Encode(int no, String name, String code)`. Updated all callers (`EncodeSelectPanel.java`) from bean-style getters (`getName()`) to record accessors (`name()`).
 - **`AppSetting.java`**: Remains a class — relies on mutable singleton state, Java serialization (`readObject`/`writeObject`), and setter-based mutation. Javadoc note added documenting future record migration potential after architectural changes (e.g., replacing `ObjectOutputStream` persistence with JSON/TOML config).
 
-### Phase 4: Eclipse API Modernization
+### Phase 4: Eclipse API Modernization ✅ DONE
 
 **Goal**: Replace deprecated Eclipse 3.x APIs with modern equivalents.
 
-#### 4a. Deprecated `org.eclipse.ui.popupMenus` → Commands/Handlers
+#### 4a. Deprecated `org.eclipse.ui.popupMenus` → Commands/Handlers ✅ DONE
 
-The `plugin.xml` uses the legacy `org.eclipse.ui.popupMenus` extension point (`viewerContribution`). Migrate to:
+Migrated all 4 action classes from `IEditorActionDelegate` to `AbstractHandler`:
 
-- `org.eclipse.ui.menus` (with `menuContribution` elements)
-- `org.eclipse.ui.handlers` (with `IHandler` / `AbstractHandler` implementations)
+| Class                      | Change                                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `ToggleCommentAction`      | `implements IEditorActionDelegate` → `extends AbstractHandler`, `run(IAction)` → `execute(ExecutionEvent)` |
+| `CollapseAllFoldingAction` | same                                                                                                       |
+| `ExpandAllFoldingAction`   | same                                                                                                       |
+| `ShowUnicodeEscAction`     | same                                                                                                       |
 
-The existing `IAction`-based classes in `action/` should be refactored to extend `AbstractHandler` and implement `execute(ExecutionEvent)`.
+All classes now use `HandlerUtil.getActiveEditor(event)` with pattern matching (`instanceof PropertiesEditor editor`) instead of storing a field via `setActiveEditor()`.
 
-#### 4b. Deprecated `org.eclipse.ui.editorActions` → `org.eclipse.ui.menus`
+`plugin.xml`: Removed `org.eclipse.ui.popupMenus` extension. Added `org.eclipse.ui.handlers` with `<handler>` elements per command, scoped via `<activeWhen>` to the editor ID.
 
-Same migration as 4a — move toolbar/menu contributions from `editorActions` to `menus` with `menuContribution` targeting `toolbar:` and `menu:` URIs.
+#### 4b. Deprecated `org.eclipse.ui.editorActions` → `org.eclipse.ui.menus` ✅ DONE
 
-#### 4c. `getAdapter(Class)` → Typed `getAdapter(Class<T>)`
+`plugin.xml`: Removed `org.eclipse.ui.editorActions` extension. Added `org.eclipse.ui.menus` with two `<menuContribution>` blocks:
 
-In `PropertiesEditor.java` (editors):
+- `popup:#PropertiesEditorContext?after=additions` — context menu (replaces `popupMenus`)
+- `menu:edit?after=additions` — editor menu bar (replaces `editorActions`), with `<visibleWhen>` scoped to editor ID
 
-```java
-// Before
-public Object getAdapter(Class adapter)
-// After
-@SuppressWarnings("unchecked")
-public <T> T getAdapter(Class<T> adapter)
-```
+#### 4c. `getAdapter(Class)` → Typed `getAdapter(Class<T>)` ✅ DONE
 
-#### 4d. `Eclipse-LazyStart` → Remove
+In `PropertiesEditor.java` (editors): updated to `public <T> T getAdapter(Class<T> adapter)` with `@SuppressWarnings("unchecked")` and `(T)` cast.
 
-Remove `Eclipse-LazyStart: true` from `MANIFEST.MF` — it is superseded by `Bundle-ActivationPolicy: lazy` (already present).
+#### 4d. `Eclipse-LazyStart` → Remove ✅ DONE (already absent)
 
-#### 4e. Review `ILog` Usage
+`Eclipse-LazyStart: true` was not present in `MANIFEST.MF` — only `Bundle-ActivationPolicy: lazy` exists. No change needed.
 
-The pattern `PropertiesEditorPlugin.getDefault().getLog()` is still valid in modern Eclipse. However, consider adding a utility method or using `Platform.getLog(Class)` (available since Eclipse 4.x).
+#### 4e. Review `ILog` Usage ✅ DONE
 
-#### 4f. Replace `e.printStackTrace()` with Proper Logging
+Added `PropertiesEditorPlugin.log()` static helper using `Platform.getLog(PropertiesEditorPlugin.class)` — available even before the activator starts. Existing callers remain valid.
 
-Several classes use `e.printStackTrace()`. Replace with:
+#### 4f. Replace `e.printStackTrace()` with Proper Logging ✅ DONE
 
-```java
-ILog log = PropertiesEditorPlugin.getDefault().getLog();
-log.log(new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e));
-```
+Replaced all 14 `e.printStackTrace()` / `ex.printStackTrace()` calls across 11 files with `java.util.logging.Logger`:
 
-### Phase 5: Swing Standalone App Modernization
+| File                                  | Count |
+| ------------------------------------- | ----- |
+| `PropertiesEditorFrame.java`          | 5     |
+| `LockableFileOutputStream.java`       | 3     |
+| `PropertiesEditor.java` (Swing main)  | 1     |
+| `JSelectCodeFileChooser.java`         | 1     |
+| `PropertiesEditorFrame_AboutBox.java` | 1     |
+| `JFontChooserDialog.java`             | 1     |
+| `UnicodeDialog.java`                  | 1     |
+| `SearchTextDialog.java`               | 1     |
+| `ReplaceTextDialog.java`              | 1     |
+| `EncodeSelectPanel.java`              | 1     |
+
+Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.getName());` + `LOG.log(Level.SEVERE, e.getMessage(), e);`
+
+### Phase 5: Swing Standalone App Modernization — DONE
 
 **Goal**: Modernize the Swing desktop app (lower priority than Eclipse plugin).
 
-1. `PropertiesEditorFrame.java` — refactor into smaller classes (lambdas for event listeners already done in Phase 3h).
-2. Replace `UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())` with FlatLaf or similar modern look-and-feel.
-3. Use `var`, enhanced for-each, and streams where appropriate.
-4. Evaluate whether the standalone app should be preserved long-term or deprecated in favor of Eclipse-only usage.
+1. **`PropertiesEditorFrame.java` refactoring** — DONE
+   Extracted 6 inner classes to top-level package-private files (same package):
+   - `UndoHandler.java` — `UndoableEditListener` implementation
+   - `UndoAction.java` — Undo `AbstractAction`
+   - `RedoAction.java` — Redo `AbstractAction`
+   - `DropHandler.java` — `DropTargetListener` for drag-and-drop
+   - `PrintMonitor.java` — Print progress monitor (`Printable`)
+   - `EditorPrinter.java` — Editor content printer (`Printable`)
+     Each extracted class takes a `PropertiesEditorFrame` reference. Fields `undoAction`, `redoAction`, `editTextArea`, `pageFormat` and methods `openFile()`, `checkSave()` widened from `private` to package-private.
+     File reduced from 1,728 → 1,454 lines.
 
-### Phase 6: Testing
+2. **FlatLaf look-and-feel** — DONE
+   - Added `lib/flatlaf-3.6.jar` (~900KB)
+   - `MANIFEST.MF`: Added `Bundle-ClassPath: ., lib/flatlaf-3.6.jar`
+   - `build.properties`: Added `lib/` to `bin.includes`
+   - `PropertiesEditor.main()`: Uses `FlatLightLaf.setup()` with system L&F fallback; also registers `FlatDarkLaf` as switchable option
+   - L&F radio menu in `PropertiesEditorFrame` automatically picks up FlatLaf entries from `UIManager.getInstalledLookAndFeels()`
+
+3. **`var` / enhanced for-each / streams sweep** — DONE
+   - Converted 7 index-based for-loops in `PropertiesEditorFrame.java` to enhanced for-each (L&F menu population, L&F matching in `initialize()`, `actionPerformed()`)
+   - Converted 1 index-based for-loop in `PropertiesEditor.java` (editors) `updateFoldingStructure()`
+   - Applied `var` to ~15 local variable declarations across `PropertiesEditorFrame.java` and `PropertiesEditor.java` (editors)
+   - Remaining ~17 index-based for-loops in `SeparatorRule`, `ValueRule`, `ValueRuleForWhiteSpace`, `EncodeChanger`, `CheckAndMarkDuplicateKey`, `PropertiesReconcilingStrategy`, `PropertiesOutlineContentProvider` — all genuinely require the index for character scanning or `scanner.unread()` operations; not candidates for conversion
+
+4. **Standalone app evaluation** — DONE
+   **Decision: Preserve the standalone Swing app.** Rationale:
+   - The standalone app shares core code (`EncodeChanger`, `EncodeManager`, `FileOpener`) with the Eclipse plugin — no maintenance duplication
+   - It provides value for users who need quick `.properties` file editing without Eclipse
+   - FlatLaf gives it a modern appearance competitive with native apps
+   - Future option: repackage with `jpackage` for native distribution (installer, no JRE required)
+   - Lower priority for further investment — focus future phases on Eclipse plugin and testing
+
+### Phase 6: Testing — DONE
 
 **Goal**: Add unit tests (currently none exist).
 
-1. Create a test fragment or test source folder.
-2. Add JUnit 5 dependency.
-3. Write tests for core logic:
-   - `EncodeChanger` — Unicode ↔ escape conversion (most critical).
-   - `PropertyAnalyzer` — property file parsing.
-   - `CheckAndMarkDuplicateKey` — duplicate key detection logic.
-4. If using Tycho, configure `tycho-surefire-plugin` to run tests during build.
+1. **Test infrastructure** — DONE
+   - Created `src/test/java` directory
+   - Added JUnit 5 (`junit-jupiter` 5.11.4) dependency to `pom.xml`
+   - Added `maven-surefire-plugin` 3.5.2 + `maven-compiler-plugin` 3.14.0 to compile and run plain Java tests alongside Tycho
+   - Configured `tycho-compiler-plugin` to exclude `**/test/**` so Tycho doesn't compile test sources
+   - Tests run during `mvn verify` via surefire (no OSGi runtime needed for pure-Java tests)
 
-### Phase 7: Cleanup and Polish
+2. **`EncodeChangerTest`** — DONE (23 tests)
+   - `unicode2UnicodeEsc`: ASCII-only, Japanese, mixed, empty, null, uppercase/lowercase, hex zero-padding
+   - `unicodeEsc2Unicode`: valid lowercase/uppercase `\u`, invalid hex, partial sequences, empty, null, mixed, non-u escapes
+   - Round-trip: Japanese, ASCII, mixed
+   - `unicode2UnicodeEscWithoutComment`: comment preservation (`#`, `!`), continuation lines, no trailing newline
 
-1. **Icons**: Replace `.gif` icons with `.png` or `.svg` for HiDPI support.
-2. **Bundle version**: Bump to `7.0.0` to indicate the major modernization.
-3. **README.md**: Update with proper project description, build instructions, and screenshots.
-4. **GEMINI.md**: Update or remove — it contains the same inaccuracies that were in the old `AGENTS.md`.
-5. **`.gitignore`**: Ensure `bin/`, `target/`, `.classpath`, `.project`, `.settings/` are ignored.
+3. **`StringUtilTest`** — DONE (10 tests)
+   - `removeCarriageReturn`: Windows `\r\n`, standalone `\r`, no `\r`, empty
+   - `escapeHtml`: `&`, `<`, `>`, `"`, null, combined
+
+4. **`CheckAndMarkDuplicateKey` refactoring + tests** — DONE (18 tests)
+   - Extracted `extractKeys(String text)` → `Map<String, List<Integer>>` as a pure-Java static method (no Eclipse deps)
+   - Existing `checkAndMarkDuplicateKeyInString` now calls `extractKeys()` then creates markers from the result
+   - Tests: `=`/`:`/space/tab separators, multiple distinct keys, duplicates, triplicates, comments, blanks, escaped separators (`\=`, `\:`), multi-line values, empty input, key-only lines, leading whitespace
+   - `replace()`: basic substitution, no-match
+
+   **Total: 51 tests, 0 failures**
+
+### Phase 7: Cleanup and Polish — DONE
+
+1. **Icons** — SKIPPED (no PNG/SVG source files available; 26 GIF icons retained as-is)
+2. **Bundle version** — DONE: Bumped `Bundle-Version` to `7.0.0.qualifier` in `MANIFEST.MF` and `<version>` to `7.0.0-SNAPSHOT` in `pom.xml`
+3. **README.md** — DONE: Rewritten with project description, features, prerequisites, build instructions, run commands, project structure, and license reference
+4. **GEMINI.md** — DONE: Rewritten with accurate tech stack table, feature list, build/run commands, and key entry points (removed false claims about Eclipse 4/e4, LSP, TM4E)
+5. **`.gitignore`** — DONE: Fixed `.settings/` pattern from `*/.settings/**/*` to `.settings/`
 
 ---
 
