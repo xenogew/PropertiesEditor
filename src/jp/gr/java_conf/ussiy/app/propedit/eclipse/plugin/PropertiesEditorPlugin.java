@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -44,6 +46,14 @@ public class PropertiesEditorPlugin extends AbstractUIPlugin {
 	public static PropertiesEditorPlugin getDefault() {
 
 		return plugin;
+	}
+
+	/**
+	 * Returns the plugin logger (available even before the activator starts).
+	 */
+	public static ILog log() {
+
+		return Platform.getLog(PropertiesEditorPlugin.class);
 	}
 
 	/**

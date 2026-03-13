@@ -1,5 +1,8 @@
 package jp.gr.java_conf.ussiy.app.propedit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,9 @@ import javax.swing.JRadioButton;
 import jp.gr.java_conf.ussiy.app.propedit.bean.Encode;
 import jp.gr.java_conf.ussiy.app.propedit.util.EncodeManager;
 
-class EncodeSelectPanel extends JPanel {
+public class EncodeSelectPanel extends JPanel {
+
+	private static final Logger LOG = Logger.getLogger(EncodeSelectPanel.class.getName());
 
 	private static final long serialVersionUID = -3161561981802069139L;
 
@@ -41,7 +46,7 @@ class EncodeSelectPanel extends JPanel {
 		try {
 			jbInit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 	}
 

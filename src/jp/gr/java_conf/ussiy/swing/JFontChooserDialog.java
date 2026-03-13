@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,6 +31,8 @@ import jp.gr.java_conf.ussiy.app.propedit.BaseDialog;
 public class JFontChooserDialog extends BaseDialog {
 
 	static ResourceBundle res = ResourceBundle.getBundle("jp.gr.java_conf.ussiy.swing.lang"); //$NON-NLS-1$
+
+	private static final Logger LOG = Logger.getLogger(JFontChooserDialog.class.getName());
 
 	public static final int CANCEL_OPTION = 1;
 
@@ -123,7 +127,7 @@ public class JFontChooserDialog extends BaseDialog {
 			initialize();
 			pack();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 	}
 

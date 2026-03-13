@@ -5,48 +5,31 @@ import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEdito
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PropertiesPreference;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.property.PropertyUtil;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ToggleCommentAction implements IEditorActionDelegate {
-	private PropertiesEditor textEditor;
+public class ToggleCommentAction extends AbstractHandler {
 
-	/**
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
 	@Override
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor instanceof PropertiesEditor) {
-			textEditor = (PropertiesEditor)targetEditor;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		IEditorPart part = HandlerUtil.getActiveEditor(event);
+		if (!(part instanceof PropertiesEditor textEditor)) {
+			return null;
 		}
-		
-	}
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	@Override
-	public void run(IAction action) {
-		toggleComment();
-	}
-	
-	private void toggleComment() {
-		if (textEditor == null) {
-			return;
-		}
-		
 		IPreferenceStore pStore = PropertiesEditorPlugin.getDefault().getPreferenceStore();
 
 		IProject project = ((IFileEditorInput)textEditor.getEditorInput()).getFile().getProject();
@@ -54,7 +37,7 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 
 		ISelectionProvider selection = textEditor.getSelectionProvider();
 		if (selection == null) {
-			return;
+			return null;
 		}
 		ITextSelection ts = (ITextSelection)textEditor.getSelectionProvider().getSelection();
 		int startLineNum = ts.getStartLine();
@@ -97,14 +80,7 @@ public class ToggleCommentAction implements IEditorActionDelegate {
 			IStatus status = new Status(IStatus.ERROR, PropertiesEditorPlugin.PLUGIN_ID, e.getMessage(), e);
 			PropertiesEditorPlugin.getDefault().getLog().log(status);
 		}
-	}
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-
+		return null;
 	}
 
 }

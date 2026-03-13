@@ -1,5 +1,8 @@
 package jp.gr.java_conf.ussiy.app.propedit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class SearchTextDialog extends BaseDialog {
+
+	private static final Logger LOG = Logger.getLogger(SearchTextDialog.class.getName());
 
 	private String inputString;
 
@@ -48,7 +53,7 @@ public class SearchTextDialog extends BaseDialog {
 			jbInit();
 			pack();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 	}
 

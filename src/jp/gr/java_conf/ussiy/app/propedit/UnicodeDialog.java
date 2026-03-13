@@ -6,6 +6,9 @@
  ****************************************************/
 package jp.gr.java_conf.ussiy.app.propedit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
@@ -25,6 +28,8 @@ import javax.swing.JTextArea;
  *  
  */
 public class UnicodeDialog extends BaseDialog {
+
+	private static final Logger LOG = Logger.getLogger(UnicodeDialog.class.getName());
 
 	private JPanel panel1 = new JPanel();
 
@@ -66,7 +71,7 @@ public class UnicodeDialog extends BaseDialog {
 			jbInit();
 			pack();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 	}
 

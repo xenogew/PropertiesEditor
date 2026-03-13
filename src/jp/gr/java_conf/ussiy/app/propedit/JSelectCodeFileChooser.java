@@ -5,6 +5,9 @@
  ****************************************************/
 package jp.gr.java_conf.ussiy.app.propedit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -19,6 +22,8 @@ import javax.swing.filechooser.FileSystemView;
  *  
  */
 public class JSelectCodeFileChooser extends JFileChooser {
+
+	private static final Logger LOG = Logger.getLogger(JSelectCodeFileChooser.class.getName());
 
 	private static final long serialVersionUID = 2541718889046378532L;
 	/**
@@ -113,7 +118,7 @@ public class JSelectCodeFileChooser extends JFileChooser {
 				return scPanel.getSelectedEncode();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
 	}

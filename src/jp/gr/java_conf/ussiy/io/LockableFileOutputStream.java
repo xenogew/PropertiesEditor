@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LockableFileOutputStream extends OutputStream {
+
+	private static final Logger LOG = Logger.getLogger(LockableFileOutputStream.class.getName());
 
 	private FileOutputStream fOut;
 
@@ -46,11 +50,11 @@ public class LockableFileOutputStream extends OutputStream {
 				return false;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			try {
 				fl.release();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 			return false;
 		}
@@ -78,7 +82,7 @@ public class LockableFileOutputStream extends OutputStream {
 					fl.release();
 				}
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 		}
 	}

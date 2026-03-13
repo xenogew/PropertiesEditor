@@ -133,13 +133,12 @@ public class PropertiesEditor extends TextEditor {
 			return;
 		}
 
-		Iterator<Annotation> ite = annotationModel.getAnnotationIterator();
+		var ite = annotationModel.getAnnotationIterator();
 		while(ite.hasNext()){
 			ProjectionAnnotation annotation = (ProjectionAnnotation) ite.next();
 			Position oldPos = annotationModel.getPosition(annotation);
 			boolean removeFlg = true;
-			for(int i=0; i<positions.size(); i++){
-				Position newPos = positions.get(i);
+			for(var newPos : positions){
 				if(newPos.getOffset() == oldPos.getOffset() && newPos.getLength() == oldPos.getLength()){
 					removeFlg = false;
 					positions.remove(newPos);
@@ -152,7 +151,7 @@ public class PropertiesEditor extends TextEditor {
 		}
 		if (initialCollapseOption == null) {
 			// get default collapse option
-			IPreferenceStore store = PropertiesEditorPlugin.getDefault().getPreferenceStore();
+			var store = PropertiesEditorPlugin.getDefault().getPreferenceStore();
 			initialCollapseOption = store.getBoolean(PropertiesEditorPreference.P_INIT_COLLAPSE);
 			for(Position pos : positions){
 				annotationModel.addAnnotation(new ProjectionAnnotation(initialCollapseOption.booleanValue()), pos);
@@ -175,15 +174,16 @@ public class PropertiesEditor extends TextEditor {
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
 			if (fOutlinePage == null) {
 				fOutlinePage= new PropertiesContentOutlinePage(getDocumentProvider(), this);
 				if (getEditorInput() != null)
 					fOutlinePage.setInput(getEditorInput());
 			}
-			return fOutlinePage;
+			return (T) fOutlinePage;
 		}
 		return super.getAdapter(adapter);
 	}

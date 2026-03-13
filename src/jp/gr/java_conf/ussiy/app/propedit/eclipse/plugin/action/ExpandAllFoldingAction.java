@@ -4,47 +4,29 @@ import java.util.Iterator;
 
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditor;
 
-import org.eclipse.jface.action.IAction;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExpandAllFoldingAction implements IEditorActionDelegate {
-	private PropertiesEditor textEditor;
+public class ExpandAllFoldingAction extends AbstractHandler {
 
-	/**
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
 	@Override
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor instanceof PropertiesEditor) {
-			textEditor = (PropertiesEditor)targetEditor;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		IEditorPart part = HandlerUtil.getActiveEditor(event);
+		if (!(part instanceof PropertiesEditor editor)) {
+			return null;
 		}
-	}
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	@Override
-	public void run(IAction action) {
-		if (textEditor == null) {
-			return;
-		}
-		
-		ProjectionAnnotationModel model = textEditor.getAnnotationModel();
+		ProjectionAnnotationModel model = editor.getAnnotationModel();
 		Iterator<Annotation> annotationIterator = model.getAnnotationIterator();
-		while(annotationIterator.hasNext()) {
+		while (annotationIterator.hasNext()) {
 			model.expand(annotationIterator.next());
 		}
-	}
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
+		return null;
 	}
 
 }

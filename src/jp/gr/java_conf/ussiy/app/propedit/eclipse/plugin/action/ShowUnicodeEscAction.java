@@ -10,14 +10,15 @@ import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.property.PropertyUtil;
 import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.resources.Messages;
 import jp.gr.java_conf.ussiy.app.propedit.util.EncodeChanger;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
@@ -27,28 +28,19 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ShowUnicodeEscAction implements IEditorActionDelegate {
-	private PropertiesEditor textEditor;
+public class ShowUnicodeEscAction extends AbstractHandler {
 
-	/**
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
 	@Override
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor instanceof PropertiesEditor) {
-			textEditor = (PropertiesEditor)targetEditor;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		IEditorPart part = HandlerUtil.getActiveEditor(event);
+		if (!(part instanceof PropertiesEditor textEditor)) {
+			return null;
 		}
-	}
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	@Override
-	public void run(IAction action) {
 		Shell shell = new Shell(textEditor.getSite().getShell(), SWT.SHELL_TRIM);
 		URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
 		String path = "icons/previewPage.gif"; //$NON-NLS-1$
@@ -114,13 +106,7 @@ public class ShowUnicodeEscAction implements IEditorActionDelegate {
 
 		// window open
 		shell.open();
-	}
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
+		return null;
 	}
 
 }

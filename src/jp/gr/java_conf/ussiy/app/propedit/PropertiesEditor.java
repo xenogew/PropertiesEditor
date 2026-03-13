@@ -9,8 +9,13 @@ package jp.gr.java_conf.ussiy.app.propedit;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.UIManager;
+
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 /**
  * This class is main class of application.
@@ -19,6 +24,8 @@ import javax.swing.UIManager;
  *  
  */
 public class PropertiesEditor {
+
+	private static final Logger LOG = Logger.getLogger(PropertiesEditor.class.getName());
 
 	/**
 	 */
@@ -64,11 +71,14 @@ public class PropertiesEditor {
 	 */
 	public static void main(String[] args) {
 
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!FlatLightLaf.setup()) {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+			}
 		}
+		UIManager.installLookAndFeel("FlatLaf Dark", FlatDarkLaf.class.getName());
 		new PropertiesEditor(args);
 	}
 

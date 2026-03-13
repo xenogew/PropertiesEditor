@@ -12,6 +12,8 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -29,6 +31,8 @@ import javax.swing.SwingConstants;
  *  
  */
 public class PropertiesEditorFrame_AboutBox extends JDialog implements ActionListener {
+
+	private static final Logger LOG = Logger.getLogger(PropertiesEditorFrame_AboutBox.class.getName());
 
 	private JPanel panel1 = new JPanel();
 
@@ -100,7 +104,7 @@ public class PropertiesEditorFrame_AboutBox extends JDialog implements ActionLis
 		try {
 			jbInit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
