@@ -497,6 +497,12 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
    - `CheckAndMarkResourceVisitor.visit()`: Changed `ByteArrayOutputStream.toString()` → `toString(Charset)` using `IFile.getCharset()` with UTF-8 fallback. Fixes duplicate key detection for UTF-8 files.
    - Added 2 tests for UTF-8 key parsing. **Total: 53 tests, 0 failures.**
 
+### Phase 8: Make it modern, Java 25 compatible and adopt Leyden, Virtual Thread for executing tasks
+
+### Phase 9: Adopt Spotless for code formatting
+
+### Phase 10: Make project to be my own signature and publish it to Eclipse Marketplace for publishing
+
 ---
 
 ## Critical Files for Any Change
