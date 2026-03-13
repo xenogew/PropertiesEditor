@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import jp.gr.java_conf.ussiy.util.StringUtil;
+
 class StringUtilTest {
 
 	@Nested

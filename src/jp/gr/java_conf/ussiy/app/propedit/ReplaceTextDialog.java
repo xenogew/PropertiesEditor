@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 
 public class ReplaceTextDialog extends BaseDialog {
 
+	private static final long serialVersionUID = 6464234685324510226L;
+
 	private static final Logger LOG = Logger.getLogger(ReplaceTextDialog.class.getName());
 
 	private String sourceText;

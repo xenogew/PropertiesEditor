@@ -9,6 +9,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.checker.CheckAndMarkDuplicateKey;
+
 class CheckAndMarkDuplicateKeyTest {
 
 	@Nested

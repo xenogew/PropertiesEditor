@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import jp.gr.java_conf.ussiy.app.propedit.util.EncodeChanger;
+
 class EncodeChangerTest {
 
 	@Nested
