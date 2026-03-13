@@ -56,45 +56,44 @@
 		</page>
 	</extension>
 
-	<!-- popup menu & action -->
-	<extension point="org.eclipse.ui.popupMenus">
-		<viewerContribution
-				targetID="#PropertiesEditorContext"
-				id="jp.gr.java_conf.ussiy.app.propedit.contributions.PropertiesEditorContext">
-			<action
-					label="%toggleCommentActionLabel"
-					icon="icons/IconByTaroTw.gif"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ToggleCommentAction"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-					menubarPath="additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorInsertDeleteCommentCharacterAction">
-				<selection class="org.eclipse.jface.text.ITextSelection"/>
-			</action>
-			<action
-					label="%expandAllActionLabel"
-					icon="icons/IconByTaroTw.gif"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ExpandAllFoldingAction"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
-					menubarPath="additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorOpenAllFoldingAction">
-			</action>
-			<action
-					label="%collapseAllActionLabel"
-					icon="icons/IconByTaroTw.gif"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.CollapseAllFoldingAction"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
-					menubarPath="additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorCloseAllFoldingAction">
-			</action>
-			<action
-					label="%showUnicodeEscActionLabel"
-					icon="icons/IconByTaroTw.gif"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ShowUnicodeEscAction"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-					menubarPath="additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorUnicodeEscSrcAction">
-			</action>
-		</viewerContribution>
+	<!-- command handlers -->
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+				commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
+				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ToggleCommentAction">
+			<activeWhen>
+				<with variable="activeEditorId">
+					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+				</with>
+			</activeWhen>
+		</handler>
+		<handler
+				commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
+				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ExpandAllFoldingAction">
+			<activeWhen>
+				<with variable="activeEditorId">
+					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+				</with>
+			</activeWhen>
+		</handler>
+		<handler
+				commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
+				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.CollapseAllFoldingAction">
+			<activeWhen>
+				<with variable="activeEditorId">
+					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+				</with>
+			</activeWhen>
+		</handler>
+		<handler
+				commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
+				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ShowUnicodeEscAction">
+			<activeWhen>
+				<with variable="activeEditorId">
+					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+				</with>
+			</activeWhen>
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.contexts">
 		<context
@@ -125,48 +124,71 @@
 				name="%showUnicodeEscCommandLabel"
 				id="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"/>
 	</extension>
-	<extension point="org.eclipse.ui.editorActions">
-		<editorContribution
-				targetID="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"
-				id="jp.gr.java_conf.ussiy.app.propedit.editorContribution">
-			<action
-					disabledIcon="icons/IconByTaroTw_disable.gif"
-					label="%toggleCommentActionLabel"
+	<!-- context menu contributions (replaces org.eclipse.ui.popupMenus) -->
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution
+				locationURI="popup:#PropertiesEditorContext?after=additions">
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
 					icon="icons/IconByTaroTw.gif"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ToggleCommentAction"
-					menubarPath="edit/additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.togglecomment.action">
-				<selection class="org.eclipse.jface.text.ITextSelection"/>
-			</action>
-			<action
-					disabledIcon="icons/IconByTaroTw_disable.gif"
-					label="%expandAllActionLabel"
+					label="%toggleCommentActionLabel"/>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
 					icon="icons/IconByTaroTw.gif"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ExpandAllFoldingAction"
-					menubarPath="edit/additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorOpenAllFolding.action">
-			</action>
-			<action
-					disabledIcon="icons/IconByTaroTw_disable.gif"
-					label="%collapseAllActionLabel"
+					label="%expandAllActionLabel"/>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
 					icon="icons/IconByTaroTw.gif"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.CollapseAllFoldingAction"
-					menubarPath="edit/additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorCloseAllFolding.action">
-			</action>
-			<action
-					disabledIcon="icons/IconByTaroTw_disable.gif"
-					label="%collapseAllActionLabel"
+					label="%collapseAllActionLabel"/>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
 					icon="icons/IconByTaroTw.gif"
-					definitionId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-					class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ShowUnicodeEscAction"
-					menubarPath="edit/additions"
-					id="jp.gr.java_conf.ussiy.app.propedit.pm.PropertiesEditorUnicodeEscSrc.action">
-			</action>
-		</editorContribution>
+					label="%showUnicodeEscActionLabel"/>
+		</menuContribution>
+		<!-- editor menu bar contributions (replaces org.eclipse.ui.editorActions) -->
+		<menuContribution
+				locationURI="menu:edit?after=additions">
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
+					icon="icons/IconByTaroTw.gif"
+					label="%toggleCommentActionLabel">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeEditorId">
+						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					</with>
+				</visibleWhen>
+			</command>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
+					icon="icons/IconByTaroTw.gif"
+					label="%expandAllActionLabel">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeEditorId">
+						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					</with>
+				</visibleWhen>
+			</command>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
+					icon="icons/IconByTaroTw.gif"
+					label="%collapseAllActionLabel">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeEditorId">
+						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					</with>
+				</visibleWhen>
+			</command>
+			<command
+					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
+					icon="icons/IconByTaroTw.gif"
+					label="%showUnicodeEscActionLabel">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeEditorId">
+						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					</with>
+				</visibleWhen>
+			</command>
+		</menuContribution>
 	</extension>
 
 	<!-- duplication checklistener & duplication marker -->

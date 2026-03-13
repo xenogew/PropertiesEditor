@@ -1,56 +1,40 @@
-# PropertiesEditor
+# PropertiesEditor — Quick Reference
 
-A specialized Java `.properties` file editor that supports automatic Unicode escape conversion, available as both an Eclipse plugin and a standalone Swing application.
+A Java `.properties` file editor with automatic `\uXXXX` ↔ native character conversion. Eclipse plugin + standalone Swing app.
 
-## Project Overview
+## Tech Stack
 
-- **Main Technologies:** Java (J2SE-1.4 to JavaSE-1.7), Swing, Eclipse Plugin Framework (SWT, JFace, OSGi).
-- **Primary Functionality:** Simplifies the editing of Java properties files by allowing users to work with native characters (e.g., Japanese, Chinese) while automatically converting them to/from `\uXXXX` escapes during save/load operations.
+| Component      | Version / Tool                      |
+| -------------- | ----------------------------------- |
+| Java           | 25 (JavaSE-25)                      |
+| Build          | Maven + Eclipse Tycho 5.0.2         |
+| Eclipse Target | 2024-12                             |
+| Look & Feel    | FlatLaf 3.6 (Swing app)             |
+| Testing        | JUnit 5.11.4 + maven-surefire 3.5.2 |
+| Packaging      | OSGi bundle (`eclipse-plugin`)      |
 
-## Key Technologies and Architecture
+## Features
 
-- **Eclipse Tycho**: Used for building Eclipse plugins, features, and products with Maven.
-- **Eclipse 4 (e4)**: Demonstrates dependency injection (Jakarta Inject), the application model (`.e4xmi`), and CSS styling.
-- **Generic Editor & TM4E**: Examples of extending the Eclipse Generic Editor with TextMate grammars (TM4E) for languages like Asciidoc.
-- **Language Server Protocol (LSP)**: Integrations for Asciidoc via Language Servers.
-- **OSGi**: The underlying modular system for all Eclipse plugins.
-- **Java 25**: The project is configured to use JavaSE-25.
+- Unicode escape conversion (auto on load/save, configurable case, comment-aware)
+- Syntax highlighting (comments, keys, separators, values)
+- Duplicate key detection with Eclipse problem markers
+- Code folding, content outline
+- JDT hover + completion proposals for property keys in Java source
+- Standalone Swing app with FlatLaf, search/replace, encoding selection
+- English + Japanese localization
 
-## Core Features
+## Build & Run
 
-- **Unicode Escape Support:** Seamlessly handles non-ASCII characters by converting them to Unicode escapes.
-- **Syntax Highlighting:** Provides visual distinction for keys, values, and comments in properties files.
-- **Key Duplication Checking:** Identifies and marks duplicate keys to prevent configuration errors.
-- **Folding:** Supports collapsing and expanding sections of the properties file.
-- **Eclipse Integration:**
-  - JDT hovers and completion proposals for properties.
-  - Custom preference and property pages.
-  - Content outline view.
-- **Standalone Mode:** Can be run as a standard desktop application using Swing.
+```bash
+# Build + test (51 unit tests)
+./mvnw clean verify
 
-## Building and Running
+# Run standalone
+java -cp "target/classes:lib/flatlaf-3.6.jar" jp.gr.java_conf.ussiy.app.propedit.PropertiesEditor
+```
 
-### Prerequisites
+## Key Entry Points
 
-- **Java 25**: Ensure you have a JDK 25 installed and your `JAVA_HOME` is set.
-- **Maven**: The project includes a Maven wrapper (`mvnw`).
-
-### Build Environment
-This is a standard Eclipse project. It does not use modern build tools like Maven or Gradle.
-- **Source Folder:** `src/`
-- **Output Folder:** `bin/`
-- **Classpath:** Managed by `.classpath` and `META-INF/MANIFEST.MF`.
-
-### Running Standalone
-The standalone application's entry point is:
-`jp.gr.java_conf.ussiy.app.propedit.PropertiesEditor`
-
-### Running as Plugin
-The plugin activator is:
-`jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin`
-
-## Development Conventions
-
-- **Language Support:** Localization is handled via `.properties` files (e.g., `lang.properties`, `plugin.properties`).
-- **Icons:** Located in the `icons/` and `src/.../resource/` directories.
-- **Packaging:** Configuration for the Eclipse plugin is defined in `plugin.xml` and `META-INF/MANIFEST.MF`.
+- **Standalone main**: `jp.gr.java_conf.ussiy.app.propedit.PropertiesEditor`
+- **Plugin activator**: `jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin`
+- **Core conversion**: `jp.gr.java_conf.ussiy.app.propedit.util.EncodeChanger`
