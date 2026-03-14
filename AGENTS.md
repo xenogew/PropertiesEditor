@@ -575,6 +575,21 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 
 ### Phase 12: Make icons modern
 
+**Goal**: Replace all legacy icons (which were converted from GIF to PNG in an earlier phase) with modern, flat, vector-based designs (from sets like Lucide) while maintaining exactly the same dimensions (16x16 and 32x32) to ensure Eclipse UI compatibility.
+
+#### 12a. Icon Sourcing and Mapping
+- Identify all existing `.png` icons in `icons/` (Eclipse UI) and `src/io/github/xenogew/propedit/resource/` (Standalone UI).
+- Download corresponding modern icons from the open-source Lucide icon set (`lucide.dev`), matching their semantic meanings (e.g., `file-cog` for properties file, `scissors` for cut, `undo-2` for undo).
+- Generate the icons in SVG format, modifying the `currentColor` fill to appropriate branding colors (e.g., `#2563eb` for primary logos, `#333333` for general UI actions, `#eab308` for warnings, `#ef4444` for delete/stop).
+
+#### 12b. Rasterization and Verification
+- Use `ImageMagick` (`magick` / `convert`) to accurately rasterize the SVGs into transparent PNGs, ensuring the output dimensions match the legacy files exactly (either 16x16 or 32x32).
+- Generate the new files with an `-x.png` suffix side-by-side with the originals to allow for visual comparison and review without breaking current references.
+
+#### 12c. Replacement and Cleanup
+- Once the `-x.png` files are reviewed and approved, replace the original `.png` files with the modern versions.
+- Run a full build (`./mvnw clean verify`) and launch the application to ensure Eclipse successfully loads and renders the new icons in Toolbars, Menus, Outline Views, and About dialogs.
+
 ---
 
 ## Critical Files for Any Change
