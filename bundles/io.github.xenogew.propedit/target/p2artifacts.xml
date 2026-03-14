@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='1'>
+  <artifact classifier='osgi.bundle' id='io.github.xenogew.propedit' version='7.0.0.202603140938'>
+    <properties size='8'>
+      <property name='artifact.size' value='202227'/>
+      <property name='download.size' value='202227'/>
+      <property name='download.checksum.sha-512' value='6e6dfef121c02ddd407ba4aae0ca28edc95672413af38ec0f9ba8307bb5520f7bf635cd9a7286180def6277117ecee5cc9af8997b301b2c89267aaed82dc35ec'/>
+      <property name='download.checksum.sha-256' value='ff701aefc7a46cfb31a4ef516f8101d71202c08723fd6c4af1ba55d639273ea2'/>
+      <property name='maven-groupId' value='io.github.xenogew.propedit.app'/>
+      <property name='maven-artifactId' value='io.github.xenogew.propedit'/>
+      <property name='maven-version' value='7.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+</artifacts>

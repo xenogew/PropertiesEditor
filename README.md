@@ -29,11 +29,28 @@ Forked from [PropEditorX on OSDN](http://svn.osdn.net/svnroot/propedit/).
 
 This compiles the plugin, runs 51 unit tests, and packages the OSGi bundle JAR in `target/`.
 
-## Running Standalone
+## Installation
+
+### Eclipse IDE
+
+You can install PropEditorX into your Eclipse IDE using the following methods:
+
+#### 1. Drag and Drop
+Drag the following button into your running Eclipse workspace:
+[![Install](https://marketplace.eclipse.org/sites/all/modules/custom/marketplace/images/installbutton.png)](https://marketplace.eclipse.org/marketplace-client-intro?mpit=5921234) *(Marketplace ID pending)*
+
+#### 2. P2 Update Site
+1. Go to **Help > Install New Software...**
+2. Click **Add...**
+3. Enter the following URL: `https://xenogew.github.io/PropEditorX/`
+4. Select **PropEditorX** and follow the prompts.
+
+### Standalone App
 
 ```bash
 java -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
 ```
+
 
 ### Optimization (Project Leyden)
 

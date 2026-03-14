@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="io.github.xenogew.propedit.feature"
+      label="PropEditorX Feature"
+      version="7.0.0.202603140938"
+      provider-name="Santa Soft">
+
+   <description url="https://github.com/xenogew/PropertiesEditor">
+      PropEditorX — Modernized Java .properties file editor with automatic Unicode escape conversion. Originally created by Sou Miyazaki.
+   </description>
+
+   <copyright>
+      Copyright (c) 2004-2026 Sou Miyazaki and xenogew.
+   </copyright>
+
+   <license url="license/epl.html">
+      Eclipse Public License
+   </license>
+
+   <plugin
+         id="io.github.xenogew.propedit"
+         version="7.0.0.202603140938"/>
+
+</feature>

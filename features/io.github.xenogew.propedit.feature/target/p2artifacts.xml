@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='1'>
+  <artifact classifier='org.eclipse.update.feature' id='io.github.xenogew.propedit.feature' version='7.0.0.202603140938'>
+    <properties size='9'>
+      <property name='artifact.size' value='783'/>
+      <property name='download.size' value='783'/>
+      <property name='download.checksum.sha-512' value='138c8a7f0b75f4b7e681816d9571c1661d328c257ef80f65fef76f2d262d30a60980c714fac1834b9a3143d5af3d1047a41a445f046f935675365be9b8a0bae1'/>
+      <property name='download.checksum.sha-256' value='dc8db670346c5cce304c525a23797086e6bbc6307fbd058e41f5d3d195f29237'/>
+      <property name='maven-groupId' value='io.github.xenogew.propedit.app'/>
+      <property name='maven-artifactId' value='io.github.xenogew.propedit.feature'/>
+      <property name='maven-version' value='7.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-feature'/>
+      <property name='download.contentType' value='application/zip'/>
+    </properties>
+  </artifact>
+</artifacts>

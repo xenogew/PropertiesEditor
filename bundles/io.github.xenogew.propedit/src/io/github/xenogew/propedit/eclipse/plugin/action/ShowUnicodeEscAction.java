@@ -1,0 +1,117 @@
+package io.github.xenogew.propedit.eclipse.plugin.action;
+
+import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
+import io.github.xenogew.propedit.eclipse.plugin.editors.PropEditorX;
+import io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesPreference;
+import io.github.xenogew.propedit.eclipse.plugin.property.PropertyUtil;
+import io.github.xenogew.propedit.eclipse.plugin.resources.Messages;
+import io.github.xenogew.propedit.util.EncodeChanger;
+import java.net.URL;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.handlers.HandlerUtil;
+
+public class ShowUnicodeEscAction extends AbstractHandler {
+
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    IEditorPart part = HandlerUtil.getActiveEditor(event);
+    if (!(part instanceof PropEditorX textEditor)) {
+      return null;
+    }
+
+    Shell shell = new Shell(textEditor.getSite().getShell(), SWT.SHELL_TRIM);
+    String path = "/icons/previewPage.png"; //$NON-NLS-1$
+    URL url = PropEditorXPlugin.getDefault().getBundle().getEntry(path); // $NON-NLS-1$
+    ImageDescriptor descriptor = null;
+    descriptor = ImageDescriptor.createFromURL(url);
+    Image image = descriptor.createImage();
+    shell.setImage(image);
+    shell.setSize(600, 400);
+    shell.setLayout(new FillLayout());
+
+    // editor
+    StyledText text = new StyledText(shell, SWT.H_SCROLL | SWT.V_SCROLL);
+    text.setEditable(false);
+    Display display = Display.getCurrent();
+    RGB rgb = new RGB(240, 240, 240);
+    Color color = new Color(display, rgb);
+    text.setBackground(color);
+
+    // set font
+    Font font = textEditor.getFont();
+    text.setFont(font);
+
+    // set title
+    shell.setText(textEditor.getTitle());
+    // set unicode text
+    String editorText =
+        textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).get();
+
+    IProject project = ((IFileEditorInput) textEditor.getEditorInput()).getFile().getProject();
+    String charcase = PropertyUtil.getCharCase(project, PropEditorXPlugin.getDefault()
+        .getPreferenceStore().getString(PropertiesPreference.P_CONVERT_CHAR_CASE));
+    if (PropertyUtil.getNotAllConvert(project, PropEditorXPlugin.getDefault().getPreferenceStore()
+        .getBoolean(PropertiesPreference.P_NOT_ALL_CONVERT))) {
+      text.setText(editorText);
+    } else if (PropertyUtil.getNotConvertComment(project, PropEditorXPlugin.getDefault()
+        .getPreferenceStore().getBoolean(PropertiesPreference.P_NOT_CONVERT_COMMENT))) {
+      try {
+        if (Messages.getString("eclipse.propertieseditor.preference.convert.char.uppercase") //$NON-NLS-1$
+            .equals(charcase)) {
+          text.setText(
+              EncodeChanger.unicode2UnicodeEscWithoutComment(editorText, EncodeChanger.UPPERCASE));
+        } else {
+          text.setText(
+              EncodeChanger.unicode2UnicodeEscWithoutComment(editorText, EncodeChanger.LOWERCASE));
+        }
+      } catch (Exception e) {
+        IStatus status =
+            new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
+        ILog log = PropEditorXPlugin.getDefault().getLog();
+        log.log(status);
+        ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), //$NON-NLS-1$
+            Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$
+      }
+    } else {
+      try {
+        if (Messages.getString("eclipse.propertieseditor.preference.convert.char.uppercase") //$NON-NLS-1$
+            .equals(charcase)) {
+          text.setText(EncodeChanger.unicode2UnicodeEsc(editorText, EncodeChanger.UPPERCASE));
+        } else {
+          text.setText(EncodeChanger.unicode2UnicodeEsc(editorText, EncodeChanger.LOWERCASE));
+        }
+      } catch (Exception e) {
+        IStatus status =
+            new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
+        ILog log = PropEditorXPlugin.getDefault().getLog();
+        log.log(status);
+        ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), //$NON-NLS-1$
+            Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$
+      }
+    }
+
+    // window open
+    shell.open();
+    return null;
+  }
+
+}
