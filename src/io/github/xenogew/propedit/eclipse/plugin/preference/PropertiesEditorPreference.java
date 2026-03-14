@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 public class PropertiesEditorPreference extends FieldEditorPreferencePage
     implements IWorkbenchPreferencePage {
@@ -133,8 +134,7 @@ public class PropertiesEditorPreference extends FieldEditorPreferencePage
   private void apply2Editor() {
 
     IPreferenceStore pStore = getPreferenceStore();
-    IWorkbenchWindow[] workbenchWindow =
-        PropertiesEditorPlugin.getDefault().getWorkbench().getWorkbenchWindows();
+    IWorkbenchWindow[] workbenchWindow = PlatformUI.getWorkbench().getWorkbenchWindows();
     for (IWorkbenchWindow window : workbenchWindow) {
       IWorkbenchPage[] workbenchPage = window.getPages();
       for (IWorkbenchPage page : workbenchPage) {

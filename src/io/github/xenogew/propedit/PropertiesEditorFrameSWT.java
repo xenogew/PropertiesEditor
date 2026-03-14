@@ -1,6 +1,5 @@
 package io.github.xenogew.propedit;
 
-import io.github.xenogew.propedit.bean.AppSetting;
 import io.github.xenogew.propedit.util.EncodeChanger;
 import io.github.xenogew.propedit.util.EncodeManager;
 import io.github.xenogew.propedit.util.FileOpener;
@@ -44,7 +43,6 @@ public class PropertiesEditorFrameSWT {
   private StyledText editTextArea;
   private StyledText lineNumberTextArea;
   private ToolBar toolBar;
-  private AppSetting appSetting = AppSetting.getInstance();
 
   private FileOpener opFp;
   private boolean isModified = false;

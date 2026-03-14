@@ -1,7 +1,6 @@
 package io.github.xenogew.propedit.eclipse.plugin.editors.view.outline;
 
 import io.github.xenogew.propedit.eclipse.plugin.PropertiesEditorPlugin;
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -18,14 +17,9 @@ public class PropertiesOutlineLabelProvider extends LabelProvider {
     if (markerImage != null && !markerImage.isDisposed()) {
       return markerImage;
     }
-    URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
-    String path = "icons/outlineMarker.png"; //$NON-NLS-1$
+    URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/icons/outlineMarker.png"); //$NON-NLS-1$
     ImageDescriptor descriptor = null;
-    try {
-      descriptor = ImageDescriptor.createFromURL(new URL(url, path));
-    } catch (MalformedURLException e) {
-      descriptor = ImageDescriptor.getMissingImageDescriptor();
-    }
+    descriptor = ImageDescriptor.createFromURL(url);
     markerImage = descriptor.createImage();
     return markerImage;
   }

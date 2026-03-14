@@ -1,3 +1,4 @@
+Automatic-Module-Name: PropertiesEditor
 Manifest-Version: 1.0
 Main-Class: io.github.xenogew.propedit.PropertiesEditor
 Bundle-ManifestVersion: 2

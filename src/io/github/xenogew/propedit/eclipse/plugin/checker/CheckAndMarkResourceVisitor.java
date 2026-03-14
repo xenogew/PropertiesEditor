@@ -16,8 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * @author Sou Miyazaki
- * この生成されたコメントの挿入されるテンプレートを変更するため ウィンドウ > 設定 > Java > コード生成 > コードとコメント
+ * @author Sou Miyazaki この生成されたコメントの挿入されるテンプレートを変更するため ウィンドウ > 設定 > Java > コード生成 > コードとコメント
  */
 public class CheckAndMarkResourceVisitor implements IResourceVisitor {
 

@@ -2,7 +2,6 @@ package io.github.xenogew.propedit.eclipse.plugin.editors.view.outline;
 
 import io.github.xenogew.propedit.eclipse.plugin.PropertiesEditorPlugin;
 import io.github.xenogew.propedit.eclipse.plugin.resources.Messages;
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -12,7 +11,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -84,38 +83,34 @@ public class PropertiesContentOutlinePage extends ContentOutlinePage {
       viewer.setInput(fInput);
 
     // create toolbar action
-    PropertiesEditorPlugin.getDefault().getPluginPreferences().setDefault(ALPHA_SORT_BTN_CHECK_KEY,
+    PropertiesEditorPlugin.getDefault().getPreferenceStore().setDefault(ALPHA_SORT_BTN_CHECK_KEY,
         false);
     IToolBarManager toolbar = getSite().getActionBars().getToolBarManager();
     String label = Messages.getString("eclipse.contentoutline.sort.label"); //$NON-NLS-1$
     Action action = new Action(label, Action.AS_CHECK_BOX) {
       public void run() {
-        PropertiesEditorPlugin.getDefault().getPluginPreferences()
-            .setValue(ALPHA_SORT_BTN_CHECK_KEY, isChecked());
+        PropertiesEditorPlugin.getDefault().getPreferenceStore().setValue(ALPHA_SORT_BTN_CHECK_KEY,
+            isChecked());
         if (isChecked()) {
           TreeViewer v = getTreeViewer();
-          v.setSorter(new ViewerSorter());
+          v.setComparator(new ViewerComparator());
           v.setInput(v.getInput());
         } else {
-          getTreeViewer().setSorter(null);
+          getTreeViewer().setComparator(null);
           redraw();
         }
       }
     };
     action.setToolTipText(action.getText());
     if (sortImageDescriptor == null) {
-      URL url = PropertiesEditorPlugin.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
-      String path = "icons/alphab_sort_co.png"; //$NON-NLS-1$
-      try {
-        sortImageDescriptor = ImageDescriptor.createFromURL(new URL(url, path));
-      } catch (MalformedURLException e) {
-        sortImageDescriptor = ImageDescriptor.getMissingImageDescriptor();
-      }
+      URL url =
+          PropertiesEditorPlugin.getDefault().getBundle().getEntry("/icons/alphab_sort_co.png"); //$NON-NLS-1$
+      sortImageDescriptor = ImageDescriptor.createFromURL(url);
     }
     action.setImageDescriptor(sortImageDescriptor);
     toolbar.add(action);
 
-    action.setChecked(PropertiesEditorPlugin.getDefault().getPluginPreferences()
+    action.setChecked(PropertiesEditorPlugin.getDefault().getPreferenceStore()
         .getBoolean(ALPHA_SORT_BTN_CHECK_KEY));
     action.run();
   }
