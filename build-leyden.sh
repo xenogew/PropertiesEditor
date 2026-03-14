@@ -2,19 +2,17 @@
 # Project Leyden optimization script for PropEditorX standalone app
 
 echo "1. Building the project and generating classpath..."
-./mvnw clean compile
+./mvnw clean package -DskipTests
 ./mvnw dependency:build-classpath -pl :io.github.xenogew.propedit -Dmdep.outputFile=cp.txt
 
 # Get the classpath
-# Note: bundles/io.github.xenogew.propedit/target/classes is where the main app lives now
-CLASSES="bundles/io.github.xenogew.propedit/target/classes"
-CP="$CLASSES:$(cat cp.txt)"
+# We use the JAR file instead of the classes directory to satisfy AppCDS requirements
+APP_JAR=$(ls bundles/io.github.xenogew.propedit/target/io.github.xenogew.propedit-*.jar | grep -v "sources.jar" | head -n 1)
+CP="$APP_JAR:$(cat cp.txt)"
 
 echo "2. Running training session to generate class list..."
-# -XX:DumpLoadedClassList generates a list of all classes loaded during this run.
-# We run the app briefly and then close it (manual interaction required in training).
-# For automation, we can't easily "close" the SWT window, so we'll just run it with a timeout.
-java -XX:DumpLoadedClassList=classes.lst -cp "$CP" io.github.xenogew.propedit.PropEditorX &
+# --enable-native-access=ALL-UNNAMED is required for SWT's native libraries on Java 25
+java --enable-native-access=ALL-UNNAMED -XX:DumpLoadedClassList=classes.lst -cp "$CP" io.github.xenogew.propedit.PropEditorX &
 PID=$!
 sleep 5
 kill $PID
