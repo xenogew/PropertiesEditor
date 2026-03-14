@@ -222,13 +222,15 @@
 			id="io.github.xenogew.propedit.propertiesCompletionProposalComputer"
 			point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
 			name="%proposalName">
+		<proposalCategory 
+				icon="icons/pe_32.png" 
+				id="io.github.xenogew.propedit.eclipse.plugin.jdt.proposal.Category"/>
 		<javaCompletionProposalComputer
 				activate="true"
 				categoryId="io.github.xenogew.propedit.eclipse.plugin.jdt.proposal.Category"
 				class="io.github.xenogew.propedit.eclipse.plugin.jdt.proposal.PropertiesCompletionProposalComputer">
 			<partition type="__java_string"/>
 		</javaCompletionProposalComputer>
-		<proposalCategory icon="icons/pe_32.png"/>
 	</extension>
 	<extension
 			point="org.eclipse.core.contenttype.contentTypes">
