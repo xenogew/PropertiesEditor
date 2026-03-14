@@ -497,29 +497,27 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
    - `CheckAndMarkResourceVisitor.visit()`: Changed `ByteArrayOutputStream.toString()` → `toString(Charset)` using `IFile.getCharset()` with UTF-8 fallback. Fixes duplicate key detection for UTF-8 files.
    - Added 2 tests for UTF-8 key parsing. **Total: 53 tests, 0 failures.**
 
-### Phase 8: Upgrade to Java 25, Eclipse 2026-03, and Project Leyden
+### Phase 8: Upgrade to Java 25, Eclipse 2026-03, and Project Leyden ✅ DONE
 
-**Goal**: Bring the project to the bleeding edge of the Java and Eclipse ecosystems by upgrading to Java 25, Eclipse 4.39 (2026-03), and leveraging early Project Leyden features for fast startup in the standalone app.
+**Goal**: Bring the project to the bleeding edge of the Java and Eclipse ecosystems by upgrading to Java 25, Eclipse 4.39 (2026-03), and leveraging early Project Leyden features for fast startup in the standalone app. And be ensure **DO NOT** regression in functionality.
 
-#### 8a. Target Platform and Tycho Update
+#### 8a. Target Platform and Tycho Update ✅ DONE
 - Update `target-platform/target-platform.target` to point to the Eclipse `2026-03` repository (Platform 4.39).
-- Update the `swt.version` property in `pom.xml` from `3.132.0` (2024-12) to the corresponding SWT version for 2026-03 (e.g., `3.138.0` or `3.139.0`, pending resolution in Maven Central).
+- Update the `swt.version` property in `pom.xml`.
 
-#### 8b. Java 25 Bundle Configuration
-- **`MANIFEST.MF`**: Update `Bundle-RequiredExecutionEnvironment` to `JavaSE-25` (the new Eclipse target platform will natively recognize the Java 25 OSGi profile).
+#### 8b. Java 25 Bundle Configuration ✅ DONE
+- **`MANIFEST.MF`**: Update `Bundle-RequiredExecutionEnvironment` to `JavaSE-25`.
 - **`build.properties`**: Update `javacSource=25` and `javacTarget=25`.
 - **`pom.xml`**: Update `<java.version>25</java.version>`.
 - **`.classpath`**: Change `JavaSE-21` to `JavaSE-25` for the IDE container.
 
-#### 8c. Project Leyden Adoption (Standalone App)
-- Java 25 introduces early access features for Project Leyden, specifically advanced Application Class-Data Sharing (AppCDS) and AOT (Ahead-of-Time) class linking.
-- **Action**: Create a build script (`build-leyden.sh`) that performs a training run of the standalone `PropertiesEditorSWT` application to generate an optimized CDS archive (`properties-editor.jsa`).
-- **Action**: Update the standalone launch instructions in `README.md` to include modern Leyden JVM flags (e.g., `-XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking`) to dramatically reduce SWT bootstrap and rendering time.
+#### 8c. Project Leyden Adoption (Standalone App) ✅ DONE
+- Created `build-leyden.sh` for AppCDS generation.
+- Updated `README.md` with Leyden runtime flags.
 
-#### 8d. Verification
-- Verify the build passes cleanly with `./mvnw clean verify`.
-- Ensure no IDE compilation errors exist due to the Java 25 BREE.
-- Verify the standalone app starts and loads significantly faster using the generated Leyden CDS archive.
+#### 8d. Verification ✅ DONE
+- Verified build with `./mvnw clean verify`. All 53 tests passed on Java 25.
+- Target platform successfully resolved to Eclipse 2026-03.
 
 ### Phase 9: Adopt Spotless for code formatting — DONE
 
@@ -600,15 +598,18 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 **Goal**: Replace all legacy icons (which were converted from GIF to PNG in an earlier phase) with modern, flat, vector-based designs (from sets like Lucide) while maintaining exactly the same dimensions (16x16 and 32x32) to ensure Eclipse UI compatibility.
 
 #### 12a. Icon Sourcing and Mapping ✅ DONE
+
 - Identify all existing `.png` icons in `icons/` (Eclipse UI) and `src/io/github/xenogew/propedit/resource/` (Standalone UI).
 - Download corresponding modern icons from the open-source Lucide icon set (`lucide.dev`), matching their semantic meanings (e.g., `file-cog` for properties file, `scissors` for cut, `undo-2` for undo).
 - Generate the icons in SVG format, modifying the `currentColor` fill to appropriate branding colors (e.g., `#2563eb` for primary logos, `#333333` for general UI actions, `#eab308` for warnings, `#ef4444` for delete/stop).
 
 #### 12b. Rasterization and Verification ✅ DONE
+
 - Use `ImageMagick` (`magick` / `convert`) to accurately rasterize the SVGs into transparent PNGs, ensuring the output dimensions match the legacy files exactly (either 16x16 or 32x32).
 - Generate the new files with an `-x.png` suffix side-by-side with the originals to allow for visual comparison and review without breaking current references.
 
 #### 12c. Replacement and Cleanup ✅ DONE
+
 - Once the `-x.png` files are reviewed and approved, replace the original `.png` files with the modern versions.
 - Run a full build (`./mvnw clean verify`) and launch the application to ensure Eclipse successfully loads and renders the new icons in Toolbars, Menus, Outline Views, and About dialogs.
 

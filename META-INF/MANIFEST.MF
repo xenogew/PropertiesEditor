@@ -21,5 +21,6 @@ Bundle-Vendor: %Bundle-Vendor.0
 Export-Package: io.github.xenogew.propedit.eclipse.plugin.editors.detector,
  io.github.xenogew.propedit.eclipse.plugin.listener;uses:="org.eclipse.core.runtime"
 Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-25
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin

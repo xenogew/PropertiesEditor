@@ -32,10 +32,22 @@ This compiles the plugin, runs 51 unit tests, and packages the OSGi bundle JAR i
 ## Running Standalone
 
 ```bash
-java -cp "target/classes:lib/flatlaf-3.6.jar" io.github.xenogew.propedit.PropertiesEditor
+java -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropertiesEditor
 ```
 
-Or run `PropertiesEditor.main()` from your IDE.
+### Optimization (Project Leyden)
+
+For near-instant startup on Java 25+, you can generate an optimized CDS archive:
+
+```bash
+./build-leyden.sh
+```
+
+Then run with optimization flags:
+
+```bash
+java -XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropertiesEditor
+```
 
 ## Running as Eclipse Plugin
 
