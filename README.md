@@ -45,6 +45,13 @@ Drag the following button into your running Eclipse workspace:
 3. Enter the following URL: `https://xenogew.github.io/PropertiesEditor/`
 4. Select **PropEditorX** and follow the prompts.
 
+#### 3. Offline Installation (ZIP)
+1. Go to the [Releases](https://github.com/xenogew/PropertiesEditor/releases) page.
+2. Download the `io.github.xenogew.propedit.repository-*.zip` file.
+3. In Eclipse, go to **Help > Install New Software...**
+4. Click **Add...** then **Archive...**
+5. Select the downloaded ZIP file, click **Add**, then select **PropEditorX** to install.
+
 ### Standalone App
 
 ```bash
