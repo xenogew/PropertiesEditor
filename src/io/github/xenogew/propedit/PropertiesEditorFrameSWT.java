@@ -50,7 +50,7 @@ public class PropertiesEditorFrameSWT {
 
   public PropertiesEditorFrameSWT(Display display) {
     shell = new Shell(display);
-    shell.setText("PropertiesEditor");
+    shell.setText("PropEditorX");
     shell.setImage(new Image(display,
         PropertiesEditorFrameSWT.class.getResourceAsStream("resource/pe_32.png")));
 
@@ -260,7 +260,7 @@ public class PropertiesEditorFrameSWT {
         shell.getDisplay().asyncExec(() -> {
           editTextArea.setText(decoded);
           isModified = false;
-          shell.setText("PropertiesEditor - " + file.getName());
+          shell.setText("PropEditorX - " + file.getName());
         });
       } catch (Exception ex) {
         LOG.log(Level.SEVERE, "Failed to read file", ex);

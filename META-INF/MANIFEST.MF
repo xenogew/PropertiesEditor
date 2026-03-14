@@ -1,11 +1,11 @@
-Automatic-Module-Name: PropertiesEditor
+Automatic-Module-Name: PropEditorX
 Manifest-Version: 1.0
-Main-Class: io.github.xenogew.propedit.PropertiesEditor
+Main-Class: io.github.xenogew.propedit.PropEditorX
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: io.github.xenogew.propedit;singleton:=true
 Bundle-Version: 7.0.0.qualifier
-Bundle-Activator: io.github.xenogew.propedit.eclipse.plugin.PropertiesEditorPlugin
+Bundle-Activator: io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.jface.text,
  org.eclipse.ui,

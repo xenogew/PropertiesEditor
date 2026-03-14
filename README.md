@@ -1,9 +1,9 @@
-# PropertiesEditor
+# PropEditorX
 
 A specialized Java `.properties` file editor with automatic Unicode escape conversion (`\uXXXX` ↔ native characters), available as both an **Eclipse IDE plugin** and a **standalone Swing/SWT desktop application**.
 
 Originally created by Sou Miyazaki. Modernized and maintained by xenogew.
-Forked from [PropertiesEditor on OSDN](http://svn.osdn.net/svnroot/propedit/).
+Forked from [PropEditorX on OSDN](http://svn.osdn.net/svnroot/propedit/).
 
 ## Features
 
@@ -32,7 +32,7 @@ This compiles the plugin, runs 51 unit tests, and packages the OSGi bundle JAR i
 ## Running Standalone
 
 ```bash
-java -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropertiesEditor
+java -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
 ```
 
 ### Optimization (Project Leyden)
@@ -46,7 +46,7 @@ For near-instant startup on Java 25+, you can generate an optimized CDS archive:
 Then run with optimization flags:
 
 ```bash
-java -XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropertiesEditor
+java -XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
 ```
 
 ## Running as Eclipse Plugin
@@ -56,7 +56,7 @@ Install the built JAR (`target/io.github.xenogew.propedit-7.0.0-SNAPSHOT.jar`) i
 ## Project Structure
 
 ```
-PropertiesEditor/
+PropEditorX/
 ├── META-INF/MANIFEST.MF          # OSGi bundle manifest
 ├── plugin.xml                     # Eclipse extension point declarations
 ├── build.properties               # PDE build configuration

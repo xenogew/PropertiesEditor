@@ -1,4 +1,4 @@
-# PropertiesEditor — Quick Reference
+# PropEditorX — Quick Reference
 
 A Java `.properties` file editor with automatic `\uXXXX` ↔ native character conversion. Eclipse plugin + standalone Swing app.
 
@@ -31,11 +31,11 @@ A Java `.properties` file editor with automatic `\uXXXX` ↔ native character co
 ./mvnw clean verify
 
 # Run standalone
-java -cp "target/classes:lib/flatlaf-3.6.jar" io.github.xenogew.propedit.PropertiesEditor
+java -cp "target/classes:lib/flatlaf-3.6.jar" io.github.xenogew.propedit.PropEditorX
 ```
 
 ## Key Entry Points
 
-- **Standalone main**: `io.github.xenogew.propedit.PropertiesEditor`
-- **Plugin activator**: `io.github.xenogew.propedit.eclipse.plugin.PropertiesEditorPlugin`
+- **Standalone main**: `io.github.xenogew.propedit.PropEditorX`
+- **Plugin activator**: `io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin`
 - **Core conversion**: `io.github.xenogew.propedit.util.EncodeChanger`

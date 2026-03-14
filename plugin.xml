@@ -11,10 +11,10 @@
 		   point="org.eclipse.ui.editors">
 		<editor
 				icon="icons/IconByTaroTw.png"
-				class="io.github.xenogew.propedit.eclipse.plugin.editors.PropertiesEditor"
+				class="io.github.xenogew.propedit.eclipse.plugin.editors.PropEditorX"
 				default="true"
-				name="PropertiesEditor"
-				id="io.github.xenogew.propedit.editors.PropertiesEditor"
+				name="PropEditorX"
+				id="io.github.xenogew.propedit.editors.PropEditorX"
 				contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
 				extensions="properties">
 		</editor>
@@ -27,15 +27,15 @@
 				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesPreference"
 				id="io.github.xenogew.propedit.preference.PropertiesPreference"/>
 		<page
-				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesEditorPreference"
+				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropEditorXPreference"
 				category="io.github.xenogew.propedit.preference.PropertiesPreference"
 				name="%editorPreferencePageName"
-				id="io.github.xenogew.propedit.preference.PropertiesEditorPreference"/>
+				id="io.github.xenogew.propedit.preference.PropEditorXPreference"/>
 		<page
-				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesEditorDuplicationCheckerPreference"
+				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropEditorXDuplicationCheckerPreference"
 				category="io.github.xenogew.propedit.preference.PropertiesPreference"
 				name="%checkDuplicationPreferencePageName"
-				id="io.github.xenogew.propedit.preference.PropertiesEditorDuplicationCheckerPreference"/>
+				id="io.github.xenogew.propedit.preference.PropEditorXDuplicationCheckerPreference"/>
 	</extension>
 	<extension point="org.eclipse.core.runtime.preferences">
 		   <initializer class="io.github.xenogew.propedit.eclipse.plugin.preference.PreferenceInitializer"/>
@@ -63,7 +63,7 @@
 				class="io.github.xenogew.propedit.eclipse.plugin.action.ToggleCommentAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 				</with>
 			</activeWhen>
 		</handler>
@@ -72,7 +72,7 @@
 				class="io.github.xenogew.propedit.eclipse.plugin.action.ExpandAllFoldingAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 				</with>
 			</activeWhen>
 		</handler>
@@ -81,7 +81,7 @@
 				class="io.github.xenogew.propedit.eclipse.plugin.action.CollapseAllFoldingAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 				</with>
 			</activeWhen>
 		</handler>
@@ -90,7 +90,7 @@
 				class="io.github.xenogew.propedit.eclipse.plugin.action.ShowUnicodeEscAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 				</with>
 			</activeWhen>
 		</handler>
@@ -100,7 +100,7 @@
 			name="%contextLabel"
 			description="%contextDescription"
 			parentId="org.eclipse.ui.textEditorScope"
-			id="io.github.xenogew.propedit.PropertiesEditorScope">
+			id="io.github.xenogew.propedit.PropEditorXScope">
 		</context>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
@@ -127,7 +127,7 @@
 	<!-- context menu contributions (replaces org.eclipse.ui.popupMenus) -->
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
-				locationURI="popup:#PropertiesEditorContext?after=additions">
+				locationURI="popup:#PropEditorXContext?after=additions">
 			<command
 					commandId="io.github.xenogew.propedit.togglecomment.command"
 					icon="icons/IconByTaroTw.png"
@@ -154,7 +154,7 @@
 					label="%toggleCommentActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 					</with>
 				</visibleWhen>
 			</command>
@@ -164,7 +164,7 @@
 					label="%expandAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 					</with>
 				</visibleWhen>
 			</command>
@@ -174,7 +174,7 @@
 					label="%collapseAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 					</with>
 				</visibleWhen>
 			</command>
@@ -184,7 +184,7 @@
 					label="%showUnicodeEscActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
 					</with>
 				</visibleWhen>
 			</command>
@@ -209,12 +209,12 @@
 			point="org.eclipse.ui.bindings">
 		<key
 				commandId="io.github.xenogew.propedit.togglecomment.command"
-				contextId="io.github.xenogew.propedit.PropertiesEditorScope"
+				contextId="io.github.xenogew.propedit.PropEditorXScope"
 				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 				sequence="Ctrl+/"/>
 		<key
 				commandId="io.github.xenogew.propedit.showunicode.command"
-				contextId="io.github.xenogew.propedit.PropertiesEditorScope"
+				contextId="io.github.xenogew.propedit.PropEditorXScope"
 				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 				sequence="Ctrl+I"/>
 	</extension>
