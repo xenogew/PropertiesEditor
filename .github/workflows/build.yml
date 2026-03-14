@@ -22,6 +22,10 @@ jobs:
     - name: Build with Maven
       run: ./mvnw clean verify -B
       
+    - name: Prepare P2 Landing Page
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: cp releng/io.github.xenogew.propedit.repository/index.html releng/io.github.xenogew.propedit.repository/target/repository/
+
     - name: Upload P2 Repository
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v4
