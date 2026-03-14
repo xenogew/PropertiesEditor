@@ -1,11 +1,14 @@
 #!/bin/bash
 # Project Leyden optimization script for PropEditorX standalone app
 
-echo "1. Building the project..."
+echo "1. Building the project and generating classpath..."
 ./mvnw clean compile
+./mvnw dependency:build-classpath -pl :io.github.xenogew.propedit -Dmdep.outputFile=cp.txt
 
 # Get the classpath
-CP="target/classes:$(cat cp.txt)"
+# Note: bundles/io.github.xenogew.propedit/target/classes is where the main app lives now
+CLASSES="bundles/io.github.xenogew.propedit/target/classes"
+CP="$CLASSES:$(cat cp.txt)"
 
 echo "2. Running training session to generate class list..."
 # -XX:DumpLoadedClassList generates a list of all classes loaded during this run.
