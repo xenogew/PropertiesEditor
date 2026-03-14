@@ -41,13 +41,14 @@ A specialized Java `.properties` file editor that supports automatic Unicode esc
 
 ### Phase 13: Rebrand to PropEditorX and Implementation of New Logo ✅ DONE
 
-**Goal**: Complete the final rebranding of the project to "PropEditorX", establishing a distinct modern identity while acknowledging the original inspiration from Sou Miyazaki. This includes implementing the new solar-flare-themed logo.
+**Goal**: Complete the final rebranding of the project to "PropEditorX", establishing a distinct modern identity while acknowledging the original inspiration from Sou Miyazaki. This includes implementing the new solar-flare-themed logo with size-optimized variations.
 
 #### 13a. Logo Modernization ✅ DONE
-- **Source**: Used `icons/PropEditorX-Solar-Flare-(Uppercase).svg` as the source for all brand-related icons.
-- **Rasterization**: Converted the SVG into high-quality transparent PNGs.
-    - `16x16`: Replaced `icons/pe_16.png` and `src/io/github/xenogew/propedit/resource/pe_16.png`.
-    - `32x32`: Replaced `icons/pe_32.png` and `src/io/github/xenogew/propedit/resource/pe_32.png`.
+- **Source**: Used `icons/PropEditorX-Icon-16x16.svg`, `32x32`, and `48x48` as sources for better clarity at small scales.
+- **Rasterization**: Converted the SVGs into high-quality transparent PNGs tailored for each size.
+    - `16x16`: Updated `icons/pe_16.png`, `icons/IconByTaroTw.png`, and `src/io/github/xenogew/propedit/resource/pe_16.png`.
+    - `32x32`: Updated `icons/pe_32.png` and `src/io/github/xenogew/propedit/resource/pe_32.png`.
+    - `48x48`: Added `icons/pe_48.png` for future high-DPI support.
 - **Integration**: Updated all references. The new logo is now the main icon for both the plugin and standalone app.
 
 #### 13b. Name Rebranding (PropertiesEditor → PropEditorX) ✅ DONE
