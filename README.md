@@ -1,8 +1,8 @@
 # PropEditorX
 
-A specialized Java `.properties` file editor with automatic Unicode escape conversion (`\uXXXX` ↔ native characters), available as both an **Eclipse IDE plugin** and a **standalone Swing/SWT desktop application**.
+A specialized Java `.properties` file editor with automatic Unicode escape conversion (`\uXXXX` ↔ native characters), available as both an **Eclipse IDE plugin** and a **standalone SWT desktop application**.
 
-Originally created by Sou Miyazaki. Modernized and maintained by xenogew.
+Originally created by Sou Miyazaki. Modernized and maintained by **Santa Soft**.
 Forked from [PropEditorX on OSDN](http://svn.osdn.net/svnroot/propedit/).
 
 ## Features
@@ -13,12 +13,12 @@ Forked from [PropEditorX on OSDN](http://svn.osdn.net/svnroot/propedit/).
 - **Code Folding** — Projection-based folding with collapse/expand all actions.
 - **Content Outline** — Property keys displayed in the Eclipse Outline view.
 - **JDT Integration** — Hover shows property values in Java source; completion proposals suggest property keys inside string literals.
-- **Standalone App** — Full desktop application with file open/save, search/replace, encoding selection, and Unicode conversion.
-- **Localization** — English and Japanese.
+- **Standalone App** — Full native SWT desktop application with file open/save, search/replace, encoding selection, and Unicode conversion.
+- **Localization** — English and Japanese (UTF-8 based).
 
 ## Prerequisites
 
-- **Java 21+** — JDK 21+ with `JAVA_HOME` set
+- **Java 25+** — JDK 25+ with `JAVA_HOME` set
 - **Maven** — Included via Maven Wrapper (`./mvnw`)
 
 ## Build
@@ -27,7 +27,7 @@ Forked from [PropEditorX on OSDN](http://svn.osdn.net/svnroot/propedit/).
 ./mvnw clean verify
 ```
 
-This compiles the plugin, runs 51 unit tests, and packages the OSGi bundle JAR in `target/`.
+This compiles the project, runs 53 unit tests, and packages the modules (Plugin, Feature, and P2 Repository).
 
 ## Installation
 
@@ -42,58 +42,50 @@ Drag the following button into your running Eclipse workspace:
 #### 2. P2 Update Site
 1. Go to **Help > Install New Software...**
 2. Click **Add...**
-3. Enter the following URL: `https://xenogew.github.io/PropEditorX/`
+3. Enter the following URL: `https://xenogew.github.io/PropertiesEditor/`
 4. Select **PropEditorX** and follow the prompts.
 
 ### Standalone App
 
 ```bash
-java -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
+# Run using the built JAR and its dependencies
+java -cp "bundles/io.github.xenogew.propedit/target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
 ```
-
 
 ### Optimization (Project Leyden)
 
-For near-instant startup on Java 25+, you can generate an optimized CDS archive:
+For near-instant startup on Java 25+, you can generate an optimized AppCDS archive:
 
 ```bash
 ./build-leyden.sh
 ```
 
-Then run with optimization flags:
+Then run with AOT optimization flags:
 
 ```bash
-java -XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking -cp "target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
+java -XX:SharedArchiveFile=properties-editor.jsa -XX:+AOTClassLinking -cp "bundles/io.github.xenogew.propedit/target/classes:$(cat cp.txt)" io.github.xenogew.propedit.PropEditorX
 ```
-
-## Running as Eclipse Plugin
-
-Install the built JAR (`target/io.github.xenogew.propedit-7.0.0-SNAPSHOT.jar`) into your Eclipse `dropins/` folder, or use a P2 update site.
 
 ## Project Structure
 
+PropEditorX uses a standard multi-module Tycho layout:
+
 ```
-PropEditorX/
-├── META-INF/MANIFEST.MF          # OSGi bundle manifest
-├── plugin.xml                     # Eclipse extension point declarations
-├── build.properties               # PDE build configuration
-├── pom.xml                        # Maven/Tycho build
-├── target-platform/               # Eclipse target platform definition
-├── lib/flatlaf-3.6.jar            # FlatLaf look-and-feel
-├── icons/                         # Eclipse plugin icons (PNG)
-├── schema/                        # Extension point schemas
-├── src/
-│   ├── io/github/xenogew/propedit/
-│   │   ├── eclipse/plugin/        # Eclipse plugin code
-│   │   ├── util/                  # Core utilities (EncodeChanger, etc.)
-│   │   ├── bean/                  # Data classes
-│   │   ├── swing/                 # Swing utility classes
-│   │   ├── io/                    # Custom I/O classes
-│   │   └── ...                    # Standalone App classes
-│   └── test/java/                 # JUnit 5 unit tests
-└── license/                       # License files
+PropertiesEditor/
+├── bundles/
+│   └── io.github.xenogew.propedit/    # Core Plugin & Standalone App
+│       ├── META-INF/MANIFEST.MF      # OSGi manifest
+│       ├── plugin.xml                 # Extension points
+│       ├── src/                       # Java source code
+│       └── icons/                     # Harmonized PNG icons
+├── features/
+│   └── io.github.xenogew.propedit.feature/ # Eclipse Feature definition
+├── releng/
+│   └── io.github.xenogew.propedit.repository/ # P2 Update Site generation
+├── target-platform/                   # Eclipse target platform (.target)
+└── .github/workflows/                 # CI/CD (Auto-build & Deploy)
 ```
 
 ## License
 
-See the [LICENSE](license/) file for details.
+See the `LICENSE` file and `bundles/io.github.xenogew.propedit/license/` for details.
