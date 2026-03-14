@@ -1,3 +1,4 @@
-target/
+target/**/*
+!target/io.github.xenogew.propedit-7.0.0-SNAPSHOT.jar
 bin/
 *.target.resolved
