@@ -10,19 +10,12 @@ public class PropertyAnalyzer {
 
 }
 
-
 class ElementListCreator {
 
   void addElement(int keyStartPos, int keyLength, String key, int valueStartPos, int valueLength,
       String value, int elementStartLine, int elementLineCount) {
-    PropertyElement element = new PropertyElement();
-    element.setKeyStartPos(keyStartPos);
-    element.setKeyLength(keyLength);
-    element.setKey(key);
-    element.setValueStartPos(valueStartPos);
-    element.setValueLength(valueLength);
-    element.setValue(value);
-    element.setElementStartLine(elementStartLine);
-    element.setElementLineCount(elementLineCount);
+    var element = PropertyElement.builder().keyStartPos(keyStartPos).keyLength(keyLength).key(key)
+        .valueStartPos(valueStartPos).valueLength(valueLength).value(value)
+        .elementStartLine(elementStartLine).elementLineCount(elementLineCount).build();
   }
 }

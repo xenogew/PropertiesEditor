@@ -535,15 +535,15 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 
 #### 10d. Incremental Implementation Plan
 
-1.  **Environment Setup**: Update `pom.xml` with SWT profiles and verify cross-platform resolution.
-2.  **Basic Shell**: Create a minimal SWT `PropertiesEditor` entry point that launches a blank `Shell`.
-3.  **Dialog Migration**: Migrate `AboutBox` and `UnicodeDialog` as they are relatively self-contained.
-4.  **Main Frame Migration**:
+1.  **Environment Setup**: Update `pom.xml` with SWT profiles and verify cross-platform resolution. ✅ DONE
+2.  **Basic Shell**: Create a minimal SWT `PropertiesEditor` entry point that launches a blank `Shell`. ✅ DONE
+3.  **Dialog Migration**: Migrate `AboutBox`, `UnicodeDialog`, `SearchTextDialog`, and `ReplaceTextDialog` as they are relatively self-contained. ✅ DONE (`JFontChooserDialog` will be replaced with native SWT `FontDialog`/`ColorDialog` in the Main Frame)
+4.  **Main Frame Migration**: ✅ DONE
     - Implement the `StyledText` editor area.
     - Port the Menu and ToolBar logic.
     - Connect existing `EncodeChanger` and `EncodeManager` logic (core utilities are already UI-agnostic).
-5.  **DND & Printing**: Port `DropHandler` and `EditorPrinter` to SWT's native Drag-and-Drop and Printing APIs.
-6.  **Cleanup**: Remove all `javax.swing` and `java.awt` dependencies from the standalone application source.
+5.  **DND & Printing**: Port `DropHandler` and `EditorPrinter` to SWT's native Drag-and-Drop and Printing APIs. ✅ DONE
+6.  **Cleanup**: Remove all `javax.swing` and UI-specific `java.awt` dependencies from the standalone application source. ✅ DONE
 
 ### Phase 11: Rebranding and Eclipse Marketplace Publishing
 

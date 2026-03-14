@@ -38,6 +38,8 @@ import java.util.List;
  */
 public class AppSetting implements Serializable {
 
+  private static final long serialVersionUID = 4236912674591700629L;
+
   /**
    */
   public static final String filepath = "ini"; //$NON-NLS-1$

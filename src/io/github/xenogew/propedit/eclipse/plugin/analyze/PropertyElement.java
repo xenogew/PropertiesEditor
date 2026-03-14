@@ -1,7 +1,8 @@
 package io.github.xenogew.propedit.eclipse.plugin.analyze;
 
-public class PropertyElement {
+public record PropertyElement(int keyStartPos,int keyLength,int valueStartPos,int valueLength,String key,String value,int elementStartLine,int elementLineCount){
 
+public static final class Builder {
   private int keyStartPos;
   private int keyLength;
   private int valueStartPos;
@@ -11,68 +12,56 @@ public class PropertyElement {
   private int elementStartLine;
   private int elementLineCount;
 
-  public int getElementStartLine() {
-    return elementStartLine;
-  }
+  private Builder() {}
 
-  public void setElementStartLine(int elementStartLine) {
-    this.elementStartLine = elementStartLine;
-  }
-
-  public String getKey() {
-    return key;
-  }
-
-  public int getElementLineCount() {
-    return elementLineCount;
-  }
-
-  public void setElementLineCount(int elementLineCount) {
-    this.elementLineCount = elementLineCount;
-  }
-
-  public int getKeyLength() {
-    return keyLength;
-  }
-
-  public void setKeyLength(int keyLength) {
-    this.keyLength = keyLength;
-  }
-
-  public int getValueLength() {
-    return valueLength;
-  }
-
-  public void setValueLength(int valueLength) {
-    this.valueLength = valueLength;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  public int getKeyStartPos() {
-    return keyStartPos;
-  }
-
-  public void setKeyStartPos(int keyStartPos) {
+  public Builder keyStartPos(int keyStartPos) {
     this.keyStartPos = keyStartPos;
+    return this;
   }
 
-  public String getValue() {
-    return value;
+  public Builder keyLength(int keyLength) {
+    this.keyLength = keyLength;
+    return this;
   }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public int getValueStartPos() {
-    return valueStartPos;
-  }
-
-  public void setValueStartPos(int valueStartPos) {
+  public Builder valueStartPos(int valueStartPos) {
     this.valueStartPos = valueStartPos;
+    return this;
   }
 
+  public Builder valueLength(int valueLength) {
+    this.valueLength = valueLength;
+    return this;
+  }
+
+  public Builder key(String key) {
+    this.key = key;
+    return this;
+  }
+
+  public Builder value(String value) {
+    this.value = value;
+    return this;
+  }
+
+  public Builder elementStartLine(int elementStartLine) {
+    this.elementStartLine = elementStartLine;
+    return this;
+  }
+
+  public Builder elementLineCount(int elementLineCount) {
+    this.elementLineCount = elementLineCount;
+    return this;
+  }
+
+  public PropertyElement build() {
+    return new PropertyElement(this.keyStartPos, this.keyLength, this.valueStartPos,
+        this.valueLength, this.key, this.value, this.elementStartLine, this.elementLineCount);
+  }
+
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
 }

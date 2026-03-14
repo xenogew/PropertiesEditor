@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 public class FileOpener extends File {
 
+  private static final long serialVersionUID = -4346547218462246935L;
   /**
    */
   private StringBuilder txt = null;

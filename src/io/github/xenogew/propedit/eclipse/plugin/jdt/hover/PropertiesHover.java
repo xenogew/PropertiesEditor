@@ -26,7 +26,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
 /**
- * @author miyazaki
+ * @author Sou Miyazaki
+ * @author xenogew
  *
  */
 public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtension {

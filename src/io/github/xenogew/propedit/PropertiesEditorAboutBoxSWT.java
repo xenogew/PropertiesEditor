@@ -34,7 +34,7 @@ public class PropertiesEditorAboutBoxSWT extends BaseDialogSWT {
     // Icon
     Label imageLabel = new Label(shell, SWT.NONE);
     Image image = new Image(shell.getDisplay(),
-        PropertiesEditorFrame.class.getResourceAsStream("resource/editor.png"));
+        PropertiesEditorFrameSWT.class.getResourceAsStream("resource/editor.png"));
     imageLabel.setImage(image);
     imageLabel.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false, false));
     shell.addDisposeListener(e -> image.dispose());
