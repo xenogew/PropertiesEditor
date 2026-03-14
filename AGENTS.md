@@ -79,25 +79,30 @@ A specialized Java `.properties` file editor that supports automatic Unicode esc
 **Goal**: Prepare PropEditorX for publishing on the Eclipse Marketplace by restructuring the project into a standard multi-module Tycho build, creating an Eclipse Feature, and generating a P2 Update Site (Repository).
 
 #### 14a. Icon Naming Harmonization ✅ DONE
+
 - Harmonized brand icon naming to use the preferred `icon-prop-editor-x` prefix.
 - Updated all references in `plugin.xml`, `about.ini`, and code.
 - Removed redundant legacy icon files.
 
 #### 14b. Project Restructuring (Standard Tycho Layout) ✅ DONE
+
 - Restructured the repository into a multi-module Maven project:
-    - `/bundles/io.github.xenogew.propedit`: Core plugin code and resources.
-    - `/features/io.github.xenogew.propedit.feature`: Eclipse Feature project.
-    - `/releng/io.github.xenogew.propedit.repository`: Eclipse Repository project (P2 Update Site).
+  - `/bundles/io.github.xenogew.propedit`: Core plugin code and resources.
+  - `/features/io.github.xenogew.propedit.feature`: Eclipse Feature project.
+  - `/releng/io.github.xenogew.propedit.repository`: Eclipse Repository project (P2 Update Site).
 - Updated the root `pom.xml` to serve as the parent aggregator.
 
 #### 14c. Final Branding and Vendor Update ✅ DONE
+
 - Updated `Bundle-Vendor` to `Santa Soft` in all localization and manifest files.
 - Renamed main classes and references to `PropEditorX`.
 
 #### 14d. GitHub Actions CI/CD ✅ DONE
+
 - Implemented `.github/workflows/build.yml` for automated build and P2 site deployment to `gh-pages`.
 
 #### 14e. Documentation for Installation ✅ DONE
+
 - Updated `README.md` with a clear "Installation" section pointing to the automated Update Site.
 
 ---
@@ -110,7 +115,7 @@ A specialized Java `.properties` file editor that supports automatic Unicode esc
 | `plugin.xml`                      | All Eclipse extension point declarations                               |
 | `pom.xml`                         | Maven/Tycho build and Java version configuration                       |
 | `PropertiesDocumentProvider.java` | Core load/save logic with Unicode conversion — the heart of the plugin |
-| `PropEditorX.java`           | Main application entry point                                           |
+| `PropEditorX.java`                | Main application entry point                                           |
 | `EncodeChanger.java`              | Core Unicode ↔ escape conversion algorithm                             |
 | `CheckAndMarkDuplicateKey.java`   | Duplicate key detection and marker creation                            |
-| `PropEditorXPlugin.java`     | Plugin activator — singleton, resource bundle                          |
+| `PropEditorXPlugin.java`          | Plugin activator — singleton, resource bundle                          |

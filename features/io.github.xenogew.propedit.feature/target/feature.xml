@@ -2,7 +2,7 @@
 <feature
       id="io.github.xenogew.propedit.feature"
       label="PropEditorX Feature"
-      version="7.0.0.202603140938"
+      version="7.0.0.202603141013"
       provider-name="Santa Soft">
 
    <description url="https://github.com/xenogew/PropertiesEditor">
@@ -19,6 +19,6 @@
 
    <plugin
          id="io.github.xenogew.propedit"
-         version="7.0.0.202603140938"/>
+         version="7.0.0.202603141013"/>
 
 </feature>

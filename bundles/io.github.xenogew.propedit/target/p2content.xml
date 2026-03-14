@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <units size='1'>
-  <unit id='io.github.xenogew.propedit' version='7.0.0.202603140938' generation='2'>
-    <update id='io.github.xenogew.propedit' range='[0.0.0,7.0.0.202603140938)' severity='0'/>
+  <unit id='io.github.xenogew.propedit' version='7.0.0.202603141013' generation='2'>
+    <update id='io.github.xenogew.propedit' range='[0.0.0,7.0.0.202603141013)' severity='0'/>
     <properties size='11'>
       <property name='df_LT.Bundle-Vendor.0' value='Santa Soft'/>
       <property name='df_LT.Bundle-Name.0' value='PropEditorX'/>
@@ -16,15 +16,15 @@
       <property name='maven-type' value='eclipse-plugin'/>
     </properties>
     <provides size='8'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='io.github.xenogew.propedit' version='7.0.0.202603140938'/>
-      <provided namespace='osgi.bundle' name='io.github.xenogew.propedit' version='7.0.0.202603140938'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='io.github.xenogew.propedit' version='7.0.0.202603141013'/>
+      <provided namespace='osgi.bundle' name='io.github.xenogew.propedit' version='7.0.0.202603141013'/>
       <provided namespace='java.package' name='io.github.xenogew.propedit.eclipse.plugin.editors.detector' version='0.0.0'/>
       <provided namespace='java.package' name='io.github.xenogew.propedit.eclipse.plugin.listener' version='0.0.0'>
         <properties size='1'>
           <property name='java.package.directive.uses' value='org.eclipse.core.runtime' type='List'/>
         </properties>
       </provided>
-      <provided namespace='osgi.identity' name='io.github.xenogew.propedit' version='7.0.0.202603140938'>
+      <provided namespace='osgi.identity' name='io.github.xenogew.propedit' version='7.0.0.202603141013'>
         <properties size='1'>
           <property name='type' value='osgi.bundle'/>
         </properties>
@@ -50,20 +50,20 @@
           io.github.xenogew.propedit
         </description>
       </requiredProperties>
-      <required namespace='org.eclipse.equinox.p2.iu' name='io.github.xenogew.propedit.source' range='[7.0.0.202603140938,7.0.0.202603140938]' optional='true'>
+      <required namespace='org.eclipse.equinox.p2.iu' name='io.github.xenogew.propedit.source' range='[7.0.0.202603141013,7.0.0.202603141013]' optional='true'>
         <filter>
           (org.eclipse.update.install.sources=true)
         </filter>
       </required>
     </requires>
     <artifacts size='1'>
-      <artifact classifier='osgi.bundle' id='io.github.xenogew.propedit' version='7.0.0.202603140938'/>
+      <artifact classifier='osgi.bundle' id='io.github.xenogew.propedit' version='7.0.0.202603141013'/>
     </artifacts>
     <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
     <touchpointData size='1'>
       <instructions size='1'>
         <instruction key='manifest'>
-          Bundle-SymbolicName: io.github.xenogew.propedit;singleton:=true&#xA;Bundle-Version: 7.0.0.202603140938&#xA;
+          Bundle-SymbolicName: io.github.xenogew.propedit;singleton:=true&#xA;Bundle-Version: 7.0.0.202603141013&#xA;
         </instruction>
       </instructions>
     </touchpointData>

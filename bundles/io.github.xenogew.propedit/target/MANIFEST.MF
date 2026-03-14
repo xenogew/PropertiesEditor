@@ -4,7 +4,7 @@ Main-Class: io.github.xenogew.propedit.PropEditorX
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: io.github.xenogew.propedit;singleton:=true
-Bundle-Version: 7.0.0.202603140938
+Bundle-Version: 7.0.0.202603141106
 Bundle-Activator: io.github.xenogew.propedit.eclipse.plugin.PropEditorXP
  lugin
 Require-Bundle: org.eclipse.core.resources,org.eclipse.jface.text,org.ec
