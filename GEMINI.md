@@ -31,11 +31,11 @@ A Java `.properties` file editor with automatic `\uXXXX` ↔ native character co
 ./mvnw clean verify
 
 # Run standalone
-java -cp "target/classes:lib/flatlaf-3.6.jar" jp.gr.java_conf.ussiy.app.propedit.PropertiesEditor
+java -cp "target/classes:lib/flatlaf-3.6.jar" io.github.xenogew.propedit.PropertiesEditor
 ```
 
 ## Key Entry Points
 
-- **Standalone main**: `jp.gr.java_conf.ussiy.app.propedit.PropertiesEditor`
-- **Plugin activator**: `jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.PropertiesEditorPlugin`
-- **Core conversion**: `jp.gr.java_conf.ussiy.app.propedit.util.EncodeChanger`
+- **Standalone main**: `io.github.xenogew.propedit.PropertiesEditor`
+- **Plugin activator**: `io.github.xenogew.propedit.eclipse.plugin.PropertiesEditorPlugin`
+- **Core conversion**: `io.github.xenogew.propedit.util.EncodeChanger`

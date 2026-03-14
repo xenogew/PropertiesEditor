@@ -506,31 +506,35 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 **Goal**: Replace the legacy Swing-based standalone application with a modern, native SWT-based implementation. This allows for better code sharing with the Eclipse plugin and provides a more native experience on all platforms.
 
 #### 10a. Maven Dependency Strategy (Cross-Platform)
+
 - Use official **Eclipse SWT** artifacts from Maven Central (`org.eclipse.platform` group).
 - Implement **Maven Profiles** for automatic OS-based dependency selection (Windows, Linux, macOS) to handle native libraries correctly.
 - Target modern architecture variants, including `aarch64` for macOS (Apple Silicon) and Linux.
 
 #### 10b. Core Architecture Migration
+
 - **Main Loop**: Replace `SwingUtilities.invokeLater` and the standard JFrame lifecycle with an SWT `Display` and `Shell` read-and-dispatch loop.
-- **Threading (Virtual Threads)**: 
-    - Leverage **Java 21 Virtual Threads** for all non-UI tasks (File I/O, `EncodeChanger` logic).
-    - Use `Display.asyncExec()` to bridge results back to the UI thread, maintaining a highly responsive interface.
+- **Threading (Virtual Threads)**:
+  - Leverage **Java 21 Virtual Threads** for all non-UI tasks (File I/O, `EncodeChanger` logic).
+  - Use `Display.asyncExec()` to bridge results back to the UI thread, maintaining a highly responsive interface.
 - **Note on Project Leyden**: Defer deep Leyden optimizations (startup time, static images) until Phase 8/11 to ensure a stable SWT foundation first.
 - **Styling**: Replace `FlatLaf` (Swing) with native SWT themes and eventually shared CSS styling if applicable.
 
 #### 10c. Component & Dialog Mapping
-| Swing Component | SWT Equivalent | Implementation Target |
-| :--- | :--- | :--- |
-| `JFrame` | `Shell (SWT.SHELL_TRIM)` | `PropertiesEditorFrame` |
-| `JDialog` | `Shell (SWT.DIALOG_TRIM)` | `BaseDialog`, `UnicodeDialog`, `SearchTextDialog` |
-| `JTextArea` | `StyledText` | `PropertiesEditorFrame`, `UnicodeDialog` |
-| `JMenuBar` / `JMenu` | `Menu` (SWT.BAR) | Menu Bar construction |
-| `JToolBar` | `ToolBar` | Tool Bar construction |
-| `JFileChooser` | `FileDialog` | `JSelectCodeFileChooser` |
-| `JOptionPane` | `MessageBox` | User alerts and confirmations |
-| `UndoManager` | `TextChangeListener` / `Stack` | Refactor undo/redo logic for `StyledText` |
+
+| Swing Component      | SWT Equivalent                 | Implementation Target                             |
+| :------------------- | :----------------------------- | :------------------------------------------------ |
+| `JFrame`             | `Shell (SWT.SHELL_TRIM)`       | `PropertiesEditorFrame`                           |
+| `JDialog`            | `Shell (SWT.DIALOG_TRIM)`      | `BaseDialog`, `UnicodeDialog`, `SearchTextDialog` |
+| `JTextArea`          | `StyledText`                   | `PropertiesEditorFrame`, `UnicodeDialog`          |
+| `JMenuBar` / `JMenu` | `Menu` (SWT.BAR)               | Menu Bar construction                             |
+| `JToolBar`           | `ToolBar`                      | Tool Bar construction                             |
+| `JFileChooser`       | `FileDialog`                   | `JSelectCodeFileChooser`                          |
+| `JOptionPane`        | `MessageBox`                   | User alerts and confirmations                     |
+| `UndoManager`        | `TextChangeListener` / `Stack` | Refactor undo/redo logic for `StyledText`         |
 
 #### 10d. Incremental Implementation Plan
+
 1.  **Environment Setup**: Update `pom.xml` with SWT profiles and verify cross-platform resolution.
 2.  **Basic Shell**: Create a minimal SWT `PropertiesEditor` entry point that launches a blank `Shell`.
 3.  **Dialog Migration**: Migrate `AboutBox` and `UnicodeDialog` as they are relatively self-contained.
@@ -541,7 +545,33 @@ Pattern: `private static final Logger LOG = Logger.getLogger(ClassName.class.get
 5.  **DND & Printing**: Port `DropHandler` and `EditorPrinter` to SWT's native Drag-and-Drop and Printing APIs.
 6.  **Cleanup**: Remove all `javax.swing` and `java.awt` dependencies from the standalone application source.
 
-### Phase 11: Make project to be my own signature and publish it to Eclipse Marketplace for publishing
+### Phase 11: Rebranding and Eclipse Marketplace Publishing
+
+**Goal**: Rebrand the project to establish your own signature and prepare for Eclipse Marketplace publishing, while strictly preserving credit to the original author (Sou Miyazaki) and ensuring absolutely zero functional regression.
+
+#### 11a. Namespace and Bundle ID Refactoring
+
+- **Package Renaming**: Safely rename the base package from `jp.gr.java_conf.ussiy.app.propedit` to your own namespace `io.github.xenogew.propedit`.
+- **Eclipse IDs**: Update the `Bundle-SymbolicName` in `MANIFEST.MF` to match the new namespace. This ensures users can install your modernized version without conflicting with the legacy plugin.
+- **Extension Points**: Update custom extension point IDs (in `plugin.xml`, `listeners.exsd`, `hyperlinkdetectors.exsd`) to the new namespace.
+- **Caution (Regression Prevention)**: Carefully update all string-based class references (e.g., in `plugin.xml`, `MANIFEST.MF` `Main-Class`, and `pom.xml`) to prevent runtime `ClassNotFoundException`s.
+
+#### 11b. Crediting and Licensing (Honoring Sou Miyazaki)
+
+- **About Dialogs**: Update `about.ini`, `plugin.properties`, and the Standalone App's About Box to explicitly state: _"Originally created by Sou Miyazaki. Modernized and maintained by [Your Name/Handle]."_
+- **License & README**: Retain the original license file. Update the `README.md` to clearly indicate this is a modernized fork of the original OSDN project.
+- **Source Headers**: Retain existing `@author` or copyright headers in legacy files, appending your own `@author` or copyright line alongside them for modifications.
+
+#### 11c. Build and Artifact Updates
+
+- **Maven Coordinates**: Update `groupId` and `artifactId` in `pom.xml` to reflect the new identity.
+- **P2 Update Site**: Ensure the build output generates a clean P2 update site (a requirement for users to install via Eclipse Marketplace).
+
+#### 11d. Exhaustive Validation
+
+- Run the full test suite (`./mvnw clean verify`) to ensure package changes didn't break resource loading (e.g., `.properties` files, icons).
+- Launch the Eclipse IDE and verify: Editor opens, Unicode conversion works, Preference pages load, and the new About dialog displays correctly.
+- Launch the Standalone App and verify it runs from the new Main-Class.
 
 ### Phase 12: Make icons modern
 

@@ -5,8 +5,8 @@
              https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>jp.gr.java_conf.ussiy.app</groupId>
-  <artifactId>jp.gr.java_conf.ussiy.app.propedit</artifactId>
+  <groupId>io.github.xenogew.propedit.app</groupId>
+  <artifactId>io.github.xenogew.propedit</artifactId>
   <version>7.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 

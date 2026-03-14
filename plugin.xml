@@ -11,10 +11,10 @@
 		   point="org.eclipse.ui.editors">
 		<editor
 				icon="icons/IconByTaroTw.png"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.editors.PropertiesEditor"
+				class="io.github.xenogew.propedit.eclipse.plugin.editors.PropertiesEditor"
 				default="true"
 				name="PropertiesEditor"
-				id="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"
+				id="io.github.xenogew.propedit.editors.PropertiesEditor"
 				contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
 				extensions="properties">
 		</editor>
@@ -24,29 +24,29 @@
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 				name="%propertiesEditorPreferencePageName"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PropertiesPreference"
-				id="jp.gr.java_conf.ussiy.app.propedit.preference.PropertiesPreference"/>
+				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesPreference"
+				id="io.github.xenogew.propedit.preference.PropertiesPreference"/>
 		<page
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PropertiesEditorPreference"
-				category="jp.gr.java_conf.ussiy.app.propedit.preference.PropertiesPreference"
+				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesEditorPreference"
+				category="io.github.xenogew.propedit.preference.PropertiesPreference"
 				name="%editorPreferencePageName"
-				id="jp.gr.java_conf.ussiy.app.propedit.preference.PropertiesEditorPreference"/>
+				id="io.github.xenogew.propedit.preference.PropertiesEditorPreference"/>
 		<page
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PropertiesEditorDuplicationCheckerPreference"
-				category="jp.gr.java_conf.ussiy.app.propedit.preference.PropertiesPreference"
+				class="io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesEditorDuplicationCheckerPreference"
+				category="io.github.xenogew.propedit.preference.PropertiesPreference"
 				name="%checkDuplicationPreferencePageName"
-				id="jp.gr.java_conf.ussiy.app.propedit.preference.PropertiesEditorDuplicationCheckerPreference"/>
+				id="io.github.xenogew.propedit.preference.PropertiesEditorDuplicationCheckerPreference"/>
 	</extension>
 	<extension point="org.eclipse.core.runtime.preferences">
-		   <initializer class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.preference.PreferenceInitializer"/>
+		   <initializer class="io.github.xenogew.propedit.eclipse.plugin.preference.PreferenceInitializer"/>
 	</extension>
 	
 	<!-- property page -->
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
 				name="%propertiesEditorPreferencePageName"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.property.PropertiesProperty"
-				id="jp.gr.java_conf.ussiy.app.propedit.property.PropertiesProperty">
+				class="io.github.xenogew.propedit.eclipse.plugin.property.PropertiesProperty"
+				id="io.github.xenogew.propedit.property.PropertiesProperty">
 			<enabledWhen>
 				<or>
 					<instanceof value="org.eclipse.core.resources.IProject"/>
@@ -59,38 +59,38 @@
 	<!-- command handlers -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-				commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ToggleCommentAction">
+				commandId="io.github.xenogew.propedit.togglecomment.command"
+				class="io.github.xenogew.propedit.eclipse.plugin.action.ToggleCommentAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 				</with>
 			</activeWhen>
 		</handler>
 		<handler
-				commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ExpandAllFoldingAction">
+				commandId="io.github.xenogew.propedit.expandall.command"
+				class="io.github.xenogew.propedit.eclipse.plugin.action.ExpandAllFoldingAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 				</with>
 			</activeWhen>
 		</handler>
 		<handler
-				commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.CollapseAllFoldingAction">
+				commandId="io.github.xenogew.propedit.collapseall.command"
+				class="io.github.xenogew.propedit.eclipse.plugin.action.CollapseAllFoldingAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 				</with>
 			</activeWhen>
 		</handler>
 		<handler
-				commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.action.ShowUnicodeEscAction">
+				commandId="io.github.xenogew.propedit.showunicode.command"
+				class="io.github.xenogew.propedit.eclipse.plugin.action.ShowUnicodeEscAction">
 			<activeWhen>
 				<with variable="activeEditorId">
-					<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+					<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 				</with>
 			</activeWhen>
 		</handler>
@@ -100,48 +100,48 @@
 			name="%contextLabel"
 			description="%contextDescription"
 			parentId="org.eclipse.ui.textEditorScope"
-			id="jp.gr.java_conf.ussiy.app.propedit.PropertiesEditorScope">
+			id="io.github.xenogew.propedit.PropertiesEditorScope">
 		</context>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<category
 				name="%commandCategory"
-				id="jp.gr.java_conf.ussiy.app.propedit.category"/>
+				id="io.github.xenogew.propedit.category"/>
 		<command
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.category"
+				categoryId="io.github.xenogew.propedit.category"
 				name="%toggleCommentCommandLabel"
-				id="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"/>
+				id="io.github.xenogew.propedit.togglecomment.command"/>
 		<command
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.category"
+				categoryId="io.github.xenogew.propedit.category"
 				name="%collapseAllCommandLabel"
-				id="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"/>
+				id="io.github.xenogew.propedit.collapseall.command"/>
 		<command
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.category"
+				categoryId="io.github.xenogew.propedit.category"
 				name="%expandAllCommandLabel"
-				id="jp.gr.java_conf.ussiy.app.propedit.expandall.command"/>
+				id="io.github.xenogew.propedit.expandall.command"/>
 		<command
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.category"
+				categoryId="io.github.xenogew.propedit.category"
 				name="%showUnicodeEscCommandLabel"
-				id="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"/>
+				id="io.github.xenogew.propedit.showunicode.command"/>
 	</extension>
 	<!-- context menu contributions (replaces org.eclipse.ui.popupMenus) -->
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 				locationURI="popup:#PropertiesEditorContext?after=additions">
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
+					commandId="io.github.xenogew.propedit.togglecomment.command"
 					icon="icons/IconByTaroTw.png"
 					label="%toggleCommentActionLabel"/>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
+					commandId="io.github.xenogew.propedit.expandall.command"
 					icon="icons/IconByTaroTw.png"
 					label="%expandAllActionLabel"/>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
+					commandId="io.github.xenogew.propedit.collapseall.command"
 					icon="icons/IconByTaroTw.png"
 					label="%collapseAllActionLabel"/>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
+					commandId="io.github.xenogew.propedit.showunicode.command"
 					icon="icons/IconByTaroTw.png"
 					label="%showUnicodeEscActionLabel"/>
 		</menuContribution>
@@ -149,42 +149,42 @@
 		<menuContribution
 				locationURI="menu:edit?after=additions">
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
+					commandId="io.github.xenogew.propedit.togglecomment.command"
 					icon="icons/IconByTaroTw.png"
 					label="%toggleCommentActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 					</with>
 				</visibleWhen>
 			</command>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.expandall.command"
+					commandId="io.github.xenogew.propedit.expandall.command"
 					icon="icons/IconByTaroTw.png"
 					label="%expandAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 					</with>
 				</visibleWhen>
 			</command>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.collapseall.command"
+					commandId="io.github.xenogew.propedit.collapseall.command"
 					icon="icons/IconByTaroTw.png"
 					label="%collapseAllActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 					</with>
 				</visibleWhen>
 			</command>
 			<command
-					commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
+					commandId="io.github.xenogew.propedit.showunicode.command"
 					icon="icons/IconByTaroTw.png"
 					label="%showUnicodeEscActionLabel">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeEditorId">
-						<equals value="jp.gr.java_conf.ussiy.app.propedit.editors.PropertiesEditor"/>
+						<equals value="io.github.xenogew.propedit.editors.PropertiesEditor"/>
 					</with>
 				</visibleWhen>
 			</command>
@@ -192,8 +192,8 @@
 	</extension>
 
 	<!-- duplication checklistener & duplication marker -->
-	<extension point="jp.gr.java_conf.ussiy.app.propedit.listeners">
-		<listener class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.listener.DuplicationKeyCheckListener"/>
+	<extension point="io.github.xenogew.propedit.listeners">
+		<listener class="io.github.xenogew.propedit.eclipse.plugin.listener.DuplicationKeyCheckListener"/>
 	</extension>
 	<extension
 			id="duplicationmarker"
@@ -208,24 +208,24 @@
 	<extension
 			point="org.eclipse.ui.bindings">
 		<key
-				commandId="jp.gr.java_conf.ussiy.app.propedit.togglecomment.command"
-				contextId="jp.gr.java_conf.ussiy.app.propedit.PropertiesEditorScope"
+				commandId="io.github.xenogew.propedit.togglecomment.command"
+				contextId="io.github.xenogew.propedit.PropertiesEditorScope"
 				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 				sequence="Ctrl+/"/>
 		<key
-				commandId="jp.gr.java_conf.ussiy.app.propedit.showunicode.command"
-				contextId="jp.gr.java_conf.ussiy.app.propedit.PropertiesEditorScope"
+				commandId="io.github.xenogew.propedit.showunicode.command"
+				contextId="io.github.xenogew.propedit.PropertiesEditorScope"
 				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 				sequence="Ctrl+I"/>
 	</extension>
 	<extension
-			id="jp.gr.java_conf.ussiy.app.propedit.propertiesCompletionProposalComputer"
+			id="io.github.xenogew.propedit.propertiesCompletionProposalComputer"
 			point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
 			name="%proposalName">
 		<javaCompletionProposalComputer
 				activate="true"
-				categoryId="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal.Category"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.proposal.PropertiesCompletionProposalComputer">
+				categoryId="io.github.xenogew.propedit.eclipse.plugin.jdt.proposal.Category"
+				class="io.github.xenogew.propedit.eclipse.plugin.jdt.proposal.PropertiesCompletionProposalComputer">
 			<partition type="__java_string"/>
 		</javaCompletionProposalComputer>
 		<proposalCategory icon="icons/pe_32.png"/>
@@ -233,7 +233,7 @@
 	<extension
 			point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
-				id="jp.gr.java_conf.ussiy.app.propedit.properties.conent.type"
+				id="io.github.xenogew.propedit.properties.conent.type"
 				name="Properties File"
 				base-type="org.eclipse.core.runtime.text"
 				file-extensions="properties"
@@ -243,9 +243,9 @@
 	<extension
 			point="org.eclipse.ui.newWizards">
 		<wizard
-				id="jp.gr.java_conf.ussiy.app.propedit.newwizard"
+				id="io.github.xenogew.propedit.newwizard"
 				name="%wizardName"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.wizard.BasicNewPropertiesFileWizard"
+				class="io.github.xenogew.propedit.eclipse.plugin.wizard.BasicNewPropertiesFileWizard"
 				category="org.eclipse.jdt.ui.java"
 				icon="icons/pe_32.png"
 				project="false"/>
@@ -253,15 +253,15 @@
 	<extension
 			point="org.eclipse.jdt.ui.javaEditorTextHovers">
 		<hover
-				id="jp.gr.java_conf.ussiy.app.propedit.hover"
-				class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.jdt.hover.PropertiesHover"
+				id="io.github.xenogew.propedit.hover"
+				class="io.github.xenogew.propedit.eclipse.plugin.jdt.hover.PropertiesHover"
 				label="%hoverLabel"
 				description="%hoverDescription"
 				activate="true"/>
 	</extension>
 	<extension
 			point="org.eclipse.ui.startup">
-		<startup class="jp.gr.java_conf.ussiy.app.propedit.eclipse.plugin.startup.Startup"/>
+		<startup class="io.github.xenogew.propedit.eclipse.plugin.startup.Startup"/>
 	</extension>
 
 </plugin>

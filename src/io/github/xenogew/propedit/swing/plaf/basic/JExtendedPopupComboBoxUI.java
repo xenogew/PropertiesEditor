@@ -1,0 +1,56 @@
+package io.github.xenogew.propedit.swing.plaf.basic;
+
+import io.github.xenogew.propedit.swing.JExtendedPopupComboBox;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.plaf.basic.ComboPopup;
+
+public class JExtendedPopupComboBoxUI extends BasicComboBoxUI {
+
+  @Override
+  protected ComboPopup createPopup() {
+
+    BasicComboPopup popup = new BasicComboPopup(comboBox) {
+
+      @Override
+      public void show() {
+
+        JExtendedPopupComboBox sComboBox = (JExtendedPopupComboBox) comboBox;
+
+        ComboBoxModel<?> cModel = sComboBox.getModel();
+        @SuppressWarnings("unchecked")
+        JComboBox<?> tmpComboBox = new JComboBox<>(cModel);
+        sComboBox.setPopupWidth(tmpComboBox.getPreferredSize().width);
+
+        Dimension popupSize = sComboBox.getPopupSize();
+        popupSize.setSize(popupSize.width,
+            getPopupHeightForRowCount(sComboBox.getMaximumRowCount()));
+        if (sComboBox.getWidth() > popupSize.width) {
+          popupSize.width = sComboBox.getWidth();
+        }
+        Rectangle popupBounds =
+            computePopupBounds(0, sComboBox.getBounds().height, popupSize.width, popupSize.height);
+        scroller.setMaximumSize(popupBounds.getSize());
+        scroller.setPreferredSize(popupBounds.getSize());
+        scroller.setMinimumSize(popupBounds.getSize());
+        list.invalidate();
+        int selectedIndex = sComboBox.getSelectedIndex();
+        if (selectedIndex == -1) {
+          list.clearSelection();
+        } else {
+          list.setSelectedIndex(selectedIndex);
+        }
+        list.ensureIndexIsVisible(list.getSelectedIndex());
+        setLightWeightPopupEnabled(sComboBox.isLightWeightPopupEnabled());
+
+        show(sComboBox, popupBounds.x, popupBounds.y);
+      }
+    };
+    popup.getAccessibleContext().setAccessibleParent(comboBox);
+    return popup;
+  }
+}
