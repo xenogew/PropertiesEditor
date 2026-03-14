@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -30,7 +32,7 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: cp releng/io.github.xenogew.propedit.repository/index.html releng/io.github.xenogew.propedit.repository/target/repository/
 
-    - name: Upload P2 Repository (Directory)
+    - name: Upload P2 Repository (Artifact)
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v4
       with:
@@ -48,20 +50,27 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Download P2 Repository
-      uses: actions/download-artifact@v4
-      with:
-        name: p2-repository
-        path: repository
+      - name: Download P2 Repository
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-repository
+          path: repository
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
         
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: repository
-        branch: gh-pages
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'repository'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
