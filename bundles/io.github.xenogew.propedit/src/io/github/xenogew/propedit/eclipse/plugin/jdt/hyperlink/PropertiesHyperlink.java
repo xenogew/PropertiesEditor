@@ -1,11 +1,15 @@
 package io.github.xenogew.propedit.eclipse.plugin.jdt.hyperlink;
 
+import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -65,8 +69,10 @@ public class PropertiesHyperlink implements IHyperlink {
           textEditor.selectAndReveal(keyIndex, key.length());
         }
       }
-    } catch (Exception e) {
-      // Ignore or log
+    } catch (PartInitException e) {
+      IStatus status = new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK,
+          "Failed to open PropEditorX for: " + file.getName(), e);
+      PropEditorXPlugin.log().log(status);
     }
   }
 }
