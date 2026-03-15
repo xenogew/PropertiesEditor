@@ -9,6 +9,7 @@ import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -181,12 +182,16 @@ public class PropertiesGridPage extends FormPage {
 
     String value = model.getValue(key, locale);
 
-    // Locale Header Style
-    Label label = toolkit.createLabel(row, model.getDisplayName(locale) + ":");
+    // Locale Header Style (Lokalise-inspired)
+    Label label = toolkit.createLabel(row, model.getDisplayName(locale) + ":", SWT.LEFT);
     label.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-    label.setForeground(toolkit.getColors().getColor(org.eclipse.ui.forms.IFormColors.TITLE));
-    label.setBackground(row.getBackground());
-    GridData gdLabel = new GridData(SWT.LEFT, SWT.TOP, false, false);
+
+    // slate-400 (148, 163, 184) background
+    ColorManager cm = ((PropEditorX) getEditor()).getColorManager();
+    label.setBackground(cm.getColor(new RGB(148, 163, 184)));
+    label.setForeground(row.getDisplay().getSystemColor(SWT.COLOR_BLACK)); // Solid black text
+
+    GridData gdLabel = new GridData(SWT.FILL, SWT.FILL, false, true);
     gdLabel.widthHint = 120;
     label.setLayoutData(gdLabel);
 

@@ -20,11 +20,11 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * locale).
  */
 public class PropEditorX extends FormEditor {
-
   private PropertiesGridPage gridPage;
   private PropertyBundleModel bundleModel;
   private final Map<String, PropertiesSourceEditor> sourceEditors = new HashMap<>();
   private boolean isDirty = false;
+  private final ColorManager colorManager = new ColorManager();
 
   @Override
   protected void addPages() {
@@ -104,6 +104,16 @@ public class PropEditorX extends FormEditor {
   public void markDirty() {
     isDirty = true;
     editorDirtyStateChanged();
+  }
+
+  @Override
+  public void dispose() {
+    colorManager.dispose();
+    super.dispose();
+  }
+
+  public ColorManager getColorManager() {
+    return colorManager;
   }
 
   // --- Delegate methods for legacy TextEditor integrations ---

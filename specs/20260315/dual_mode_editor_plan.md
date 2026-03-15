@@ -76,4 +76,27 @@ Recalculate `rowHeight` to tightly fit content while maintaining comfortable pad
 
 ---
 
+# Phase 17.2: Locale Header Aesthetic Refinement
+
+**Goal**: Strengthen the visual identity of the locale header column by applying a bold font and a distinct background color (Tailwind `slate-400` equivalent).
+
+## 1. Background & UX Problem
+Initial implementation lacked visual distinction for the locale column, making it blend into editable areas.
+
+## 2. Proposed Solution
+
+### A. Color Management
+- **Target Color**: Tailwind `slate-400` (RGB: 148, 163, 184).
+- **Implementation**: Manage via `ColorManager` within `PropEditorX`.
+
+### B. Header Styling
+- **Bold Labels**: Explicitly set Bold font.
+- **Background**: Apply the `slate-400` color to the Locale Label.
+- **Fill Layout**: Ensure labels fill their vertical space for a "column" effect.
+
+### C. Resource Lifecycle
+- Ensure `ColorManager` is properly disposed of in `PropEditorX.dispose()`.
+
+---
+
 _Created on 2026-03-15_
