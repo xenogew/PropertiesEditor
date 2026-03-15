@@ -94,6 +94,15 @@
 				</with>
 			</activeWhen>
 		</handler>
+		<handler
+				commandId="org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace"
+				class="io.github.xenogew.propedit.eclipse.plugin.action.FindUsagesAction">
+			<activeWhen>
+				<with variable="activeEditorId">
+					<equals value="io.github.xenogew.propedit.editors.PropEditorX"/>
+				</with>
+			</activeWhen>
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.contexts">
 		<context
@@ -144,6 +153,11 @@
 					commandId="io.github.xenogew.propedit.showunicode.command"
 					icon="icons/icon-prop-editor-x.png"
 					label="%showUnicodeEscActionLabel"/>
+			<command
+					commandId="org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace"
+					label="Find Usages in Java"
+					icon="icons/icon-prop-editor-x.png">
+			</command>
 		</menuContribution>
 		<!-- editor menu bar contributions (replaces org.eclipse.ui.editorActions) -->
 		<menuContribution

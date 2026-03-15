@@ -34,6 +34,9 @@ A Java `.properties` file editor as Eclipse plugin.
 
 - Always following coding style of "Google Coding Style" which is latest updated and compatible with modern features like Lambda expressions, Records, etc.
 - Always prefer to use `Virtual Thread` when found the heavy compute operations.
+- In `try-catch` blocks, when catching exceptions, always use the specific exception type instead of `Exception` and log the exception with Eclipse Development Platform Logger or Java Native Logger or JUL.
+- When naming the variables, parameters, constants, etc., always use descriptive names and **DO NOT** abbreviate them except for common abbreviations like `id`, `url`, `xml`, `tmp`, etc that mostly common for developers.
+- Always run `./mvnw spotless:apply` before `build`, `package`, `verify` or `install` commands.
 
 ## Key Entry Points
 
