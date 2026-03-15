@@ -112,24 +112,44 @@ public class PropertiesGridPage extends FormPage {
     final int rowHeight = (numLocales * 40) + ((numLocales - 1) * 10) + 20;
     table.addListener(SWT.MeasureItem, event -> event.height = rowHeight);
 
-    // Set initial widths before creating rows to ensure TableEditors find their bounds correctly
+    // Initial population and resize handling
     table.addControlListener(new ControlAdapter() {
       @Override
       public void controlResized(ControlEvent e) {
+        if (table.isDisposed())
+          return;
         int width = table.getClientArea().width;
         if (width > 100) {
           table.removeControlListener(this);
-          keyCol.setWidth((int) (width * 0.3));
-          valCol.setWidth((int) (width * 0.7));
-
-          // Populate rows AFTER columns have widths
-          for (String key : model.getAllKeys()) {
-            createTableRow(toolkit, table, key, rowHeight);
-          }
-          table.layout(true, true);
+          populateTable(toolkit, table, keyCol, valCol, rowHeight, width);
         }
       }
     });
+
+    // Try immediate population if size is already available (e.g. during refresh)
+    table.getDisplay().asyncExec(() -> {
+      if (table.isDisposed())
+        return;
+      int width = table.getClientArea().width;
+      if (width > 100) {
+        populateTable(toolkit, table, keyCol, valCol, rowHeight, width);
+      }
+    });
+  }
+
+  private void populateTable(FormToolkit toolkit, Table table, TableColumn keyCol,
+      TableColumn valCol, int rowHeight, int width) {
+    // Prevent double population
+    if (table.getItemCount() > 0)
+      return;
+
+    keyCol.setWidth((int) (width * 0.3));
+    valCol.setWidth((int) (width * 0.7));
+
+    for (String key : model.getAllKeys()) {
+      createTableRow(toolkit, table, key, rowHeight);
+    }
+    table.layout(true, true);
   }
 
   private void createTableRow(FormToolkit toolkit, Table table, String key, int rowHeight) {

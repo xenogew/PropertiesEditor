@@ -47,15 +47,26 @@ public class PropEditorX extends FormEditor {
       String locale = extractLocale(file.getName());
 
       if (!sourceEditors.containsKey(locale)) {
-        bundleModel.refresh();
-        try {
-          addSourcePage(locale, file);
-          if (gridPage != null) {
-            gridPage.refresh();
+        // Ensure UI updates happen on the UI thread
+        getSite().getShell().getDisplay().asyncExec(() -> {
+          if (sourceEditors.containsKey(locale))
+            return;
+
+          bundleModel.refresh();
+          try {
+            addSourcePage(locale, file);
+            if (gridPage != null) {
+              gridPage.refresh();
+            }
+            // Force tab folder layout refresh
+            if (getContainer() != null && !getContainer().isDisposed()) {
+              getContainer().layout(true, true);
+            }
+          } catch (PartInitException e) {
+            PropEditorXPlugin.getDefault().error("Error adding source page for locale: " + locale,
+                e);
           }
-        } catch (PartInitException e) {
-          PropEditorXPlugin.getDefault().error("Error adding source page for locale: " + locale, e);
-        }
+        });
       }
     }
   }
