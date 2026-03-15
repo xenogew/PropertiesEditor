@@ -46,4 +46,34 @@ The saving process will be updated to:
 
 ---
 
+# Phase 17.1: Grid UI Refinement & Aesthetic Styling
+
+**Goal**: Optimize the Dual-Mode Grid layout to eliminate excessive whitespace and implement professional styling for locale headers, inspired by the Lokalise editor.
+
+## 1. Background & Problem
+The initial grid implementation had two main issues:
+- **Verbose Unused Space**: The `rowHeight` calculation was too generous, leaving gaps.
+- **UX Visibility**: The locale column lacked visual distinction as a header.
+
+## 2. Proposed Solution
+
+### A. Dynamic Height Optimization
+Recalculate `rowHeight` to tightly fit content while maintaining comfortable padding.
+- **Margins**: Set to **10px** (Tailwind `p-2` equivalent).
+- **Row Formula**: `rowHeight = (numLocales * 40) + ((numLocales - 1) * 10) + 20`.
+
+### B. Padding & Alignment
+- **`p-2` equivalent**: Consistent **10px** margin to all cell containers.
+- **`pl-2` equivalent**: **10px** horizontal spacing between Locale Label and Text Editor.
+- **Top Alignment**: Ensure all inner components use `SWT.TOP`.
+
+### C. Locale Header Styling
+- **Bold Labels**: Apply Bold font variant.
+- **Title Color**: Use `IFormColors.TITLE` color for locale names to distinguish them from values.
+
+### D. Visual Debugging
+- **Borders**: Implement 1px black borders using `PaintListener` to verify container bounds.
+
+---
+
 _Created on 2026-03-15_

@@ -81,8 +81,8 @@ public class PropertiesGridPage extends FormPage {
     TableColumn valCol = new TableColumn(table, SWT.NONE);
     valCol.setText("Translations (English + Locales)");
 
-    // Define consistent row height
-    final int rowHeight = Math.max(80, numLocales * 65 + 40);
+    // Optimized row height: margins (20) + text boxes (40 * n) + spacing (10 * (n-1))
+    final int rowHeight = (numLocales * 40) + ((numLocales - 1) * 10) + 20;
     table.addListener(SWT.MeasureItem, event -> event.height = rowHeight);
 
     // Set initial widths before creating rows to ensure TableEditors find their bounds correctly
@@ -121,8 +121,8 @@ public class PropertiesGridPage extends FormPage {
     });
 
     GridLayout keyLayout = new GridLayout(1, false);
-    keyLayout.marginHeight = 15;
-    keyLayout.marginWidth = 15;
+    keyLayout.marginHeight = 10; // p-2 equivalent
+    keyLayout.marginWidth = 10;
     keyContainer.setLayout(keyLayout);
 
     Label keyLabel = toolkit.createLabel(keyContainer, key);
@@ -150,9 +150,9 @@ public class PropertiesGridPage extends FormPage {
     });
 
     GridLayout valLayout = new GridLayout(1, false);
-    valLayout.marginHeight = 15;
-    valLayout.marginWidth = 15;
-    valLayout.verticalSpacing = 15;
+    valLayout.marginHeight = 10; // p-2 equivalent
+    valLayout.marginWidth = 10;
+    valLayout.verticalSpacing = 10;
     valContainer.setLayout(valLayout);
 
     for (String locale : model.getLocaleFiles().keySet()) {
@@ -175,13 +175,16 @@ public class PropertiesGridPage extends FormPage {
     GridLayout layout = new GridLayout(2, false);
     layout.marginHeight = 0;
     layout.marginWidth = 0;
-    layout.horizontalSpacing = 15;
+    layout.horizontalSpacing = 10; // pl-2 equivalent
     row.setLayout(layout);
     row.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
     String value = model.getValue(key, locale);
 
+    // Locale Header Style
     Label label = toolkit.createLabel(row, model.getDisplayName(locale) + ":");
+    label.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
+    label.setForeground(toolkit.getColors().getColor(org.eclipse.ui.forms.IFormColors.TITLE));
     label.setBackground(row.getBackground());
     GridData gdLabel = new GridData(SWT.LEFT, SWT.TOP, false, false);
     gdLabel.widthHint = 120;
