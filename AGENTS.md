@@ -11,11 +11,15 @@ A specialized Java `.properties` file editor that supports automatic Unicode esc
 
 ## Current Roadmap
 
-### Phase 15: Functional Enhancement — Java to Properties Hyperlinking (Item 1)
+### Phase 15: Functional Enhancement — Java to Properties Hyperlinking ✅ DONE
 **Goal**: Enable `Ctrl + Click` (Hyperlinking) within Java string literals to jump directly to the corresponding property key in the `.properties` editor.
 
 - **Spec Location**: `specs/20260315/hyperlinking_plan.md`
-- **Status**: Planning
+
+### Phase 16: Functional Enhancement — Properties to Java Find Usages ✅ DONE
+**Goal**: Enable `Ctrl + Shift + G` within the `PropEditorX` editor to find all references of a property key in Java source code using Virtual Threads.
+
+- **Spec Location**: `specs/20260315/find_usages_plan.md`
 
 ---
 
