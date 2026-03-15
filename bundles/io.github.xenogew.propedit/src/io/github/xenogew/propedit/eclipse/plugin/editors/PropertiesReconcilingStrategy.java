@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 public class PropertiesReconcilingStrategy
     implements IReconcilingStrategy, IReconcilingStrategyExtension {
 
-  private PropEditorX editor;
+  private PropertiesSourceEditor editor;
 
   private IDocument fDocument;
   protected final ArrayList<Position> fPositions = new ArrayList<>();
@@ -28,11 +28,11 @@ public class PropertiesReconcilingStrategy
   /**
    * @return Returns the editor.
    */
-  public PropEditorX getEditor() {
+  public PropertiesSourceEditor getEditor() {
     return editor;
   }
 
-  public void setEditor(PropEditorX editor) {
+  public void setEditor(PropertiesSourceEditor editor) {
     this.editor = editor;
   }
 

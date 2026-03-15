@@ -37,9 +37,9 @@ public class PropertiesConfiguration extends SourceViewerConfiguration {
 
   private ColorManager colorManager;
 
-  private PropEditorX editor;
+  private PropertiesSourceEditor editor;
 
-  public PropertiesConfiguration(ColorManager colorManager, PropEditorX editor) {
+  public PropertiesConfiguration(ColorManager colorManager, PropertiesSourceEditor editor) {
 
     this.colorManager = colorManager;
     this.editor = editor;

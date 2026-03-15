@@ -1,233 +1,169 @@
 package io.github.xenogew.propedit.eclipse.plugin.editors;
 
-import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
-import io.github.xenogew.propedit.eclipse.plugin.editors.view.outline.PropertiesContentOutlinePage;
-import io.github.xenogew.propedit.eclipse.plugin.preference.PropEditorXPreference;
-import java.util.ArrayList;
-import org.eclipse.core.runtime.CoreException;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
-import org.eclipse.jface.text.source.projection.ProjectionSupport;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 
-public class PropEditorX extends TextEditor {
+/**
+ * Multi-page editor for PropEditorX. Supports a Grid view and multiple Source tabs (one per
+ * locale).
+ */
+public class PropEditorX extends FormEditor {
 
-  private ColorManager colorManager;
-  public Boolean initialCollapseOption;
-  private PropertiesContentOutlinePage fOutlinePage;
-
-  public PropEditorX() {
-
-    super();
-    colorManager = new ColorManager();
-    setSourceViewerConfiguration(new PropertiesConfiguration(colorManager, this));
-    setDocumentProvider(new PropertiesDocumentProvider());
-  }
+  private PropertiesGridPage gridPage;
+  private PropertyBundleModel bundleModel;
+  private final Map<String, PropertiesSourceEditor> sourceEditors = new HashMap<>();
+  private boolean isDirty = false;
 
   @Override
-  public void dispose() {
-    if (fOutlinePage != null) {
-      fOutlinePage.setInput(null);
-    }
-    fOutlinePage = null;
-    colorManager.dispose();
-    super.dispose();
-  }
+  protected void addPages() {
+    IFileEditorInput input = (IFileEditorInput) getEditorInput();
+    bundleModel = new PropertyBundleModel(input.getFile());
 
-  /**
-   * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeEditor()
-   */
-  @Override
-  protected void initializeEditor() {
+    try {
+      // 1. Grid Page
+      gridPage = new PropertiesGridPage(this, "grid", "Grid");
+      addPage(gridPage);
 
-    super.initializeEditor();
-    setEditorContextMenuId("#PropEditorXContext"); //$NON-NLS-1$
-  }
+      // 2. Source Pages (One per discovered locale file)
+      for (Map.Entry<String, IFile> entry : bundleModel.getLocaleFiles().entrySet()) {
+        String locale = entry.getKey();
+        IFile file = entry.getValue();
 
-  public void setFont(Font font) {
+        PropertiesSourceEditor editor = new PropertiesSourceEditor();
+        int index = addPage(editor, new FileEditorInput(file));
+        setPageText(index, bundleModel.getDisplayName(locale));
+        sourceEditors.put(locale, editor);
+      }
 
-    getSourceViewer().getTextWidget().setFont(font);
-    if (fLineNumberRulerColumn != null) {
-      fLineNumberRulerColumn.setFont(font);
+    } catch (PartInitException e) {
+      // Log error
     }
   }
 
-  public void setBackground(Color color) {
-
-    getSourceViewer().getTextWidget().setBackground(color);
+  public PropertyBundleModel getBundleModel() {
+    return bundleModel;
   }
 
-  public Font getFont() {
+  @Override
+  public void doSave(IProgressMonitor monitor) {
+    SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving bundle", 100);
+    try {
+      // 1. Save all source editors (50% of work)
+      int workPerEditor = sourceEditors.isEmpty() ? 0 : 50 / sourceEditors.size();
+      for (PropertiesSourceEditor editor : sourceEditors.values()) {
+        editor.doSave(subMonitor.split(workPerEditor));
+      }
+      // 2. Save model state if modified via Grid (50% of work)
+      bundleModel.saveAll(subMonitor.split(50));
 
-    return getSourceViewer().getTextWidget().getFont();
+      isDirty = false;
+      editorDirtyStateChanged();
+    } catch (Exception e) {
+      // Log error
+    } finally {
+      subMonitor.done();
+    }
+  }
+
+  @Override
+  public void doSaveAs() {
+    // SaveAs usually targets the active editor
+    if (getActiveEditor() != null) {
+      getActiveEditor().doSaveAs();
+    }
+  }
+
+  @Override
+  public boolean isSaveAsAllowed() {
+    return true;
+  }
+
+  @Override
+  public boolean isDirty() {
+    if (isDirty)
+      return true;
+    for (PropertiesSourceEditor editor : sourceEditors.values()) {
+      if (editor.isDirty())
+        return true;
+    }
+    return false;
+  }
+
+  public void markDirty() {
+    isDirty = true;
+    editorDirtyStateChanged();
+  }
+
+  // --- Delegate methods for legacy TextEditor integrations ---
+
+  public ProjectionAnnotationModel getAnnotationModel() {
+    PropertiesSourceEditor active = getActiveSourceEditor();
+    return active != null ? active.getAnnotationModel() : null;
+  }
+
+  public ISelectionProvider getSelectionProvider() {
+    return getSite().getSelectionProvider();
   }
 
   public Color getBackground() {
-
-    return getSourceViewer().getTextWidget().getBackground();
+    PropertiesSourceEditor active = getActiveSourceEditor();
+    return active != null ? active.getBackground() : null;
   }
 
-  private ProjectionAnnotationModel annotationModel;
+  public Color getForeground() {
+    PropertiesSourceEditor active = getActiveSourceEditor();
+    return active != null ? active.getForeground() : null;
+  }
 
-  /**
-   * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-   */
-  @Override
-  public void createPartControl(Composite parent) {
-    super.createPartControl(parent);
-    if (!PropEditorXPlugin.getDefault().getPreferenceStore()
-        .getBoolean(PropEditorXPreference.P_COLLAPSE)) {
-      return;
+  public Font getFont() {
+    PropertiesSourceEditor active = getActiveSourceEditor();
+    return active != null ? active.getFont() : null;
+  }
+
+  public void setBackground(Color color) {
+    for (PropertiesSourceEditor editor : sourceEditors.values()) {
+      editor.setBackground(color);
     }
-    ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
-
-    ProjectionSupport projectionSupport =
-        new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
-    projectionSupport.install();
-
-    // turn projection mode on
-    viewer.doOperation(ProjectionViewer.TOGGLE);
-
-    annotationModel = viewer.getProjectionAnnotationModel();
   }
 
-  public ProjectionAnnotationModel getAnnotationModel() {
-    return annotationModel;
-  }
-
-  /**
-   * @see org.eclipse.ui.texteditor.AbstractTextEditor#createSourceViewer(org.eclipse.swt.widgets.Composite,
-   *      org.eclipse.jface.text.source.IVerticalRuler, int)
-   */
-  @Override
-  protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-    if (!PropEditorXPlugin.getDefault().getPreferenceStore()
-        .getBoolean(PropEditorXPreference.P_COLLAPSE)) {
-      return super.createSourceViewer(parent, ruler, styles);
+  public void setForeground(Color color) {
+    for (PropertiesSourceEditor editor : sourceEditors.values()) {
+      editor.setForeground(color);
     }
-    ISourceViewer viewer =
-        new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
-
-    // ensure decoration support has been created and configured.
-    getSourceViewerDecorationSupport(viewer);
-
-    return viewer;
   }
 
-  public void updateFoldingStructure(ArrayList<Position> positions) {
-    if (!PropEditorXPlugin.getDefault().getPreferenceStore()
-        .getBoolean(PropEditorXPreference.P_COLLAPSE)) {
-      return;
+  public void setFont(Font font) {
+    for (PropertiesSourceEditor editor : sourceEditors.values()) {
+      editor.setFont(font);
     }
+  }
 
-    var ite = annotationModel.getAnnotationIterator();
-    while (ite.hasNext()) {
-      ProjectionAnnotation annotation = (ProjectionAnnotation) ite.next();
-      Position oldPos = annotationModel.getPosition(annotation);
-      boolean removeFlg = true;
-      for (var newPos : positions) {
-        if (newPos.getOffset() == oldPos.getOffset() && newPos.getLength() == oldPos.getLength()) {
-          removeFlg = false;
-          positions.remove(newPos);
-          break;
-        }
-      }
-      if (removeFlg) {
-        annotationModel.removeAnnotation(annotation);
+  public IDocumentProvider getDocumentProvider() {
+    PropertiesSourceEditor active = getActiveSourceEditor();
+    return active != null ? active.getDocumentProvider() : null;
+  }
+
+  private PropertiesSourceEditor getActiveSourceEditor() {
+    int index = getActivePage();
+    if (index > 0) {
+      Object page = getEditor(index);
+      if (page instanceof PropertiesSourceEditor) {
+        return (PropertiesSourceEditor) page;
       }
     }
-    if (initialCollapseOption == null) {
-      // get default collapse option
-      var store = PropEditorXPlugin.getDefault().getPreferenceStore();
-      initialCollapseOption = store.getBoolean(PropEditorXPreference.P_INIT_COLLAPSE);
-      for (Position pos : positions) {
-        annotationModel
-            .addAnnotation(new ProjectionAnnotation(initialCollapseOption.booleanValue()), pos);
-      }
-    } else {
-      for (Position pos : positions) {
-        annotationModel.addAnnotation(new ProjectionAnnotation(), pos);
-      }
-    }
+    // Fallback to primary if available
+    return sourceEditors.get(PropertyBundleModel.DEFAULT_LOCALE);
   }
-
-  /**
-   * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeKeyBindingScopes()
-   */
-  @Override
-  protected void initializeKeyBindingScopes() {
-    setKeyBindingScopes(new String[] {"io.github.xenogew.propedit.PropEditorXScope"}); //$NON-NLS-1$
-  }
-
-  /**
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getAdapter(Class<T> adapter) {
-    if (IContentOutlinePage.class.equals(adapter)) {
-      if (fOutlinePage == null) {
-        fOutlinePage = new PropertiesContentOutlinePage(getDocumentProvider(), this);
-        if (getEditorInput() != null)
-          fOutlinePage.setInput(getEditorInput());
-      }
-      return (T) fOutlinePage;
-    }
-    return super.getAdapter(adapter);
-  }
-
-  /**
-   * @see org.eclipse.ui.texteditor.ITextEditor#doRevertToSaved()
-   */
-  @Override
-  public void doRevertToSaved() {
-    super.doRevertToSaved();
-    if (fOutlinePage != null) {
-      fOutlinePage.update();
-    }
-  }
-
-  /**
-   * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-   */
-  @Override
-  public void doSave(IProgressMonitor progressMonitor) {
-    super.doSave(progressMonitor);
-    if (fOutlinePage != null) {
-      fOutlinePage.update();
-    }
-  }
-
-  /**
-   * @see org.eclipse.ui.ISaveablePart#doSaveAs()
-   */
-  @Override
-  public void doSaveAs() {
-    super.doSaveAs();
-    if (fOutlinePage != null) {
-      fOutlinePage.update();
-    }
-  }
-
-  /**
-   * @see org.eclipse.ui.texteditor.AbstractTextEditor#doSetInput(org.eclipse.ui.IEditorInput)
-   */
-  @Override
-  protected void doSetInput(IEditorInput input) throws CoreException {
-    super.doSetInput(input);
-    if (fOutlinePage != null) {
-      fOutlinePage.update();
-    }
-  }
-
 }

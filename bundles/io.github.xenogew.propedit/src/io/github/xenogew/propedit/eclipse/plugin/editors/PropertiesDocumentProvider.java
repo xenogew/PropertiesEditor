@@ -2,29 +2,20 @@ package io.github.xenogew.propedit.eclipse.plugin.editors;
 
 import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
 import io.github.xenogew.propedit.eclipse.plugin.listener.IPropertiesDocumentListener;
-import io.github.xenogew.propedit.eclipse.plugin.preference.PropertiesPreference;
-import io.github.xenogew.propedit.eclipse.plugin.property.PropertyUtil;
-import io.github.xenogew.propedit.eclipse.plugin.resources.Messages;
-import io.github.xenogew.propedit.util.EncodeChanger;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
 public class PropertiesDocumentProvider extends FileDocumentProvider {
@@ -70,17 +61,15 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
     }
 
     if (document != null) {
-
-      try {
-        document.set(EncodeChanger.unicodeEsc2Unicode(document.get()));
-      } catch (Exception e) {
-        IStatus status =
-            new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
-        ILog log = PropEditorXPlugin.getDefault().getLog();
-        log.log(status);
-        ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), //$NON-NLS-1$
-            Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$
-      }
+      // DISABLED: Legacy \\uXXXX conversion removed to maintain human-readable UTF-8.
+      /*
+       * try { document.set(EncodeChanger.unicodeEsc2Unicode(document.get())); } catch (Exception e)
+       * { IStatus status = new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK,
+       * e.getMessage(), e); ILog log = PropEditorXPlugin.getDefault().getLog(); log.log(status);
+       * ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"),
+       * //$NON-NLS-1$ Messages.getString("eclipse.propertieseditor.property.get.settings.error"),
+       * status); //$NON-NLS-1$ }
+       */
 
       for (IPropertiesDocumentListener listener : listeners) {
         try {
@@ -107,80 +96,9 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
   protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
       boolean overwrite) throws CoreException {
 
-    if (element instanceof IFileEditorInput) {
+    // DISABLED: Legacy \\uXXXX conversion removed.
+    // Saving now directly writes the human-readable UTF-8 document content to disk.
 
-      IFileEditorInput input = (IFileEditorInput) element;
-
-      IProject project = input.getFile().getProject();
-
-      List<IPropertiesDocumentListener> listeners = computePropertiesDocumentListeners();
-      for (IPropertiesDocumentListener listener : listeners) {
-        try {
-          listener.beforeUnicodeConvertAtSavingDocument(monitor, element, document, overwrite);
-        } catch (Exception e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
-          ILog log = PropEditorXPlugin.getDefault().getLog();
-          log.log(status);
-        }
-      }
-
-      String uniEscStr = null;
-      String charcase = PropertyUtil.getCharCase(project, PropEditorXPlugin.getDefault()
-          .getPreferenceStore().getString(PropertiesPreference.P_CONVERT_CHAR_CASE));
-      if (PropertyUtil.getNotAllConvert(project, PropEditorXPlugin.getDefault().getPreferenceStore()
-          .getBoolean(PropertiesPreference.P_NOT_ALL_CONVERT))) {
-        uniEscStr = document.get();
-      } else if (PropertyUtil.getNotConvertComment(project, PropEditorXPlugin.getDefault()
-          .getPreferenceStore().getBoolean(PropertiesPreference.P_NOT_CONVERT_COMMENT))) {
-        try {
-          if (Messages.getString("eclipse.propertieseditor.preference.convert.char.uppercase") //$NON-NLS-1$
-              .equals(charcase)) {
-            uniEscStr = EncodeChanger.unicode2UnicodeEscWithoutComment(document.get(),
-                EncodeChanger.UPPERCASE);
-          } else {
-            uniEscStr = EncodeChanger.unicode2UnicodeEscWithoutComment(document.get(),
-                EncodeChanger.LOWERCASE);
-          }
-        } catch (Exception e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
-          ILog log = PropEditorXPlugin.getDefault().getLog();
-          log.log(status);
-          ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), //$NON-NLS-1$
-              Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$
-        }
-      } else {
-        try {
-          if (Messages.getString("eclipse.propertieseditor.preference.convert.char.uppercase") //$NON-NLS-1$
-              .equals(charcase)) {
-            uniEscStr = EncodeChanger.unicode2UnicodeEsc(document.get(), EncodeChanger.UPPERCASE);
-          } else {
-            uniEscStr = EncodeChanger.unicode2UnicodeEsc(document.get(), EncodeChanger.LOWERCASE);
-          }
-        } catch (Exception e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
-          ILog log = PropEditorXPlugin.getDefault().getLog();
-          log.log(status);
-          ErrorDialog.openError(null, Messages.getString("eclipse.propertieseditor.convert.error"), //$NON-NLS-1$
-              Messages.getString("eclipse.propertieseditor.property.get.settings.error"), status); //$NON-NLS-1$
-        }
-      }
-      document = new Document(uniEscStr);
-
-      for (IPropertiesDocumentListener listener : listeners) {
-        try {
-          listener.afterUnicodeConvertAtSavingDocument(monitor, element, document, overwrite);
-        } catch (Exception e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);
-          ILog log = PropEditorXPlugin.getDefault().getLog();
-          log.log(status);
-        }
-      }
-
-    }
     super.doSaveDocument(monitor, element, document, overwrite);
   }
 }
