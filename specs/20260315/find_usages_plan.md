@@ -32,7 +32,7 @@ We will leverage the `org.eclipse.search.ui` API to perform a workspace-wide sea
 2.  **Implement Handler**: Create `FindUsagesAction` implementing `org.eclipse.core.commands.IHandler`.
 3.  **Search Logic**: Implement the bridge to the Eclipse Search API to trigger a text search for the key string in Java files.
 4.  **Register Handler**: Update `plugin.xml` to bind the handler to the standard command ID and the `Ctrl + Shift + G` shortcut.
-5.  **Use Virtual Thread**: Use virtual thread for search operation to approach speed and performance while keeping the UI responsive and ensure that **NO** regression.
+5.  **Thread Management**: Call the Search API directly from the UI thread. The Eclipse Search API (`NewSearchUI.runQueryInBackground`) automatically handles the actual search in a background job while ensuring the Search View UI is managed correctly on the UI thread.
 6.  **Validation**: Test by pressing `Ctrl + Shift + G` on a key in `PropEditorX` and verifying that the Search View opens with Java file references.
 
 ---

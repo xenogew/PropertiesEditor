@@ -37,6 +37,7 @@ A Java `.properties` file editor as Eclipse plugin.
 - In `try-catch` blocks, when catching exceptions, always use the specific exception type instead of `Exception` and log the exception with Eclipse Development Platform Logger or Java Native Logger or JUL.
 - When naming the variables, parameters, constants, etc., always use descriptive names and **DO NOT** abbreviate them except for common abbreviations like `id`, `url`, `xml`, `tmp`, etc that mostly common for developers.
 - Always run `./mvnw spotless:apply` before `build`, `package`, `verify` or `install` commands.
+- Always make data object class using `record` keyword and adding "Builder" pattern when the properies or attributes are more or equals to 3.
 
 ## Key Entry Points
 

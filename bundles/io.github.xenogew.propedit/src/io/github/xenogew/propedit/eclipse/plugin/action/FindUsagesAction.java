@@ -46,45 +46,44 @@ public class FindUsagesAction extends AbstractHandler {
       return null;
     }
 
-    // Use Virtual Thread for search initiation to keep UI responsive
-    Thread.ofVirtual().start(() -> {
-      try {
-        TextSearchQueryProvider provider = TextSearchQueryProvider.getPreferred();
-        final FileTextSearchScope scope =
-            FileTextSearchScope.newWorkspaceScope(new String[] {"*.java"}, false);
+    try {
+      TextSearchQueryProvider provider = TextSearchQueryProvider.getPreferred();
+      final FileTextSearchScope scope =
+          FileTextSearchScope.newWorkspaceScope(new String[] {"*.java"}, false);
 
-        TextSearchInput input = new TextSearchInput() {
-          @Override
-          public String getSearchText() {
-            return key;
-          }
+      TextSearchInput input = new TextSearchInput() {
+        @Override
+        public String getSearchText() {
+          return key;
+        }
 
-          @Override
-          public boolean isCaseSensitiveSearch() {
-            return true;
-          }
+        @Override
+        public boolean isCaseSensitiveSearch() {
+          return true;
+        }
 
-          @Override
-          public boolean isRegExSearch() {
-            return false;
-          }
+        @Override
+        public boolean isRegExSearch() {
+          return false;
+        }
 
-          @Override
-          public FileTextSearchScope getScope() {
-            return scope;
-          }
-        };
+        @Override
+        public FileTextSearchScope getScope() {
+          return scope;
+        }
+      };
 
-        ISearchQuery query = provider.createQuery(input);
+      ISearchQuery query = provider.createQuery(input);
 
-        // Run the query in the background using the standard Search UI
-        NewSearchUI.runQueryInBackground(query);
-      } catch (CoreException e) {
-        IStatus status = new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK,
-            "Failed to create find usages query", e);
-        PropEditorXPlugin.log().log(status);
-      }
-    });
+      // NewSearchUI.runQueryInBackground handles offloading the actual search to a background job
+      // but must be initiated from the UI thread to update the Search View properly.
+      NewSearchUI.runQueryInBackground(query);
+
+    } catch (CoreException e) {
+      IStatus status = new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK,
+          "Failed to create find usages query", e);
+      PropEditorXPlugin.log().log(status);
+    }
 
     return null;
   }
