@@ -99,4 +99,43 @@ Initial implementation lacked visual distinction for the locale column, making i
 
 ---
 
+# Phase 17.3: Unified Editor Instance (Bundle-Aware)
+
+**Goal**: Prevent multiple editor tabs from opening for different files that belong to the same property bundle. Opening any sibling file should activate the existing editor for that bundle instead of creating a new tab.
+
+## 1. Problem Statement
+Eclipse treats each `.properties` file as a distinct resource, opening separate tabs for `messages.properties` and `messages_ja.properties` despite them being part of the same bundle.
+
+## 2. Proposed Solution
+
+### A. Implement `IEditorMatchingStrategy`
+Created `PropertyEditorMatchingStrategy` to compare editor inputs based on:
+1.  **Directory**: Files must be in the same parent folder.
+2.  **Base Name**: Files must share the same base bundle name (e.g., "messages").
+
+### B. Utility Centralization
+Moved `extractBaseName` logic to `PropertiesFileUtil` to provide a single point of truth for bundle identification.
+
+### C. Registration
+Registered the matching strategy in `plugin.xml` under the `PropEditorX` editor definition.
+
+---
+
+# Phase 17.4: Dynamic Locale Discovery & Tab Management
+
+**Goal**: Ensure that newly created locale files (e.g., `messages_ko.properties`) are correctly identified with human-readable names and automatically appear as "Source" tabs in the editor when opened. Also, establish a unique branding for the multi-mode tab.
+
+## 1. Branding & UX
+- **Tab Name**: Renamed the main Grid tab from "Grid" to **"Editor::{✘}"** using the Java method reference pattern (`::`) and scope brackets (`{}`) for a unique, developer-centric brand identity.
+
+## 2. Robust Locale Name Resolution
+- **`java.util.Locale` Integration**: Updated `PropertyBundleModel.getDisplayName` to use standard Java locale resolution.
+- **Result**: `ko` -> "Korean", `ja` -> "Japanese", etc., ensuring all international locales are human-readable.
+
+## 3. Dynamic Tab Management
+- **On-the-fly Updates**: Modified `PropEditorX.init` to detect when a sibling file from the same bundle is opened and dynamically add its "Source" tab.
+- **Live Grid Refresh**: Implemented `refresh()` in `PropertiesGridPage` to rebuild the UI when new locales are detected, ensuring the model and view are always in sync.
+
+---
+
 _Created on 2026-03-15_
