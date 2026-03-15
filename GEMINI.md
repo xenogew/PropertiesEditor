@@ -1,6 +1,6 @@
 # PropEditorX — Quick Reference
 
-A Java `.properties` file editor with automatic `\uXXXX` ↔ native character conversion. Eclipse plugin + standalone Swing app.
+A Java `.properties` file editor as Eclipse plugin.
 
 ## Tech Stack
 
@@ -20,19 +20,20 @@ A Java `.properties` file editor with automatic `\uXXXX` ↔ native character co
 - Duplicate key detection with Eclipse problem markers
 - Code folding, content outline
 - JDT hover + completion proposals for property keys in Java source
-- Standalone Swing app with FlatLaf, search/replace, encoding selection
 - **Modernized Icons** — All 26 GIF icons converted to PNG; visual directory available at `icon_directory.png`
-- English + Japanese localization
+- English + Japanese + etc localization
 
 ## Build & Run
 
 ```bash
-# Build + test (51 unit tests)
+# Build + test (53 unit tests)
 ./mvnw clean verify
-
-# Run standalone
-java -cp "target/classes:lib/flatlaf-3.6.jar" io.github.xenogew.propedit.PropEditorX
 ```
+
+## Implementations
+
+- Always following coding style of "Google Coding Style" which is latest updated and compatible with modern features like Lambda expressions, Records, etc.
+- Always prefer to use `Virtual Thread` when found the heavy compute operations.
 
 ## Key Entry Points
 

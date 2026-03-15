@@ -4,6 +4,7 @@
 package io.github.xenogew.propedit.eclipse.plugin.jdt.hover;
 
 import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
+import io.github.xenogew.propedit.eclipse.plugin.jdt.util.JdtUtil;
 import io.github.xenogew.propedit.eclipse.plugin.util.ProjectProperties;
 import io.github.xenogew.propedit.util.StringUtil;
 import java.util.Map;
@@ -51,67 +52,11 @@ public class PropertiesHover implements IJavaEditorTextHover, ITextHoverExtensio
     IDocument document = textViewer.getDocument();
     int offset = region.getOffset();
     try {
-      int lineNum = document.getLineOfOffset(offset);
-      int lineOffset = document.getLineOffset(lineNum);
-      int lineLength = document.getLineLength(lineNum);
-      String source = document.get();
-      int startIdx = -1;
-      int tmp = offset - 1;
-      while (tmp >= lineOffset) {
-        tmp = source.lastIndexOf("\"", tmp); //$NON-NLS-1$
-        if (tmp < lineOffset) {
-          startIdx = -1;
-          break;
-        }
-        if (tmp > 0) {
-          if (document.getChar(tmp - 1) == '\\') {
-            tmp--;
-            continue;
-          } else {
-            startIdx = tmp + 1;
-            break;
-          }
-        } else if (tmp == 0) {
-          startIdx = 0 + 1;
-          break;
-        } else {
-          startIdx = -1;
-          break;
-        }
-      }
-      tmp = offset + 1;
-      int endIdx = -1;
-      while (tmp < lineOffset + lineLength) {
-        tmp = source.indexOf("\"", tmp); //$NON-NLS-1$
-        if (tmp > lineOffset + lineLength) {
-          endIdx = -1;
-          break;
-        }
-        if (tmp > 0) {
-          if (document.getChar(tmp - 1) == '\\') {
-            tmp++;
-            continue;
-          } else {
-            endIdx = tmp;
-            break;
-          }
-        } else if (tmp == 0) {
-          endIdx = 0;
-          break;
-        } else {
-          endIdx = -1;
-          break;
-        }
-      }
-
-      if (startIdx == -1 || endIdx == -1 || startIdx == endIdx) {
+      String key = JdtUtil.extractKey(document, offset);
+      if (key == null) {
         return null;
       }
-
-      String key = textViewer.getDocument().get(startIdx, endIdx - startIdx);
-
       return getPropertyValue(key);
-
     } catch (BadLocationException e) {
       IStatus status =
           new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, IStatus.OK, e.getMessage(), e);

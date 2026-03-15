@@ -266,4 +266,13 @@
 		<startup class="io.github.xenogew.propedit.eclipse.plugin.startup.Startup"/>
 	</extension>
 
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+				id="io.github.xenogew.propedit.eclipse.plugin.jdt.hyperlink.PropertiesHyperlinkDetector"
+				class="io.github.xenogew.propedit.eclipse.plugin.jdt.hyperlink.PropertiesHyperlinkDetector"
+				name="PropEditorX Hyperlink Detector"
+				targetId="org.eclipse.jdt.ui.javaCode">
+		</hyperlinkDetector>
+	</extension>
+
 </plugin>
