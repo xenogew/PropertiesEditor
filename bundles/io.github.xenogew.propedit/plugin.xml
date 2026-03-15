@@ -16,6 +16,7 @@
 				name="PropEditorX"
 				id="io.github.xenogew.propedit.editors.PropEditorX"
 				contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+				matchingStrategy="io.github.xenogew.propedit.eclipse.plugin.editors.PropertyEditorMatchingStrategy"
 				extensions="properties">
 		</editor>
 	</extension>

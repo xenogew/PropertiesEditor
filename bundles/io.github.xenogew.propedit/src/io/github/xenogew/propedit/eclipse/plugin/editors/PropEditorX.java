@@ -1,5 +1,6 @@
 package io.github.xenogew.propedit.eclipse.plugin.editors;
 
+import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.resources.IFile;
@@ -9,6 +10,8 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -27,29 +30,79 @@ public class PropEditorX extends FormEditor {
   private final ColorManager colorManager = new ColorManager();
 
   @Override
+  public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+    super.init(site, input);
+    handleNewInput(input);
+  }
+
+  @Override
+  protected void setInput(IEditorInput input) {
+    super.setInput(input);
+    handleNewInput(input);
+  }
+
+  private void handleNewInput(IEditorInput input) {
+    if (bundleModel != null && input instanceof IFileEditorInput fileInput) {
+      IFile file = fileInput.getFile();
+      String locale = extractLocale(file.getName());
+
+      if (!sourceEditors.containsKey(locale)) {
+        bundleModel.refresh();
+        try {
+          addSourcePage(locale, file);
+          if (gridPage != null) {
+            gridPage.refresh();
+          }
+        } catch (PartInitException e) {
+          PropEditorXPlugin.getDefault().error("Error adding source page for locale: " + locale, e);
+        }
+      }
+    }
+  }
+
+  private String extractLocale(String fileName) {
+    String base = bundleModel.getBaseName();
+    String nameNoExt = fileName.substring(0, fileName.lastIndexOf('.'));
+    if (nameNoExt.equals(base)) {
+      return PropertyBundleModel.DEFAULT_LOCALE;
+    }
+    if (nameNoExt.startsWith(base + "_")) {
+      return nameNoExt.substring(base.length() + 1);
+    }
+    return nameNoExt;
+  }
+
+  @Override
   protected void addPages() {
     IFileEditorInput input = (IFileEditorInput) getEditorInput();
     bundleModel = new PropertyBundleModel(input.getFile());
 
     try {
       // 1. Grid Page
-      gridPage = new PropertiesGridPage(this, "grid", "Grid");
+      gridPage = new PropertiesGridPage(this, "grid", "Editor::{✘}");
       addPage(gridPage);
 
       // 2. Source Pages (One per discovered locale file)
       for (Map.Entry<String, IFile> entry : bundleModel.getLocaleFiles().entrySet()) {
-        String locale = entry.getKey();
-        IFile file = entry.getValue();
-
-        PropertiesSourceEditor editor = new PropertiesSourceEditor();
-        int index = addPage(editor, new FileEditorInput(file));
-        setPageText(index, bundleModel.getDisplayName(locale));
-        sourceEditors.put(locale, editor);
+        addSourcePage(entry.getKey(), entry.getValue());
       }
 
     } catch (PartInitException e) {
-      // Log error
+      PropEditorXPlugin.getDefault().error("Error adding pages to editor", e);
     }
+  }
+
+  /**
+   * Dynamically adds a source tab for a locale file if it doesn't already exist.
+   */
+  public void addSourcePage(String locale, IFile file) throws PartInitException {
+    if (sourceEditors.containsKey(locale)) {
+      return;
+    }
+    PropertiesSourceEditor editor = new PropertiesSourceEditor();
+    int index = addPage(editor, new FileEditorInput(file));
+    setPageText(index, bundleModel.getDisplayName(locale));
+    sourceEditors.put(locale, editor);
   }
 
   public PropertyBundleModel getBundleModel() {
@@ -60,18 +113,33 @@ public class PropEditorX extends FormEditor {
   public void doSave(IProgressMonitor monitor) {
     SubMonitor subMonitor = SubMonitor.convert(monitor, "Saving bundle", 100);
     try {
-      // 1. Save all source editors (50% of work)
-      int workPerEditor = sourceEditors.isEmpty() ? 0 : 50 / sourceEditors.size();
+      // 1. Save all source editors (Commit current UI to disk)
+      int workPerEditor = sourceEditors.isEmpty() ? 0 : 40 / sourceEditors.size();
       for (PropertiesSourceEditor editor : sourceEditors.values()) {
         editor.doSave(subMonitor.split(workPerEditor));
       }
-      // 2. Save model state if modified via Grid (50% of work)
-      bundleModel.saveAll(subMonitor.split(50));
+
+      // 2. Refresh Model from disk (Sync with Source tab edits)
+      bundleModel.refresh();
+      subMonitor.worked(10);
+
+      // 3. Save model state ONLY if Grid was dirty (modified via Grid UI)
+      if (isDirty) {
+        bundleModel.saveAll(subMonitor.split(40));
+      } else {
+        subMonitor.worked(40);
+      }
+
+      // 4. Update Grid UI to reflect potential changes from Source tabs
+      if (gridPage != null) {
+        gridPage.refresh();
+      }
+      subMonitor.worked(10);
 
       isDirty = false;
       editorDirtyStateChanged();
     } catch (Exception e) {
-      // Log error
+      PropEditorXPlugin.getDefault().error("Error saving bundle", e);
     } finally {
       subMonitor.done();
     }

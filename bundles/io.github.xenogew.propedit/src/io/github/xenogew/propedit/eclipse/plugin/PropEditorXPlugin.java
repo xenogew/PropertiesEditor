@@ -5,7 +5,9 @@ import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -54,6 +56,13 @@ public class PropEditorXPlugin extends AbstractUIPlugin {
   public static ILog log() {
 
     return Platform.getLog(PropEditorXPlugin.class);
+  }
+
+  /**
+   * Logs an error message.
+   */
+  public void error(String message, Throwable exception) {
+    getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, message, exception));
   }
 
   /**

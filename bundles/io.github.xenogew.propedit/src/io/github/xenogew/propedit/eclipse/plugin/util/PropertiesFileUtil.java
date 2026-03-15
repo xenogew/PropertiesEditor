@@ -53,6 +53,21 @@ public class PropertiesFileUtil {
   }
 
   /**
+   * Extracts the base name of a properties file by stripping locale suffixes.
+   *
+   * @param fileName the filename (e.g., messages_ja.properties)
+   * @return the base name (e.g., messages)
+   */
+  public static String extractBaseName(String fileName) {
+    if (fileName == null || !fileName.contains(".")) {
+      return fileName;
+    }
+    String nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
+    // Matches patterns like _ja, _en_US, etc.
+    return nameWithoutExt.replaceFirst("(_[a-z]{2}(_[A-Z]{2})?(_[a-zA-Z0-9]+)?)$", "");
+  }
+
+  /**
    * Identifies the property key at the given offset in a properties file.
    *
    * @param document the properties file document

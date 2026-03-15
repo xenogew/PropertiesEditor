@@ -1,5 +1,7 @@
 package io.github.xenogew.propedit.eclipse.plugin.editors;
 
+import io.github.xenogew.propedit.eclipse.plugin.PropEditorXPlugin;
+import io.github.xenogew.propedit.eclipse.plugin.util.PropertiesFileUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -34,15 +37,9 @@ public class PropertyBundleModel {
 
   public PropertyBundleModel(IFile primaryFile) {
     this.primaryFile = primaryFile;
-    this.baseName = extractBaseName(primaryFile.getName());
+    this.baseName = PropertiesFileUtil.extractBaseName(primaryFile.getName());
     discoverFiles();
     loadProperties();
-  }
-
-  private String extractBaseName(String fileName) {
-    String nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
-    // Matches patterns like _ja, _en_US, etc.
-    return nameWithoutExt.replaceFirst("(_[a-z]{2}(_[A-Z]{2})?(_[a-zA-Z0-9]+)?)$", "");
   }
 
   private void discoverFiles() {
@@ -65,7 +62,7 @@ public class PropertyBundleModel {
         }
       }
     } catch (CoreException e) {
-      // Handle
+      PropEditorXPlugin.getDefault().error("Error discovering bundle files", e);
     }
   }
 
@@ -84,10 +81,21 @@ public class PropertyBundleModel {
     if (DEFAULT_LOCALE.equals(locale)) {
       return "English";
     }
-    if ("ja".equalsIgnoreCase(locale)) {
-      return "Japanese";
+    // Use Java's Locale to get a human-readable name in English
+    Locale l = Locale.forLanguageTag(locale.replace('_', '-'));
+    String name = l.getDisplayLanguage(Locale.ENGLISH);
+    if (name != null && !name.isEmpty()) {
+      // Capitalize first letter
+      return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
     return locale.toUpperCase();
+  }
+
+  public void refresh() {
+    localeFiles.clear();
+    localeProperties.clear();
+    discoverFiles();
+    loadProperties();
   }
 
   private void loadProperties() {
@@ -102,7 +110,8 @@ public class PropertyBundleModel {
           keys.add((String) key);
         }
       } catch (Exception e) {
-        // TODO: Logging with Eclipse Logger engine
+        PropEditorXPlugin.getDefault()
+            .error("Error loading properties for locale: " + entry.getKey(), e);
       }
     }
     allKeys.clear();

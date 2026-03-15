@@ -138,4 +138,23 @@ Registered the matching strategy in `plugin.xml` under the `PropEditorX` editor 
 
 ---
 
+# Phase 17.5: Robust Save Synchronization & Logging
+
+**Goal**: Solve the data-desync flaw during saves and implement a standardized logging framework.
+
+## 1. Save Synchronization
+Modified `PropEditorX.doSave()` to prioritize Source tab edits while keeping the Grid in sync.
+- **Workflow**: 
+    1.  **Commit Source**: Save all open text editors to disk first.
+    2.  **Model Sync**: Reload the `PropertyBundleModel` from disk immediately after source save.
+    3.  **Conditional Grid Save**: Only perform `bundleModel.saveAll()` if the Grid itself was modified (`isDirty`).
+    4.  **UI Refresh**: Trigger a Grid UI rebuild to reflect the new Source content.
+
+## 2. Professional Logging
+Implemented a project-wide logging strategy using the Eclipse `ILog` engine.
+- **`PropEditorXPlugin.error(msg, e)`**: Added a convenience method for standardized error reporting.
+- **Audit**: Replaced all empty or comment-only `catch` blocks in critical paths (I/O, Page Init, Model Refresh) with proper log entries.
+
+---
+
 _Created on 2026-03-15_

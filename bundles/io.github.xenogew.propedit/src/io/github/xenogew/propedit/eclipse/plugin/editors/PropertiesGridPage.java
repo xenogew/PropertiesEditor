@@ -36,6 +36,32 @@ public class PropertiesGridPage extends FormPage {
     super(editor, id, title);
   }
 
+  public void refresh() {
+    IManagedForm managedForm = getManagedForm();
+    if (managedForm == null) {
+      return;
+    }
+    ScrolledForm scrolledForm = managedForm.getForm();
+    if (scrolledForm == null || scrolledForm.isDisposed()) {
+      return;
+    }
+    // Remove all existing content from body and dispose editors
+    for (TableEditor editor : editors) {
+      if (editor.getEditor() != null) {
+        editor.getEditor().dispose();
+      }
+      editor.dispose();
+    }
+    editors.clear();
+
+    for (org.eclipse.swt.widgets.Control child : scrolledForm.getBody().getChildren()) {
+      child.dispose();
+    }
+    // Re-create content
+    createFormContent(managedForm);
+    scrolledForm.layout(true, true);
+  }
+
   @Override
   protected void createFormContent(IManagedForm managedForm) {
     ScrolledForm form = managedForm.getForm();

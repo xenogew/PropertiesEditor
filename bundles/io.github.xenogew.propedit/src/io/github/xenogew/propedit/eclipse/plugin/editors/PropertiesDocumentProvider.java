@@ -10,9 +10,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
@@ -35,9 +33,8 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
             results.add((IPropertiesDocumentListener) listener);
           }
         } catch (CoreException e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, e.getMessage(), e);
-          PropEditorXPlugin.getDefault().getLog().log(status);
+          PropEditorXPlugin.getDefault().error("Error creating executable extension for listener",
+              e);
         }
       }
     }
@@ -55,8 +52,7 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
       try {
         listener.beforeConvertAtLoadingDocument(document, element);
       } catch (Exception e) {
-        IStatus status = new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, e.getMessage(), e);
-        PropEditorXPlugin.getDefault().getLog().log(status);
+        PropEditorXPlugin.getDefault().error("Error calling beforeConvertAtLoadingDocument", e);
       }
     }
 
@@ -75,9 +71,7 @@ public class PropertiesDocumentProvider extends FileDocumentProvider {
         try {
           listener.afterConvertAtLoadingDocument(document, element);
         } catch (Exception e) {
-          IStatus status =
-              new Status(IStatus.ERROR, PropEditorXPlugin.PLUGIN_ID, e.getMessage(), e);
-          PropEditorXPlugin.getDefault().getLog().log(status);
+          PropEditorXPlugin.getDefault().error("Error calling afterConvertAtLoadingDocument", e);
         }
       }
 
