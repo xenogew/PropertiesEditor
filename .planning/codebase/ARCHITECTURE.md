@@ -6,10 +6,13 @@
 
 **Overall:** Multi-page Form Editor (Eclipse Plug-in Architecture)
 
-**Key Characteristics:**
-- **Bundle-based Modeling**: Groups related `.properties` files (locales) into a single logical unit (`PropertyBundleModel`).
-- **Hybrid Editing**: Provides both a structured Grid view for multi-locale editing and traditional source-level editing.
-- **Deep IDE Integration**: Extends JDT (Java Development Tools) to provide property-aware features within Java source files.
+**Core Patterns:**
+- **MVVM (Model-View-ViewModel)**: Applied to the multi-mode grid editor.
+    - **Model**: `PropertyBundleModel` (Raw data and workspace persistence).
+    - **ViewModel**: `PropertiesGridViewModel` (Logic for spanning, debouncing, and state synchronization).
+    - **View**: `PropertiesGridPage` (Nebula NatTable UI and event handling).
+- **MultiPageEditorPart**: Coordinates multiple views (Grid vs. Source).
+- **Flyweight Editor**: Used in the virtualized grid to minimize widget allocation.
 
 ## Layers
 

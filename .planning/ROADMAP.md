@@ -5,10 +5,10 @@
 **Goal**: Establish a rock-solid, high-performance base for the multi-locale editor.
 
 ### Phase 1: Grid Performance Optimization
-- Transition `PropertiesGridPage` to use `SWT.VIRTUAL` Table.
-- Implement `SWT.SetData` listener for lazy row population.
-- Implement **Flyweight Editor Pattern**: A single `TableEditor` that moves to the active cell.
-- Remove redundant widget creation per row to drastically reduce memory usage.
+- Transition `PropertiesGridPage` to use **Nebula NatTable**.
+- Implement `SpanningDataLayer` for Key column rowspan effects.
+- Implement **Flyweight Editor Pattern**: A single active editor jumping between cells.
+- Native virtualization for 100k+ rows with minimal memory overhead.
 - **Success Criteria**: Smooth scrolling with 1,000+ keys; immediate opening of large bundles.
 
 ## Milestone 2: Intelligent i18n & Production Readiness
